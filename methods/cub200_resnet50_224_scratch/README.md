@@ -17,6 +17,20 @@ changes only the teacher initialization:
 | student input | 224 x 224 | same |
 | split | official CUB train/test | same |
 
+## Why the scratch teacher still uses 200 epochs
+
+The 200-epoch teacher schedule is not claimed to be an official CUB standard
+or an optimal from-scratch ResNet50 recipe. It is retained from the existing
+ResNet50-224 transfer family so that the controlled ablation changes only one
+factor: `ImageNet1K-V2` initialization versus random initialization. The
+architecture, resolution, data split, augmentation, optimizer, learning rate,
+and epoch count remain fixed.
+
+If the scratch teacher underfits or has not converged at epoch 200, a
+scratch-optimized teacher schedule can be studied later. Such a run must be
+labeled as a separate protocol because changing both initialization and the
+training schedule would no longer isolate the pretraining effect.
+
 The sequence contains six tasks:
 
 1. scratch ResNet50-224 teacher
@@ -41,3 +55,8 @@ The final stdout line is:
 ```text
 [FINAL_TOP1_SUMMARY_224_SCRATCH] TeacherScratch224=...% VanillaB128=...% LG=...% ALG=...% VanillaB64=...% Ours=...%
 ```
+
+Copyable H200 forms:
+
+- timing: `H200_TIMING_ISSUE.md`
+- full training: `H200_FULL_ISSUE.md`

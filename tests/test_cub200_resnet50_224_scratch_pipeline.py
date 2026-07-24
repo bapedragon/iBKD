@@ -172,6 +172,26 @@ class Cub200ResNet50224ScratchPipelineTest(unittest.TestCase):
         self.assertIn("completed_tasks=6/6", issue)
         self.assertIn("teacher_pretrained=False", issue)
 
+    def test_full_issue_has_both_accounts_and_single_line_command(self) -> None:
+        issue = (
+            Path(__file__).resolve().parents[1]
+            / "methods"
+            / "cub200_resnet50_224_scratch"
+            / "H200_FULL_ISSUE.md"
+        ).read_text(encoding="utf-8")
+        command = (
+            "python methods/run_cub200_resnet50_224_scratch_all.py "
+            "--full-run --num-workers 4 --output-dir "
+            "/app/output/cub200_resnet50_224_scratch_all_full_seed1"
+        )
+        self.assertIn("bapedragon", issue)
+        self.assertIn("kau-aimslab", issue)
+        self.assertIn(command, issue)
+        self.assertNotIn(f"{command} \\", issue)
+        self.assertIn("teacher 200ep", issue)
+        self.assertIn("Ours 300ep", issue)
+        self.assertIn("completed_tasks=6/6", issue)
+
 
 if __name__ == "__main__":
     unittest.main()
