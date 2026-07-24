@@ -449,8 +449,17 @@ def finalize_args(args: argparse.Namespace) -> None:
         )
     if args.image_size != 224:
         raise ValueError("The fixed dataset protocols require --image-size 224")
-    if args.teacher_image_size != 32:
-        raise ValueError("V2 fixed ResNet56 teachers require --teacher-image-size 32")
+    if args.teacher_image_size not in {32, 224}:
+        raise ValueError("Ours supports teacher image sizes 32 or 224")
+    if args.teacher_image_size == 224 and args.dataset != "cub200":
+        raise ValueError(
+            "The ResNet50-224 teacher adaptation is locked to CUB-200"
+        )
+    if args.teacher_image_size == 224 and args.base_protocol != "lg_official":
+        raise ValueError(
+            "The CUB ResNet50-224 path requires the ImageNet-normalized "
+            "lg_official data path"
+        )
     if args.feature_grid != 14:
         raise ValueError("DeiT-Ti patch features require --feature-grid 14")
     if args.deform_kernel_size % 2 == 0:
@@ -468,17 +477,19 @@ def forward_teacher_features(
     teacher_image_size: int,
     base_protocol: str = "common",
 ) -> list[torch.Tensor]:
-    if teacher_image_size != 32:
-        raise ValueError("V2 fixed teachers require --teacher-image-size 32")
     if base_protocol == "lg_official":
         # The public LG pipeline feeds ImageNet-normalized student tensors to
         # the teacher after a direct bilinear resize; do not apply the generic
         # KD denormalize/renormalize bridge a second time.
-        teacher_images = F.interpolate(
-            images,
-            size=(teacher_image_size, teacher_image_size),
-            mode="bilinear",
-            align_corners=False,
+        teacher_images = (
+            images
+            if images.shape[-2:] == (teacher_image_size, teacher_image_size)
+            else F.interpolate(
+                images,
+                size=(teacher_image_size, teacher_image_size),
+                mode="bilinear",
+                align_corners=False,
+            )
         )
     else:
         teacher_images = student_view_to_teacher_view(images, dataset)
@@ -501,14 +512,16 @@ def evaluate_teacher_at_runtime_size(
     for images, targets in loader:
         images = images.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
-        if teacher_image_size != 32:
-            raise ValueError("V2 fixed teachers require --teacher-image-size 32")
         if base_protocol == "lg_official":
-            images = F.interpolate(
-                images,
-                size=(teacher_image_size, teacher_image_size),
-                mode="bilinear",
-                align_corners=False,
+            images = (
+                images
+                if images.shape[-2:] == (teacher_image_size, teacher_image_size)
+                else F.interpolate(
+                    images,
+                    size=(teacher_image_size, teacher_image_size),
+                    mode="bilinear",
+                    align_corners=False,
+                )
             )
         else:
             images = student_view_to_teacher_view(images, dataset)
@@ -523,9 +536,16 @@ def build_native_teacher_audit_loader(
     args: argparse.Namespace,
     device: torch.device,
 ) -> Any:
-    """Build the exact direct-32px evaluation path used by teacher training."""
+    """Build the teacher's native evaluation path."""
 
-    transform = official_test_transform()
+    if args.dataset == "cub200" and args.teacher_image_size == 224:
+        from teachers.train_teacher_cub200_resnet50_224 import (
+            common_transfer_test_transform,
+        )
+
+        transform = common_transfer_test_transform()
+    else:
+        transform = official_test_transform()
     dataset: Dataset[Any]
     if args.dataset == "cifar100":
         dataset = CIFAR100(
@@ -810,8 +830,8 @@ def write_summary(
             "CE + beta(e) * (lambda * L_fuse + (1-lambda) * L_align)"
         ),
         "guidance_controller": controller.state_dict(),
-        # Backward-compatible runtime fields now refer to the comparable
-        # native direct-32px checkpoint audit.
+        # Backward-compatible runtime fields refer to the teacher's native
+        # checkpoint audit at its declared input resolution.
         "teacher_runtime_top1": teacher_native_top1,
         "teacher_checkpoint_top1": float(teacher_spec["top1"]),
         "teacher_runtime_gap_pp": (
@@ -899,7 +919,7 @@ def main() -> None:
     summary_path = run_dir / "summary.json"
 
     log("=" * 72)
-    log("OURS / RESNET56 -> DEIT-TI")
+    log(f"OURS / TEACHER-{args.teacher_image_size} -> DEIT-TI")
     log("=" * 72)
     log(
         f"[ENV] python={platform.python_version()} torch={torch.__version__} "
@@ -939,7 +959,8 @@ def main() -> None:
         )
     log(
         f"[INPUT] shared_geometry=True student=224x224({args.dataset} norm) "
-        "teacher=bilinear_downsample_to_32x32(ImageNet norm) "
+        f"teacher=student_view_to_{args.teacher_image_size}x"
+        f"{args.teacher_image_size}(ImageNet norm) "
         f"eval_resize={args.eval_resize_mode}"
     )
     log(
@@ -1027,6 +1048,29 @@ def main() -> None:
         args.teacher_image_size,
         args.base_protocol,
     )
+    teacher_channels = tuple(
+        int(value)
+        for value in teacher_spec.get("feature_channels", TEACHER_CHANNELS)
+    )
+    teacher_spatial_sizes = tuple(
+        int(value)
+        for value in teacher_spec.get(
+            "feature_spatial_sizes", (32, 16, 8)
+        )
+    )
+    if len(teacher_channels) != 3:
+        raise RuntimeError(
+            f"Ours requires exactly three teacher stages, got {teacher_channels}"
+        )
+    if len(teacher_spatial_sizes) != 3:
+        raise RuntimeError(
+            "Ours requires exactly three teacher spatial sizes, got "
+            f"{teacher_spatial_sizes}"
+        )
+    if any(channels % args.num_heads for channels in teacher_channels):
+        raise RuntimeError(
+            f"--num-heads must divide teacher channels {teacher_channels}"
+        )
     student = create_ours_student(
         timm,
         args.student,
@@ -1035,7 +1079,7 @@ def main() -> None:
     ).to(device)
     ours = Ours(
         student_channels=STUDENT_CHANNELS,
-        teacher_channels=TEACHER_CHANNELS,
+        teacher_channels=teacher_channels,
         num_student_blocks=NUM_STUDENT_BLOCKS,
         num_heads=args.num_heads,
         spatial_kernel_size=args.deform_kernel_size,
@@ -1079,6 +1123,12 @@ def main() -> None:
             teacher_probe,
         )
     expected_teacher_raw = [tuple(feature.shape) for feature in teacher_probe]
+    declared_teacher_raw = [
+        (2, channels, spatial, spatial)
+        for channels, spatial in zip(
+            teacher_channels, teacher_spatial_sizes, strict=True
+        )
+    ]
     expected_student = [
         (2, STUDENT_CHANNELS, args.feature_grid, args.feature_grid)
     ] * NUM_STUDENT_BLOCKS
@@ -1086,6 +1136,11 @@ def main() -> None:
     if [tuple(feature.shape) for feature in student_probe] != expected_student:
         raise RuntimeError(
             f"Unexpected student features: {[tuple(x.shape) for x in student_probe]}"
+        )
+    if expected_teacher_raw != declared_teacher_raw:
+        raise RuntimeError(
+            "Teacher manifest feature contract does not match runtime: "
+            f"manifest={declared_teacher_raw} runtime={expected_teacher_raw}"
         )
     if [tuple(feature.shape) for feature in aligned_probe] != expected_targets:
         raise RuntimeError(
@@ -1122,7 +1177,7 @@ def main() -> None:
     runtime_gap = teacher_native_top1 - float(teacher_payload["accuracy"])
     if runtime_gap < -args.max_teacher_runtime_gap_pp:
         log(
-            "[TEACHER_NATIVE_AUDIT][WARN] Native direct-32px teacher accuracy "
+            "[TEACHER_NATIVE_AUDIT][WARN] Native teacher accuracy "
             f"is more than {args.max_teacher_runtime_gap_pp:.1f}pp below the "
             "checkpoint record."
         )

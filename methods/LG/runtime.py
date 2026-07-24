@@ -449,8 +449,12 @@ def finalize_args(args: argparse.Namespace) -> None:
         raise ValueError("--drop-path-rate must be in [0, 1)")
     if args.image_size != STUDENT_IMAGE_SIZE:
         raise ValueError("Official LG/ALG protocol requires --image-size 224")
-    if args.teacher_image_size != TEACHER_IMAGE_SIZE:
-        raise ValueError("LG/ALG ResNet56 guidance requires --teacher-image-size 32")
+    if args.teacher_image_size not in {TEACHER_IMAGE_SIZE, 224}:
+        raise ValueError("LG/ALG supports teacher image sizes 32 or 224")
+    if args.teacher_image_size == 224 and args.dataset != "cub200":
+        raise ValueError(
+            "The ResNet50-224 teacher adaptation is locked to CUB-200"
+        )
     if args.method == "ALG":
         canonical_controller = (
             args.alg_warmup_epochs == 0
@@ -693,7 +697,9 @@ def build_alg_loaders_with_final_test(
             "final_report_split=official_test test_evaluations=1"
         )
     log(
-        f"[DATA] student_image=224 teacher_image=32 train_batch={args.batch_size} "
+        f"[DATA] student_image=224 "
+        f"teacher_image={getattr(args, 'teacher_image_size', TEACHER_IMAGE_SIZE)} "
+        f"train_batch={args.batch_size} "
         f"eval_batch={args.eval_batch_size} num_workers={args.num_workers} "
         f"drop_last_train=True smoke={args.smoke} "
         f"split={split_description}"
@@ -754,10 +760,18 @@ def build_native_teacher_audit_loader(
         from teachers.cub200_dataset import CUB200Dataset, ensure_cub200
 
         dataset_root = ensure_cub200(args.data_dir)
+        if args.teacher_image_size == 224:
+            from teachers.train_teacher_cub200_resnet50_224 import (
+                common_transfer_test_transform,
+            )
+
+            teacher_transform = common_transfer_test_transform()
+        else:
+            teacher_transform = official_test_transform()
         dataset = CUB200Dataset(
             dataset_root,
             split="test",
-            transform=official_test_transform(),
+            transform=teacher_transform,
         )
     else:
         raise ValueError(f"Unsupported teacher-audit dataset: {args.dataset}")
@@ -778,12 +792,17 @@ def build_native_teacher_audit_loader(
     )
 
 
-def student_view_to_teacher_view(images: torch.Tensor) -> torch.Tensor:
+def student_view_to_teacher_view(
+    images: torch.Tensor,
+    teacher_image_size: int = TEACHER_IMAGE_SIZE,
+) -> torch.Tensor:
     """Official LG behavior: resize the already ImageNet-normalized view."""
 
+    if images.shape[-2:] == (teacher_image_size, teacher_image_size):
+        return images
     return F.interpolate(
         images,
-        size=(TEACHER_IMAGE_SIZE, TEACHER_IMAGE_SIZE),
+        size=(teacher_image_size, teacher_image_size),
         mode="bilinear",
         align_corners=False,
     )
@@ -792,8 +811,13 @@ def student_view_to_teacher_view(images: torch.Tensor) -> torch.Tensor:
 def forward_teacher_features(
     teacher: torch.nn.Module,
     images: torch.Tensor,
+    teacher_image_size: int = TEACHER_IMAGE_SIZE,
 ) -> list[torch.Tensor]:
-    return list(teacher.forward_features(student_view_to_teacher_view(images)))
+    return list(
+        teacher.forward_features(
+            student_view_to_teacher_view(images, teacher_image_size)
+        )
+    )
 
 
 @torch.inference_mode()
@@ -822,6 +846,7 @@ def evaluate_teacher_shared_view(
     loader: Any,
     device: torch.device,
     amp_enabled: bool,
+    teacher_image_size: int = TEACHER_IMAGE_SIZE,
 ) -> float:
     teacher.eval()
     correct = 0
@@ -830,7 +855,9 @@ def evaluate_teacher_shared_view(
         images = images.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
         with autocast_context(amp_enabled):
-            logits = teacher(student_view_to_teacher_view(images))
+            logits = teacher(
+                student_view_to_teacher_view(images, teacher_image_size)
+            )
         correct += top1_correct(logits, targets)
         total += targets.size(0)
     return 100.0 * correct / max(1, total)
@@ -1012,7 +1039,9 @@ def train_one_epoch(
         teacher_features: list[torch.Tensor] | None = None
         if beta > 0.0:
             with torch.no_grad(), autocast_context(amp_enabled):
-                teacher_features = forward_teacher_features(teacher, images)
+                teacher_features = forward_teacher_features(
+                    teacher, images, args.teacher_image_size
+                )
         with autocast_context(amp_enabled):
             student_features, logits = forward_student_features(student, images)
             ce = F.cross_entropy(
@@ -1188,7 +1217,7 @@ def main(method: str = "ALG") -> None:
     log("=" * 72)
     log(
         f"{'ADAPTIVE ' if method == 'ALG' else ''}"
-        "LOCALITY GUIDANCE / RESNET56 -> DEIT-TI"
+        f"LOCALITY GUIDANCE / TEACHER-{args.teacher_image_size} -> DEIT-TI"
     )
     log("=" * 72)
     log(
@@ -1219,7 +1248,8 @@ def main(method: str = "ALG") -> None:
         f"min_lr={args.min_lr} weight_decay={args.weight_decay} "
         f"warmup={args.warmup_epochs} warmup_factor={args.warmup_factor} "
         f"cosine batch={args.batch_size} eval_batch={args.eval_batch_size} "
-        f"student_image=224 teacher_image=32 drop_path={args.drop_path_rate} "
+        f"student_image=224 teacher_image={args.teacher_image_size} "
+        f"drop_path={args.drop_path_rate} "
         f"label_smoothing={args.label_smoothing} pretrained=False "
         f"base={args.base_protocol} eval_resize={args.eval_resize_mode}"
     )
@@ -1290,32 +1320,59 @@ def main(method: str = "ALG") -> None:
         test_loader,
         device,
         amp_enabled,
+        args.teacher_image_size,
     )
+    teacher_channels = tuple(
+        int(value)
+        for value in teacher_spec.get("feature_channels", TEACHER_CHANNELS)
+    )
+    teacher_spatial_sizes = tuple(
+        int(value)
+        for value in teacher_spec.get(
+            "feature_spatial_sizes", (32, 16, 8)
+        )
+    )
+    if len(teacher_channels) != 3:
+        raise RuntimeError(
+            f"LG/ALG requires exactly three teacher stages, got {teacher_channels}"
+        )
+    if len(teacher_spatial_sizes) != 3:
+        raise RuntimeError(
+            "LG/ALG requires exactly three teacher spatial sizes, got "
+            f"{teacher_spatial_sizes}"
+        )
     student = create_student(
         timm,
         NUM_CLASSES[args.dataset],
         args.drop_path_rate,
     ).to(device)
-    guidance = LocalityGuidance().to(device)
+    guidance = LocalityGuidance(teacher_channels=teacher_channels).to(device)
 
     with torch.no_grad():
         probe = torch.zeros(2, 3, STUDENT_IMAGE_SIZE, STUDENT_IMAGE_SIZE, device=device)
         student_probe, logits_probe = forward_student_features(student, probe)
-        teacher_probe = forward_teacher_features(teacher, probe)
+        teacher_probe = forward_teacher_features(
+            teacher, probe, args.teacher_image_size
+        )
         lg_probe, aligned_student, aligned_teacher = guidance(
             student_probe,
             teacher_probe,
         )
     expected_student = [(2, STUDENT_CHANNELS, 14, 14)] * 3
     expected_teacher = [
-        (2, TEACHER_CHANNELS[0], 32, 32),
-        (2, TEACHER_CHANNELS[1], 16, 16),
-        (2, TEACHER_CHANNELS[2], 8, 8),
+        (2, channels, spatial, spatial)
+        for channels, spatial in zip(
+            teacher_channels, teacher_spatial_sizes, strict=True
+        )
     ]
     expected_aligned = [
-        (2, TEACHER_CHANNELS[0], 32, 32),
-        (2, TEACHER_CHANNELS[1], 16, 16),
-        (2, TEACHER_CHANNELS[2], 14, 14),
+        (
+            2,
+            teacher_channels[index],
+            max(14, expected_teacher[index][-2]),
+            max(14, expected_teacher[index][-1]),
+        )
+        for index in range(3)
     ]
     if [tuple(value.shape) for value in student_probe] != expected_student:
         raise RuntimeError(
@@ -1323,7 +1380,9 @@ def main(method: str = "ALG") -> None:
         )
     if [tuple(value.shape) for value in teacher_probe] != expected_teacher:
         raise RuntimeError(
-            f"Unexpected teacher features: {[tuple(x.shape) for x in teacher_probe]}"
+            "Teacher manifest feature contract does not match runtime: "
+            f"manifest={expected_teacher} "
+            f"runtime={[tuple(x.shape) for x in teacher_probe]}"
         )
     if [tuple(value.shape) for value in aligned_student] != expected_aligned:
         raise RuntimeError("Unexpected aligned student feature shapes")
@@ -1342,11 +1401,12 @@ def main(method: str = "ALG") -> None:
     )
     log(
         f"[TEACHER_NATIVE_AUDIT] checkpoint_top1={checkpoint_top1:.2f}% "
-        f"native_direct_32px_top1={teacher_native_top1:.2f}% "
+        f"native_teacher_{args.teacher_image_size}px_top1={teacher_native_top1:.2f}% "
         f"gap={teacher_native_top1 - checkpoint_top1:+.2f}pp"
     )
     log(
-        f"[TEACHER_SHARED_VIEW] resize_224_to_32px_top1={teacher_shared_top1:.2f}% "
+        f"[TEACHER_SHARED_VIEW] student_view_to_{args.teacher_image_size}px_top1="
+        f"{teacher_shared_top1:.2f}% "
         f"gap_to_checkpoint={teacher_shared_top1 - checkpoint_top1:+.2f}pp "
         "diagnostic_only=True"
     )

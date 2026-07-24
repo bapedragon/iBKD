@@ -21,13 +21,26 @@ lab accounts are under
 [`methods/LG/cub200/H200_ISSUE.md`](methods/LG/cub200/H200_ISSUE.md). CUB is
 not added to the result table until the new H200 artifacts are verified.
 
+An additional, strictly separate CUB transfer-learning family uses an
+ImageNet1K-V2-pretrained ResNet50 teacher fine-tuned at **224 x 224**. Its
+teacher, LG adaptation, ALG adaptation, Ours run, output paths, timing runner,
+and H200 Issues all carry `resnet50_224` names so they cannot be confused with
+the scratch ResNet56-32 family. See
+[`methods/cub200_resnet50_224/README.md`](methods/cub200_resnet50_224/README.md)
+and
+[`methods/cub200_resnet50_224/H200_ISSUE.md`](methods/cub200_resnet50_224/H200_ISSUE.md).
+Because the official CUB page warns that some images overlap ImageNet, results
+from this pretrained family must be reported separately from scratch-teacher
+results.
+
 The Flowers implementation uses the official `train+val` split (2,040 images)
 for training and the official test split (6,149 images) for evaluation.
 
 All three primary `best` checkpoints have passed SHA-256, strict state-dict,
 metadata, and 32 x 32 forward checks. They are fixed before downstream KD and
-must be reused across every compared method. This repository remains
-independent from the earlier 224 x 224 teacher experiments.
+must be reused across every compared method in the primary low-resolution
+family. The separate ResNet50-224 CUB transfer experiment never replaces or
+mixes with these checkpoints.
 
 ## Consolidated DeiT-Ti results (Table 2 format)
 

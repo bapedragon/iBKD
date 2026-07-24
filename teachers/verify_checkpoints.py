@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolve and verify the fixed 32 x 32 ResNet56 teachers."""
+"""Resolve and verify fixed teacher checkpoints and their declared input size."""
 
 from __future__ import annotations
 
@@ -17,11 +17,13 @@ try:
     from .train_teacher_cifar100 import ResNet56
     from .train_teacher_flowers import ResNet56Flowers
     from .train_teacher_cub200 import ResNet56CUB200
+    from .train_teacher_cub200_resnet50_224 import ResNet50CUB200
 except ImportError:  # Direct execution: python teachers/verify_checkpoints.py
     from train_teacher_chaoyang import ResNet56Chaoyang
     from train_teacher_cifar100 import ResNet56
     from train_teacher_flowers import ResNet56Flowers
     from train_teacher_cub200 import ResNet56CUB200
+    from train_teacher_cub200_resnet50_224 import ResNet50CUB200
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent
@@ -42,6 +44,9 @@ MODEL_FACTORIES: dict[str, Callable[[], nn.Module]] = {
     "flowers102": ResNet56Flowers,
     "chaoyang": ResNet56Chaoyang,
     "cub200": ResNet56CUB200,
+}
+NAMED_MODEL_FACTORIES: dict[str, Callable[[], nn.Module]] = {
+    "resnet50_cub200_imagenet1k_v2_224": ResNet50CUB200,
 }
 
 
@@ -121,11 +126,31 @@ def load_teacher(
             f"Class-count mismatch: manifest={spec['num_classes']} "
             f"checkpoint={payload['num_classes']}"
         )
+    if (
+        "input_resolution" in payload
+        and "input_resolution" in spec
+        and int(payload["input_resolution"]) != int(spec["input_resolution"])
+    ):
+        raise RuntimeError(
+            f"Input-resolution mismatch: manifest={spec['input_resolution']} "
+            f"checkpoint={payload['input_resolution']}"
+        )
+    if (
+        "model_name" in payload
+        and "model_name" in spec
+        and str(payload["model_name"]) != str(spec["model_name"])
+    ):
+        raise RuntimeError(
+            f"Model-name mismatch: manifest={spec['model_name']} "
+            f"checkpoint={payload['model_name']}"
+        )
 
     state_dict = payload.get("model_state", payload.get("model"))
     if state_dict is None:
         raise RuntimeError("Checkpoint has neither model_state nor model")
-    model = MODEL_FACTORIES[dataset_key]()
+    model_name = str(spec.get("model_name", payload.get("model_name", "")))
+    factory = NAMED_MODEL_FACTORIES.get(model_name, MODEL_FACTORIES[dataset_key])
+    model = factory()
     model.load_state_dict(state_dict, strict=True)
     model.to(device)
     model.eval()
@@ -139,7 +164,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dataset",
         default="all",
-        choices=("all", "cifar100", "flowers102", "chaoyang"),
+        choices=("all", "cifar100", "flowers102", "chaoyang", "cub200"),
     )
     parser.add_argument(
         "--checkpoint-root",
@@ -157,7 +182,7 @@ def main() -> None:
         else (args.dataset,)
     )
     print("=" * 72, flush=True)
-    print("VERIFY FIXED 32x32 TEACHER CHECKPOINTS", flush=True)
+    print("VERIFY FIXED TEACHER CHECKPOINTS", flush=True)
     print("=" * 72, flush=True)
     print(f"[PATH] checkpoint_root={args.checkpoint_root.resolve()}", flush=True)
 
@@ -166,8 +191,13 @@ def main() -> None:
             dataset,
             checkpoint_root=args.checkpoint_root,
         )
+        input_resolution = int(
+            spec.get("input_resolution", payload.get("input_resolution", 32))
+        )
         with torch.inference_mode():
-            output = model(torch.zeros(1, 3, 32, 32))
+            output = model(
+                torch.zeros(1, 3, input_resolution, input_resolution)
+            )
         expected_shape = (1, int(spec["num_classes"]))
         if tuple(output.shape) != expected_shape:
             raise RuntimeError(
@@ -179,7 +209,8 @@ def main() -> None:
             f"[CHECKPOINT_OK] dataset={dataset} "
             f"selected={spec['selected_kind']} epoch={payload['epoch']} "
             f"top1={float(payload['accuracy']):.2f}% "
-            f"classes={spec['num_classes']} sha256={spec['sha256']}",
+            f"classes={spec['num_classes']} input={input_resolution} "
+            f"sha256={spec['sha256']}",
             flush=True,
         )
 
