@@ -7,8 +7,8 @@ verified in this repository. Accuracy cells intentionally remain blank.
 ## Current status
 
 The overnight batch received on 2026-07-22 and builds 479, 480, 482, 484,
-485, 488, 490, 493, 494, 496, and 503 received through 2026-07-24 have been
-imported. One completed run still awaits its checkpoint archive:
+485, 488, 490, 493, 494, 496, 503, and 509 received through 2026-07-25 have
+been imported. One completed run still awaits its checkpoint archive:
 
 | Method | Dataset | Protocol ID | Log-verified result | Expected destination | Missing artifacts |
 |---|---|---|---:|---|---|
@@ -53,6 +53,10 @@ their JSON summaries, and imported without replacing historical results:
   batch controls from build 480;
 - `cifar100_locked_b64_v1_300ep_seed1`: auxiliary Ours Chaoyang batch-64
   result from build 480.
+- `cub200_deit_ti_official_lg_v1_300ep_seed1`,
+  `cub200_deit_ti_alg_paper_official_lg_v1_300ep_seed1`, and
+  `cub200_deit_ti_ours_scratch_teacher_v1_300ep_seed1`: the shared-teacher
+  CUB-200 LG/ALG/Ours sequence from build 509.
 
 Add new jobs below this section only after submission, and remove their rows
 after the same import gate has passed.

@@ -1,0 +1,24 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "dataset": "cub200",
+  "dataset_root": "/app/scratch/input/bapedragon_509/data/cub200/CUB_200_2011",
+  "pretrained": false,
+  "completed_epoch": 300,
+  "planned_epochs": 300,
+  "latest_top1": 36.83120469451156,
+  "best_top1": 37.24542630307214,
+  "avg_epoch_seconds": 6.935455733935038,
+  "estimated_planned_seconds": 2080.6367201805115,
+  "estimated_planned_human": "34m 41s",
+  "elapsed_seconds": 2099.2066276073456,
+  "paths": {
+    "best": "/app/output/cub200_lg_alg_ours_300ep_seed1/teacher/teacher_cub200_resnet56_32_scratch_300ep_seed1/teacher_resnet56_cub200_32_best.pt",
+    "latest": "/app/output/cub200_lg_alg_ours_300ep_seed1/teacher/teacher_cub200_resnet56_32_scratch_300ep_seed1/teacher_resnet56_cub200_32_latest.pt",
+    "manifest": "/app/output/cub200_lg_alg_ours_300ep_seed1/teacher/teacher_cub200_resnet56_32_scratch_300ep_seed1/manifest.json",
+    "metrics": "/app/output/cub200_lg_alg_ours_300ep_seed1/teacher/teacher_cub200_resnet56_32_scratch_300ep_seed1/metrics.csv"
+  },
+  "sha256": {
+    "best": "e3db747360950e20133ef2698b464ef543edfa521b703dee45e89155d4f92815"
+  }
+}

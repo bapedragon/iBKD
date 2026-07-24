@@ -1,0 +1,44 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "completed_tasks": 4,
+  "total_tasks": 4,
+  "tasks": [
+    {
+      "name": "teacher",
+      "status": "complete",
+      "summary": "/app/output/cub200_lg_alg_ours_300ep_seed1/teacher/teacher_cub200_resnet56_32_scratch_300ep_seed1/summary.json"
+    },
+    {
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/cub200_lg_alg_ours_300ep_seed1/LG/cub200/lg_cub200_deit_ti_300ep_seed1/summary.json"
+    },
+    {
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/cub200_lg_alg_ours_300ep_seed1/ALG/cub200/alg_cub200_deit_ti_300ep_seed1/summary.json"
+    },
+    {
+      "name": "Ours",
+      "status": "complete",
+      "summary": "/app/output/cub200_lg_alg_ours_300ep_seed1/Ours/cub200/ours_cub200_deit_ti_300ep_seed1/summary.json"
+    }
+  ],
+  "started_at_unix": 1784876177.9780297,
+  "protocols": {
+    "LG": "official LG code mechanics, static guidance",
+    "ALG": "official LG base plus ALG paper controller",
+    "Ours": "unchanged repository Ours protocol"
+  },
+  "best_top1": {
+    "teacher": 37.24542630307214,
+    "LG": 46.927856403175696,
+    "ALG": 49.01622367966862,
+    "Ours": 48.72281670693821
+  },
+  "estimated_planned_seconds": 14256.964499950409,
+  "pod_limit_seconds": 36000,
+  "pod_limit_status": "PASS",
+  "finished_at_unix": 1784890681.8027918
+}

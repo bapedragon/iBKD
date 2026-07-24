@@ -9,6 +9,7 @@ teachers/
 │   ├── cifar100/
 │   ├── flowers102/
 │   ├── chaoyang/
+│   ├── cub200/
 │   ├── README.md
 │   └── manifest.json
 ├── train_teacher_cifar100.py
@@ -21,7 +22,7 @@ The training recipes are documented in the repository-level `PROTOCOL.md`.
 The fixed weights, metrics, configs, summaries, logs, and integrity hashes are
 documented in `checkpoints/README.md`.
 
-Verify all selected teacher checkpoints from the repository root:
+Verify all four selected teacher checkpoints from the repository root:
 
 ```bash
 python teachers/verify_checkpoints.py --dataset all

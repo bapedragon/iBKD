@@ -17,6 +17,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
             "ReviewKD",
             "MGD",
             "OFA",
+            "LG",
             "ALG",
             "Ours",
             "OursV2",
@@ -40,7 +41,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
 
     def test_each_committed_protocol_directory_is_self_contained(self) -> None:
         summaries = sorted(RESULTS.glob("*/*/*/run_summary.json"))
-        self.assertEqual(len(summaries), 49)
+        self.assertEqual(len(summaries), 52)
         for summary_path in summaries:
             run_dir = summary_path.parent
             checkpoint_path = run_dir / "student_best.pt"
@@ -78,18 +79,30 @@ class ResultProtocolLayoutTest(unittest.TestCase):
             self.assertTrue((run_dir / "run_summary.json").is_file(), run_dir)
             self.assertTrue((run_dir / "student_best.pt").is_file(), run_dir)
 
+    def test_cub200_shared_teacher_import_destinations_are_explicit(self) -> None:
+        expected = (
+            RESULTS / "LG/cub200/cub200_deit_ti_official_lg_v1_300ep_seed1",
+            RESULTS
+            / "ALG/cub200/cub200_deit_ti_alg_paper_official_lg_v1_300ep_seed1",
+            RESULTS
+            / "Ours/cub200/cub200_deit_ti_ours_scratch_teacher_v1_300ep_seed1",
+        )
+        for run_dir in expected:
+            self.assertTrue((run_dir / "run_summary.json").is_file(), run_dir)
+            self.assertTrue((run_dir / "student_best.pt").is_file(), run_dir)
+
     def test_consolidated_table_uses_only_current_reporting_results(self) -> None:
         root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
         results_readme = (RESULTS / "README.md").read_text(encoding="utf-8")
         expected_rows = (
-            "| KD | Logits | 69.10 | 48.95 | 62.79 |",
-            "| CRD | Pooled contrastive | 68.59 | 49.06 | 79.85 |",
-            "| ReviewKD | Projected fusion | 75.65 | 61.88 | 82.75 |",
-            "| MGD | Masked reconstruction | 75.68 | 54.66 | 81.81 |",
-            "| OFA | Logit-space projection | 67.73 | 46.41 | 78.03 |",
-            "| LG | Direct match (static) |  |  |  |",
-            "| ALG | Scheduled match (static) |  | 73.15 | 83.54 |",
-            "| **Ours** | **Grid-space, learnable** | **82.90** | **74.81** | **81.95\\*** |",
+            "| KD | Logits | 69.10 | 48.95 | 62.79 |  |",
+            "| CRD | Pooled contrastive | 68.59 | 49.06 | 79.85 |  |",
+            "| ReviewKD | Projected fusion | 75.65 | 61.88 | 82.75 |  |",
+            "| MGD | Masked reconstruction | 75.68 | 54.66 | 81.81 |  |",
+            "| OFA | Logit-space projection | 67.73 | 46.41 | 78.03 |  |",
+            "| LG | Direct match (static) |  |  |  | 46.93 |",
+            "| ALG | Scheduled match (static) |  | 73.15 | 83.54 | 49.02 |",
+            "| **Ours** | **Grid-space, learnable** | **82.90** | **74.81** | **81.95\\*** | **48.72** |",
         )
         for row in expected_rows:
             self.assertIn(row, root_readme)

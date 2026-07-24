@@ -51,6 +51,22 @@
       "gap_to_reference_pp": -0.481907433380087,
       "num_classes": 4,
       "sha256": "8cadc2d471311cfb055ed4d860a9acc858fb73f7e73a2b9678c69993c3590f04"
+    },
+    "cub200": {
+      "dataset": "CUB-200-2011",
+      "checkpoint": "cub200/teacher_resnet56_cub200_32_best.pt",
+      "training_manifest": "cub200/run_manifest.json",
+      "training_metrics": "cub200/metrics.csv",
+      "training_summary": "cub200/training_summary.json",
+      "selected_kind": "best",
+      "h200_build": 509,
+      "epoch": 283,
+      "top1": 37.24542630307214,
+      "num_classes": 200,
+      "input_resolution": 32,
+      "model_name": "ResNet56",
+      "pretrained": false,
+      "sha256": "e3db747360950e20133ef2698b464ef543edfa521b703dee45e89155d4f92815"
     }
   }
 }

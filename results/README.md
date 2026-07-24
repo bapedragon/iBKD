@@ -46,6 +46,9 @@ dataset. The canonical IDs currently used are:
 | `paper_lg_v2_b128_300ep_seed1` | pure-ALG Chaoyang batch-128 control |
 | `paper_lg_v2_b64_300ep_seed1` | selected pure-ALG Chaoyang batch-64 result |
 | `cifar100_locked_b64_v1_300ep_seed1` | Ours Chaoyang CIFAR-100-locked batch-64 control |
+| `cub200_deit_ti_official_lg_v1_300ep_seed1` | CUB-200 transfer of official static LG mechanics |
+| `cub200_deit_ti_alg_paper_official_lg_v1_300ep_seed1` | CUB-200 ALG paper controller on the official LG base |
+| `cub200_deit_ti_ours_scratch_teacher_v1_300ep_seed1` | CUB-200 Ours with the shared scratch ResNet56 teacher |
 
 Account names and H200 build numbers are kept only under `run_logs`; they do
 not determine checkpoint placement. `PENDING_IMPORTS.md` records jobs that
@@ -56,24 +59,24 @@ outputs retain `student_latest.pt`; its exact final-epoch accuracy is also
 preserved in `run_summary.json`. This avoids doubling repository size and H200
 clone time without discarding the reported result.
 
-All 49 currently committed checkpoints were loaded with PyTorch and verified against
+All 52 currently committed checkpoints were loaded with PyTorch and verified against
 their summaries for dataset, method, best accuracy, and checkpoint epoch.
 The Top-1 value is read from the adjacent summary; file names are deliberately
 stable (`student_best.pt`) inside the provenance-rich protocol directory.
 
 ## Consolidated DeiT-Ti reproduction table
 
-| Method | Transfer operator | CIFAR-100 | Flowers-102 | Chaoyang |
-|---|---|---:|---:|---:|
-| Vanilla DeiT-Ti | - | 65.08 | 50.06 | 82.00 |
-| KD | Logits | 69.10 | 48.95 | 62.79 |
-| CRD | Pooled contrastive | 68.59 | 49.06 | 79.85 |
-| ReviewKD | Projected fusion | 75.65 | 61.88 | 82.75 |
-| MGD | Masked reconstruction | 75.68 | 54.66 | 81.81 |
-| OFA | Logit-space projection | 67.73 | 46.41 | 78.03 |
-| LG | Direct match (static) |  |  |  |
-| ALG | Scheduled match (static) |  | 73.15 | 83.54 |
-| **Ours** | **Grid-space, learnable** | **82.90** | **74.81** | **81.95\*** |
+| Method | Transfer operator | CIFAR-100 | Flowers-102 | Chaoyang | CUB-200 |
+|---|---|---:|---:|---:|---:|
+| Vanilla DeiT-Ti | - | 65.08 | 50.06 | 82.00 |  |
+| KD | Logits | 69.10 | 48.95 | 62.79 |  |
+| CRD | Pooled contrastive | 68.59 | 49.06 | 79.85 |  |
+| ReviewKD | Projected fusion | 75.65 | 61.88 | 82.75 |  |
+| MGD | Masked reconstruction | 75.68 | 54.66 | 81.81 |  |
+| OFA | Logit-space projection | 67.73 | 46.41 | 78.03 |  |
+| LG | Direct match (static) |  |  |  | 46.93 |
+| ALG | Scheduled match (static) |  | 73.15 | 83.54 | 49.02 |
+| **Ours** | **Grid-space, learnable** | **82.90** | **74.81** | **81.95\*** | **48.72** |
 
 Blank cells mean not yet run under the intended method-specific protocol; they
 do not mean zero accuracy. Flowers ALG uses train batch 128 (`73.15%`) and
@@ -88,7 +91,8 @@ Protocol families used in this table:
 - generic Flowers/Chaoyang: `generic_kd_300ep_epoch_only_v1_seed42`;
 - Flowers ALG: `paper_lg_v2_trainval_test_b128_300ep_seed1`;
 - Chaoyang ALG: `paper_lg_v2_b64_300ep_seed1`;
-- Ours: `researcher_sync_v1_300ep_seed1` (Flowers train batch 64).
+- Ours: `researcher_sync_v1_300ep_seed1` (Flowers train batch 64);
+- CUB-200: the three `cub200_deit_ti_*_300ep_seed1` protocol directories.
 
 ## CIFAR-100
 
@@ -167,6 +171,26 @@ with the pre-V2 sweep above.
 
 Both runs completed in one H200 sequence and are stored under
 `OursV2/cifar100/table7_lambda_{0,0p5}_relative_position_v1_300ep_seed1/`.
+
+## CUB-200-2011 — shared scratch-teacher comparison
+
+All rows use the official train/test split (`5,994`/`5,794`), a scratch
+ResNet56 teacher at 32 x 32, a scratch DeiT-Ti student at 224 x 224, FP32,
+300 epochs, and seed 1. The selected teacher reached **37.25%** at epoch 283
+and all three students reference its exact SHA-256
+`e3db747360950e20133ef2698b464ef543edfa521b703dee45e89155d4f92815`.
+
+| Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Gap to LG | Status |
+|---|---:|---:|---:|---:|---:|---|
+| LG | 128 | 222 | **46.93%** | 46.34% | reference | Verified |
+| ALG | 128 | 251 | **49.02%** | 48.26% | +2.09 pp | Verified |
+| Ours | 64 | 263 | **48.72%** | 48.17% | +1.79 pp | Verified |
+
+LG is the direct transfer of official static locality guidance; ALG changes
+only the paper controller on that base. Ours retains its researcher-sync
+batch-64 protocol and feature module. Because the source LG/ALG work does not
+publish a CUB configuration, these rows are reported as controlled protocol
+transfers rather than source-paper reproductions.
 
 ## Flowers-102 — completed 300-epoch results
 
@@ -334,6 +358,9 @@ in separate protocol directories; no old checkpoint was overwritten.
 - `run_logs/h200_build-480_alg-batch-comparison-ours-chaoyang-300ep.log`:
   ALG Flowers batch 64, ALG Chaoyang batches 128/64, and Ours Chaoyang batch
   64; adjacent sequence JSON records the four completed tasks.
+- `run_logs/h200_build-509_cub200-shared-teacher-lg-alg-ours-300ep/`:
+  shared scratch ResNet56 teacher followed by LG, ALG, and Ours CUB-200
+  students; the directory preserves the combined log and sequence status.
 - `run_logs/h200_build-482_table4-grid-permutation-cifar100-300ep.log`:
   Table 4 grid-permutation control (`81.79%`).
 - `run_logs/h200_build-484_table7-lambda0-cifar100-300ep.log`:

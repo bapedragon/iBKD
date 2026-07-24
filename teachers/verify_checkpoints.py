@@ -177,7 +177,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     datasets = (
-        ("cifar100", "flowers102", "chaoyang")
+        ("cifar100", "flowers102", "chaoyang", "cub200")
         if args.dataset == "all"
         else (args.dataset,)
     )

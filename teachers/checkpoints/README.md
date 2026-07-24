@@ -9,6 +9,7 @@ corresponding dataset.
 | CIFAR-100 | `cifar100/teacher_resnet56_cifar100_32_best.pt` | 438 | 300 | 71.91% | 70.43% | +1.48 pp |
 | Flowers-102 | `flowers102/teacher_resnet56_flowers102_32_best.pt` | 447 | 389 | 66.03% | 66.33% | -0.30 pp |
 | Chaoyang | `chaoyang/teacher_resnet56_chaoyang_32_best.pt` | 443 | 94 | 76.72% | 77.20% | -0.48 pp |
+| CUB-200-2011 | `cub200/teacher_resnet56_cub200_32_best.pt` | 509 | 283 | 37.25% | - | - |
 
 Every dataset directory also contains:
 
@@ -19,6 +20,9 @@ Every dataset directory also contains:
 
 Only the primary `best` checkpoint is committed. The locally archived H200
 output still retains `best`, `latest`, and `closest_to_reference` files.
+For CUB, the generated `run_manifest.json`, metrics, and training summary are
+stored with the checkpoint; its combined teacher/LG/ALG/Ours log and sequence
+status are under `results/run_logs/h200_build-509_*`.
 
 Verify hashes, metadata, strict state-dict loading, and a 32 x 32 forward pass:
 

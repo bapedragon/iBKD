@@ -39,3 +39,5 @@ python methods/LG/cub200/train.py
 The public LG repository did not publish a CUB-200 configuration. The CUB
 entry is explicitly a transfer of the verified LG mechanics to the official
 CUB-200-2011 train/test split and the shared scratch 32-pixel ResNet56 teacher.
+The completed 300-epoch transfer reached best Top-1 **46.93%** at epoch 222
+and last Top-1 `46.34%`.

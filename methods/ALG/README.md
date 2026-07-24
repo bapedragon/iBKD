@@ -76,6 +76,8 @@ therefore does not overwrite or hide an earlier completed checkpoint.
 CUB-200 is a protocol transfer, not a result claimed by either source paper:
 it uses the authors' official CUB train/test split, the repository's shared
 scratch ResNet56 teacher, and the otherwise unchanged LG/ALG mechanics.
+The completed 300-epoch transfer reached best Top-1 **49.02%** at epoch 251
+and last Top-1 `48.26%`.
 
 Historical noncanonical diagnostics are labeled under [`legacy`](legacy) and
 are excluded from active runners.

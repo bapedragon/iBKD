@@ -81,3 +81,10 @@ are kept in separate `teacher/` and `Ours/cub200/` directories, with
 `sequence_status.json` at the root.
 
 See [`H200_ISSUE.md`](H200_ISSUE.md) for the complete request fields.
+
+## Completed result
+
+H200 build 509 completed the shared teacher, LG, ALG, and Ours sequence. The
+scratch ResNet56 teacher reached **37.25%** at epoch 283. Ours reached best
+Top-1 **48.72%** at epoch 263 and last Top-1 `48.17%`; its checkpoint records
+and hash-verifies the same selected teacher used by LG and ALG.

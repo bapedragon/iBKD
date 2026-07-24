@@ -13,13 +13,16 @@ The low-resolution teacher stage currently covers:
 | CIFAR-100 | **32 x 32** | **71.91%** | 70.43% | +1.48 pp |
 | Flowers-102 | **32 x 32** | **66.03%** | 66.33% | -0.30 pp |
 | Chaoyang | **32 x 32** | **76.72%** | 77.20% | -0.48 pp |
+| CUB-200-2011 | **32 x 32** | **37.25%** | - | - |
 
-CUB-200-2011 now has a shared scratch 32x32 ResNet56 teacher followed by
+CUB-200-2011 has a verified shared scratch 32x32 ResNet56 teacher followed by
 independent official LG, canonical paper ALG, and unchanged Ours students.
-The combined timing/full runner and the Issue fields for both personal and
-lab accounts are under
+The completed results are `46.93%`, `49.02%`, and `48.72%`, respectively.
+The combined timing/full runner and the Issue fields for both personal and lab
+accounts are under
 [`methods/LG/cub200/H200_ISSUE.md`](methods/LG/cub200/H200_ISSUE.md). CUB is
-not added to the result table until the new H200 artifacts are verified.
+reported as a protocol transfer because the LG/ALG sources do not publish a
+CUB configuration.
 
 An additional, strictly separate CUB transfer-learning family uses an
 ImageNet1K-V2-pretrained ResNet50 teacher fine-tuned at **224 x 224**. Its
@@ -36,7 +39,7 @@ results.
 The Flowers implementation uses the official `train+val` split (2,040 images)
 for training and the official test split (6,149 images) for evaluation.
 
-All three primary `best` checkpoints have passed SHA-256, strict state-dict,
+All four selected low-resolution `best` checkpoints have passed SHA-256, strict state-dict,
 metadata, and 32 x 32 forward checks. They are fixed before downstream KD and
 must be reused across every compared method in the primary low-resolution
 family. The separate ResNet50-224 CUB transfer experiment never replaces or
@@ -48,25 +51,26 @@ The table below is the repository's current reproduction table. It reports
 only runs performed in this repository; it does not copy unrun LG/ALG values
 from the draft paper.
 
-| Method | Transfer operator | CIFAR-100 | Flowers-102 | Chaoyang |
-|---|---|---:|---:|---:|
-| Vanilla DeiT-Ti | - | 65.08 | 50.06 | 82.00 |
-| KD | Logits | 69.10 | 48.95 | 62.79 |
-| CRD | Pooled contrastive | 68.59 | 49.06 | 79.85 |
-| ReviewKD | Projected fusion | 75.65 | 61.88 | 82.75 |
-| MGD | Masked reconstruction | 75.68 | 54.66 | 81.81 |
-| OFA | Logit-space projection | 67.73 | 46.41 | 78.03 |
-| LG | Direct match (static) |  |  |  |
-| ALG | Scheduled match (static) |  | 73.15 | 83.54 |
-| **Ours** | **Grid-space, learnable** | **82.90** | **74.81** | **81.95\*** |
+| Method | Transfer operator | CIFAR-100 | Flowers-102 | Chaoyang | CUB-200 |
+|---|---|---:|---:|---:|---:|
+| Vanilla DeiT-Ti | - | 65.08 | 50.06 | 82.00 |  |
+| KD | Logits | 69.10 | 48.95 | 62.79 |  |
+| CRD | Pooled contrastive | 68.59 | 49.06 | 79.85 |  |
+| ReviewKD | Projected fusion | 75.65 | 61.88 | 82.75 |  |
+| MGD | Masked reconstruction | 75.68 | 54.66 | 81.81 |  |
+| OFA | Logit-space projection | 67.73 | 46.41 | 78.03 |  |
+| LG | Direct match (static) |  |  |  | 46.93 |
+| ALG | Scheduled match (static) |  | 73.15 | 83.54 | 49.02 |
+| **Ours** | **Grid-space, learnable** | **82.90** | **74.81** | **81.95\*** | **48.72** |
 
 Blank cells mean that the method has not yet been run under its intended
 method-specific protocol. Flowers ALG uses train batch 128 (`73.15%`) and
 Chaoyang ALG uses train batch 64 (`83.54%`); both now have a committed best
 checkpoint and adjacent run summary. `*` marks the completed Chaoyang Ours
 H200 run whose `81.95%` final result is log-verified but whose archive is still
-awaiting import. Every unmarked non-Vanilla number above has a committed best
-checkpoint and adjacent run summary.
+awaiting import. The three CUB students use the same scratch ResNet56 teacher
+checkpoint (`37.25%`, epoch 283). Every unmarked non-Vanilla number above has
+a committed best checkpoint and adjacent run summary.
 
 The generic methods use the completed 300-epoch results. The selected Flowers
 ALG value uses the isolated ALG-paper/public-LG protocol with train/eval batch
@@ -110,6 +114,7 @@ IBAM_KD_H200_V2/
 │   ├── ReviewKD/
 │   ├── MGD/
 │   ├── OFA/
+│   ├── LG/
 │   ├── Ours/
 │   ├── OursV2/
 │   └── run_logs/
@@ -118,6 +123,7 @@ IBAM_KD_H200_V2/
     │   ├── cifar100/
     │   ├── flowers102/
     │   ├── chaoyang/
+    │   ├── cub200/
     │   ├── README.md
     │   └── manifest.json
     ├── README.md
