@@ -59,6 +59,20 @@ Audit all three paper datasets and measure their 300-epoch runtime estimates:
 python methods/ALG/run_three_dataset_timing.py --timing-run --num-workers 4
 ```
 
+After the timing audit passes, run all three canonical 300-epoch jobs
+sequentially and persist every completed result under `/app/output`:
+
+```bash
+python methods/ALG/run_three_dataset_full.py \
+  --full-run \
+  --num-workers 4 \
+  --chaoyang-data-dir /app/data/chaoyang
+```
+
+The full runner writes a separate directory for each dataset and updates
+`three_dataset_full_summary.json` after every completed run. A later failure
+therefore does not overwrite or hide an earlier completed checkpoint.
+
 CUB-200 is a protocol transfer, not a result claimed by either source paper:
 it uses the authors' official CUB train/test split, the repository's shared
 scratch ResNet56 teacher, and the otherwise unchanged LG/ALG mechanics.

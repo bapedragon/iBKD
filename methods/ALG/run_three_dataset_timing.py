@@ -172,9 +172,9 @@ def audit_wrapper(task: TimingTask) -> dict[str, str]:
     return defaults
 
 
-def audit_all() -> None:
+def audit_all(run_label: str = "TIMING") -> None:
     log("=" * 72)
-    log("CANONICAL ALG / OFFICIAL LG BASE / THREE-DATASET TIMING")
+    log(f"CANONICAL ALG / OFFICIAL LG BASE / THREE-DATASET {run_label}")
     log("=" * 72)
     log(
         f"[SOURCE_LOCK] alg_paper_doi={ALG_PAPER_DOI} "
@@ -214,13 +214,18 @@ def data_dir_for(args: argparse.Namespace, task: TimingTask) -> Path:
     return Path(getattr(args, task.data_arg))
 
 
-def validate_child_summary(task: TimingTask, summary: dict[str, Any]) -> None:
+def validate_child_summary(
+    task: TimingTask,
+    summary: dict[str, Any],
+    *,
+    student_epochs: int = 2,
+) -> None:
     public = summary.get("args", {})
     expected = {
         "method": "ALG",
         "dataset": task.dataset,
         "planned_epochs": 300,
-        "student_epochs": 2,
+        "student_epochs": student_epochs,
         "official_lg_commit": OFFICIAL_LG_COMMIT,
         "alg_paper_doi": ALG_PAPER_DOI,
     }
