@@ -30,3 +30,18 @@ python methods/KD/chaoyang/train.py --student-epochs 100 --data-dir /app/data/ch
 
 Each run writes `student_best.pt`, `student_latest.pt`, and `summary.json` in
 its run directory.
+
+## Recorded epoch variants
+
+The original dataset-specific run used 100 epochs. A later controlled rerun
+changed only the epoch count to 300 and retained every other setting above;
+both produced the same best Top-1 (`62.79%`). The B/C loss-sensitivity
+comparison below is locked to that 300-epoch rerun so its full runs differ
+only in KD temperature and CE/KD balance.
+
+## Limited loss-sensitivity check
+
+The completed `T=4`, KD-weight `0.9` result is not overwritten. Requested
+`T=2` variants B (`CE:KD=0.50:0.50`) and C (`0.75:0.25`) are isolated under
+[`loss_sensitivity`](loss_sensitivity/README.md), including a sequential
+timing runner and separate output directories.
