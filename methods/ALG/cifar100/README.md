@@ -3,6 +3,8 @@
 `train.py` uses the official LG base plus the published ALG controller. It
 locks batch `128`, optimizer LR warm-up `20`, controller warm-up `0`, paper
 derivative equations, `>= -0.02` stopping, FP32, and seed `1`.
+The ALG paper's DeiT-Ti comparison point is `82.06%` Top-1 with guidance
+ending at epoch `124`.
 
 ```bash
 python methods/ALG/cifar100/train.py --timing-run --num-workers 4

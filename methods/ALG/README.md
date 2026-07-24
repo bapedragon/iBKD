@@ -19,7 +19,7 @@ published adaptive controller on the official LG training base implemented in
 - DeiT classifier head: zero initialized as in the official LG source.
 - AdamW: official four parameter groups; biases, one-dimensional parameters,
   `cls_token`, and `pos_embed` receive zero weight decay.
-- Batch `128`, eval batch `200`, 300 epochs, seed `1`, FP32, direct bicubic
+- Batch `128`, eval batch `200`, 300 epochs, seed `1`, FP32, direct bilinear
   224-pixel student view and bilinear 32-pixel teacher view.
 
 The standard wrappers reject the historical researcher normalization,
@@ -32,6 +32,18 @@ Primary sources:
 - [Official LG paper](https://arxiv.org/abs/2207.10026)
 - [Official LG repository](https://github.com/lkhl/tiny-transformers)
 
+The active wrappers use the ALG paper's own DeiT-Ti comparison values:
+`82.06%`/epoch `124` on CIFAR-100, `69.04%`/epoch `188` on
+Flowers-102, and `83.50%`/epoch `108` on Chaoyang. Values from the evolving
+project draft are not used as ALG-paper references.
+
+The implementation is a behavior-preserving PyTorch/timm port of the public
+LG source rather than the authors' historical environment. It also uses this
+repository's fixed ResNet56 checkpoints so that all compared methods share
+the same teachers. These are the only controlled integration differences;
+no Ours loss, Ours module, Ours optimizer setting, or Ours data policy enters
+the active ALG path.
+
 ## Entry points
 
 ```bash
@@ -39,6 +51,12 @@ python methods/ALG/cifar100/train.py
 python methods/ALG/flowers102/train.py
 python methods/ALG/chaoyang/train.py
 python methods/ALG/cub200/train.py
+```
+
+Audit all three paper datasets and measure their 300-epoch runtime estimates:
+
+```bash
+python methods/ALG/run_three_dataset_timing.py --timing-run --num-workers 4
 ```
 
 CUB-200 is a protocol transfer, not a result claimed by either source paper:

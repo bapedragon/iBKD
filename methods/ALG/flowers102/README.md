@@ -33,6 +33,9 @@ into ALG.
 | Early derivative | ALG Eq. (16), explicit `1/e` normalization |
 | Grid alignment | larger of teacher/student, bilinear |
 
+The ALG paper's DeiT-Ti comparison point is `69.04%` Top-1 with guidance
+ending at epoch `188`.
+
 ## Completed H200 result
 
 The pure ALG-paper/public-LG run completed with **73.15% best test Top-1**.

@@ -22,6 +22,7 @@ OFFICIAL_LG_DEFAULTS = (
     ("--beta", "2.5"),
     ("--base-protocol", "lg_official"),
     ("--eval-resize-mode", "direct"),
+    ("--eval-interpolation", "bilinear"),
     ("--seed", "1"),
 )
 

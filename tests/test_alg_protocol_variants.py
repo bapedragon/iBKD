@@ -25,6 +25,7 @@ class AlgProtocolVariantsTest(unittest.TestCase):
         self.assertEqual(defaults["--label-smoothing"], "0.0")
         self.assertEqual(defaults["--drop-path-rate"], "0.1")
         self.assertEqual(defaults["--eval-resize-mode"], "direct")
+        self.assertEqual(defaults["--eval-interpolation"], "bilinear")
         self.assertEqual(defaults["--seed"], "1")
         self.assertEqual(defaults["--batch-size"], "128")
         self.assertEqual(defaults["--eval-batch-size"], "200")
@@ -61,6 +62,7 @@ class AlgProtocolVariantsTest(unittest.TestCase):
             "--alg-warmup-epochs",
             "--base-protocol",
             "--eval-resize-mode",
+            "--eval-interpolation",
             "--seed",
         ):
             self.assertEqual(defaults[option], public[option], option)
@@ -90,6 +92,7 @@ class AlgProtocolVariantsTest(unittest.TestCase):
             "--alg-warmup-epochs",
             "--base-protocol",
             "--eval-resize-mode",
+            "--eval-interpolation",
             "--seed",
         ):
             self.assertEqual(defaults[option], public[option], option)
@@ -117,6 +120,7 @@ class AlgProtocolVariantsTest(unittest.TestCase):
             "--alg-derivative-mode",
             "--base-protocol",
             "--eval-resize-mode",
+            "--eval-interpolation",
             "--seed",
         ):
             self.assertEqual(cub[option], public[option], option)
@@ -141,7 +145,8 @@ class AlgProtocolVariantsTest(unittest.TestCase):
         with mock.patch("sys.argv", ["train.py", "--dataset", "cifar100"]):
             args = alg_core.parse_args()
         self.assertEqual(args.dataset, "cifar100")
-        self.assertEqual(alg_core.REFERENCE_TOP1["cifar100"]["alg"], 81.98)
+        self.assertEqual(alg_core.REFERENCE_TOP1["cifar100"]["alg"], 82.06)
+        self.assertEqual(alg_core.PAPER_GUIDANCE_STOP_EPOCH["cifar100"], 124)
         self.assertIn("cifar100", alg_core.PAPER_GUIDANCE_STOP_EPOCH)
 
     def test_cifar100_native_teacher_audit_uses_official_test_split(self) -> None:

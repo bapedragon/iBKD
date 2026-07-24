@@ -58,16 +58,16 @@ ALG_PAPER_DOI = "10.1109/TNNLS.2024.3515076"
 NUM_CLASSES = {**SHARED_NUM_CLASSES, "cub200": 200}
 REFERENCE_TOP1 = {
     "cifar100": {
-        "alg": 81.98,
+        "alg": 82.06,
         "alg_lg": 77.38,
-        "alg_baseline": 65.08,
+        "alg_baseline": 65.06,
         "lg": 78.15,
         "baseline": 65.08,
     },
     "flowers102": {
-        "alg": 68.54,
+        "alg": 69.04,
         "alg_lg": 67.02,
-        "alg_baseline": 50.06,
+        "alg_baseline": 49.21,
         "lg": 68.50,
         "baseline": 50.06,
     },
@@ -87,8 +87,8 @@ REFERENCE_TOP1 = {
     },
 }
 PAPER_GUIDANCE_STOP_EPOCH = {
-    "cifar100": None,
-    "flowers102": None,
+    "cifar100": 124,
+    "flowers102": 188,
     "chaoyang": 108,
     "cub200": None,
 }
@@ -372,6 +372,15 @@ def parse_args() -> argparse.Namespace:
         default="direct",
     )
     parser.add_argument(
+        "--eval-interpolation",
+        choices=("bilinear", "bicubic"),
+        default="bilinear",
+        help=(
+            "Canonical LG/ALG uses torchvision Resize's bilinear default for "
+            "the direct 224x224 evaluation view."
+        ),
+    )
+    parser.add_argument(
         "--flowers-split-policy",
         choices=("trainval_test_best", "official_three_way"),
         default="trainval_test_best",
@@ -471,6 +480,11 @@ def finalize_args(args: argparse.Namespace) -> None:
         raise ValueError(
             "LG and canonical ALG must use the official LG base protocol"
         )
+    if args.method in {"LG", "ALG"} and args.eval_interpolation != "bilinear":
+        raise ValueError(
+            "Canonical LG/ALG requires direct bilinear evaluation resize, "
+            "matching the public LG loader."
+        )
     if (
         args.flowers_split_policy == "official_three_way"
         and args.dataset != "flowers102"
@@ -499,11 +513,16 @@ def build_alg_loaders_with_final_test(
         mean=IMAGENET_MEAN,
         std=IMAGENET_STD,
     )
+    interpolation = (
+        InterpolationMode.BILINEAR
+        if getattr(args, "eval_interpolation", "bicubic") == "bilinear"
+        else InterpolationMode.BICUBIC
+    )
     test_transform = transforms.Compose(
         [
             transforms.Resize(
                 (STUDENT_IMAGE_SIZE, STUDENT_IMAGE_SIZE),
-                interpolation=InterpolationMode.BICUBIC,
+                interpolation=interpolation,
             ),
             transforms.ToTensor(),
             transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
@@ -702,7 +721,8 @@ def build_alg_loaders_with_final_test(
         f"train_batch={args.batch_size} "
         f"eval_batch={args.eval_batch_size} num_workers={args.num_workers} "
         f"drop_last_train=True smoke={args.smoke} "
-        f"split={split_description}"
+        f"split={split_description} eval_interpolation="
+        f"{getattr(args, 'eval_interpolation', 'bicubic')}"
     )
     return train_loader, test_loader, final_test_loader
 
@@ -1251,7 +1271,8 @@ def main(method: str = "ALG") -> None:
         f"student_image=224 teacher_image={args.teacher_image_size} "
         f"drop_path={args.drop_path_rate} "
         f"label_smoothing={args.label_smoothing} pretrained=False "
-        f"base={args.base_protocol} eval_resize={args.eval_resize_mode}"
+        f"base={args.base_protocol} eval_resize={args.eval_resize_mode} "
+        f"eval_interpolation={args.eval_interpolation}"
     )
     log(
         "[AUGMENT] color_jitter=0.4 auto_augment=rand-m9-mstd0.5-inc1 "

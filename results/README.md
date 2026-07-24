@@ -190,9 +190,9 @@ Both selected rows use train+val (`2,040`) / test (`6,149`), 300 epochs, seed
 1, and a scratch DeiT-Ti at 224 x 224. They intentionally preserve their own
 method protocols instead of forcing one method's batch setting onto the other.
 
-| Method | Train / eval batch | Best epoch | Best Top-1 | Last Top-1 | Working-paper value | Gap | Artifact status |
+| Method | Train / eval batch | Best epoch | Best Top-1 | Last Top-1 | Method-paper reference | Gap | Artifact status |
 |---|---:|---:|---:|---:|---:|---:|---|
-| ALG (paper/public-LG protocol) | 128 / 200 | 274 | **73.15%** | 72.92% | 68.54% | +4.61 pp | Checkpoint and summary verified |
+| ALG (paper/public-LG protocol) | 128 / 200 | 274 | **73.15%** | 72.92% | 69.04% | +4.11 pp | Checkpoint and summary verified |
 | Ours (CIFAR-100-matched researcher sync) | 64 / 200 | 251 | **74.81%** | 74.21% | 70.31% | +4.50 pp | Checkpoint and summary verified |
 
 The Ours batch-64 artifacts are committed at
@@ -209,9 +209,9 @@ The earlier shared researcher-sync batch used train/eval batch `64/200` for
 both methods. It remains useful as an ablation, but its ALG row is not the
 selected pure ALG-paper result in the consolidated table.
 
-| Method | Best epoch | Best Top-1 | Last Top-1 | Working-paper value | Gap |
+| Method | Best epoch | Best Top-1 | Last Top-1 | Method-paper reference | Gap |
 |---|---:|---:|---:|---:|---:|
-| ALG (researcher-sync batch 64) | 288 | **75.02%** | 74.87% | 68.54% | +6.48 pp |
+| ALG (researcher-sync batch 64) | 288 | **75.02%** | 74.87% | 69.04% | +5.98 pp |
 | Ours (researcher-sync batch 64) | 251 | **74.81%** | 74.21% | 70.31% | +4.50 pp |
 
 The pure-ALG batch comparison additionally produced Flowers batch-64

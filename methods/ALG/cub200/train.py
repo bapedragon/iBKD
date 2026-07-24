@@ -35,6 +35,7 @@ PROTOCOL_DEFAULTS = (
     ("--alg-derivative-mode", "paper_equations"),
     ("--base-protocol", "lg_official"),
     ("--eval-resize-mode", "direct"),
+    ("--eval-interpolation", "bilinear"),
     ("--seed", "1"),
 )
 
