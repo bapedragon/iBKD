@@ -9,7 +9,7 @@ Issue first.
 ### 제목
 
 ```text
-[Request]: 박철현 CUB-200 ResNet50-224 transfer teacher + LG224 + ALG224 + Ours224 timing run
+[Request]: 박철현 CUB-200 ImageNet-pretrained ResNet50-224 teacher + LG224 + ALG224 + Ours224 timing run
 ```
 
 ### 개인 계정 사용자 ID
@@ -84,7 +84,7 @@ Timing Issue가 `completed_tasks=4/4`, `POD_LIMIT_CHECK_224 status=PASS`로
 ### 제목
 
 ```text
-[Request]: 박철현 CUB-200 ResNet50-224 transfer teacher 200ep + LG224 + ALG224 + Ours224 300ep training
+[Request]: 박철현 CUB-200 ImageNet-pretrained ResNet50-224 teacher 200ep + LG224 + ALG224 + Ours224 300ep training
 ```
 
 ### 개인 계정 사용자 ID

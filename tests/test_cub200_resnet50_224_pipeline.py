@@ -239,6 +239,7 @@ class Cub200ResNet50224PipelineTest(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn("bapedragon", issue)
         self.assertIn("kau-aimslab", issue)
+        self.assertIn("ImageNet-pretrained ResNet50-224 teacher", issue)
         self.assertIn("teacher_input=224 student_input=224", issue)
         timing_command = (
             "python methods/run_cub200_resnet50_224_lg_alg_ours.py "
