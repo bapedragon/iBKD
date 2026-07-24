@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fine-tune an ImageNet-pretrained ResNet50 teacher on CUB-200 at 224px."""
+"""Train an ImageNet-pretrained or scratch ResNet50 CUB teacher at 224px."""
 
 from __future__ import annotations
 
@@ -44,10 +44,14 @@ WEIGHT_DECAY = 5e-4
 SEED = 1
 MODEL_NAME = "resnet50_cub200_imagenet1k_v2_224"
 PRETRAINED_SOURCE = "torchvision.ResNet50_Weights.IMAGENET1K_V2"
+SCRATCH_MODEL_NAME = "resnet50_cub200_scratch_224"
 FEATURE_STAGE_NAMES = ("layer2", "layer3", "layer4")
 FEATURE_CHANNELS = (512, 1024, 2048)
 FEATURE_SPATIAL_SIZES = (28, 14, 7)
 RECIPE_NAME = "cub200_common_transfer_resnet50_224_imagenet1k_v2_200ep_seed1"
+SCRATCH_RECIPE_NAME = "cub200_resnet50_224_scratch_200ep_seed1"
+TRANSFER_PROTOCOL_FAMILY = "cub200_common_transfer_resnet50_224"
+SCRATCH_PROTOCOL_FAMILY = "cub200_resnet50_224_scratch"
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 
@@ -126,6 +130,15 @@ def parse_args() -> argparse.Namespace:
         "--no-download",
         action="store_true",
         help="Require an already extracted CUB_200_2011 directory.",
+    )
+    parser.add_argument(
+        "--initialization",
+        choices=("imagenet1k_v2", "scratch"),
+        default="imagenet1k_v2",
+        help=(
+            "Teacher initialization. The scratch option is a controlled "
+            "ResNet50-224 ablation and keeps every other teacher setting fixed."
+        ),
     )
     parser.add_argument(
         "--no-pretrained-download",
@@ -232,6 +245,9 @@ def checkpoint_payload(
     epoch_times: list[float],
     mode: str,
     pretrained: bool,
+    model_name: str,
+    recipe_name: str,
+    protocol_family: str,
 ) -> dict[str, Any]:
     state = model.state_dict()
     return {
@@ -241,7 +257,7 @@ def checkpoint_payload(
         "model": state,
         "model_state": state,
         "optimizer_state": optimizer.state_dict(),
-        "model_name": MODEL_NAME,
+        "model_name": model_name,
         "architecture": "TorchVision ResNet50",
         "dataset": "cub200",
         "num_classes": NUM_CLASSES,
@@ -251,7 +267,8 @@ def checkpoint_payload(
         "feature_spatial_sizes": FEATURE_SPATIAL_SIZES,
         "train_split": "official_train",
         "evaluation_split": "official_test",
-        "recipe_name": RECIPE_NAME,
+        "recipe_name": recipe_name,
+        "protocol_family": protocol_family,
         "pretrained": pretrained,
         "pretrained_source": PRETRAINED_SOURCE if pretrained else None,
         "epoch_times": epoch_times,
@@ -260,7 +277,11 @@ def checkpoint_payload(
 
 
 def write_manifest(
-    run_dir: Path, best_path: Path, payload: dict[str, Any]
+    run_dir: Path,
+    best_path: Path,
+    payload: dict[str, Any],
+    *,
+    protocol_family: str,
 ) -> Path:
     manifest_path = run_dir / "manifest.json"
     spec = {
@@ -269,17 +290,17 @@ def write_manifest(
         "sha256": common.sha256_file(best_path),
         "epoch": int(payload["epoch"]),
         "top1": float(payload["accuracy"]),
-        "model_name": MODEL_NAME,
+        "model_name": payload["model_name"],
         "architecture": payload["architecture"],
         "num_classes": NUM_CLASSES,
         "input_resolution": IMAGE_SIZE,
         "feature_stage_names": list(FEATURE_STAGE_NAMES),
         "feature_channels": list(FEATURE_CHANNELS),
         "feature_spatial_sizes": list(FEATURE_SPATIAL_SIZES),
-        "recipe_name": RECIPE_NAME,
+        "recipe_name": payload["recipe_name"],
         "pretrained": bool(payload["pretrained"]),
         "pretrained_source": payload["pretrained_source"],
-        "protocol_family": "cub200_common_transfer_resnet50_224",
+        "protocol_family": protocol_family,
     }
     common.atomic_json_save(
         {"version": 1, "teachers": {"cub200": spec}}, manifest_path
@@ -298,16 +319,40 @@ def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     mode = "smoke" if args.smoke else "timing" if args.timing_run else "full"
     epochs = 1 if args.smoke else 2 if args.timing_run else PLANNED_EPOCHS
-    run_name = args.run_name or f"teacher_{RECIPE_NAME}_{mode}"
+    if args.no_pretrained_download and args.initialization == "scratch":
+        raise ValueError(
+            "--no-pretrained-download and --initialization scratch are aliases; "
+            "supply only --initialization scratch for a production ablation."
+        )
+    use_pretrained = (
+        args.initialization == "imagenet1k_v2"
+        and not args.no_pretrained_download
+    )
+    model_name = MODEL_NAME if use_pretrained else SCRATCH_MODEL_NAME
+    recipe_name = RECIPE_NAME if use_pretrained else SCRATCH_RECIPE_NAME
+    protocol_family = (
+        TRANSFER_PROTOCOL_FAMILY
+        if use_pretrained
+        else SCRATCH_PROTOCOL_FAMILY
+    )
+    run_name = args.run_name or f"teacher_{recipe_name}_{mode}"
     run_dir = args.output_dir / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
-    best_path = run_dir / "teacher_resnet50_cub200_224_best.pt"
-    latest_path = run_dir / "teacher_resnet50_cub200_224_latest.pt"
+    checkpoint_stem = (
+        "teacher_resnet50_cub200_224"
+        if use_pretrained
+        else "teacher_resnet50_cub200_224_scratch"
+    )
+    best_path = run_dir / f"{checkpoint_stem}_best.pt"
+    latest_path = run_dir / f"{checkpoint_stem}_latest.pt"
     metrics_path = run_dir / "metrics.csv"
     summary_path = run_dir / "summary.json"
 
     common.log("=" * 80)
-    common.log("TRAIN CUB-200 RESNET50 TEACHER (IMAGENET TRANSFER, 224 x 224)")
+    initialization_label = "IMAGENET TRANSFER" if use_pretrained else "SCRATCH"
+    common.log(
+        f"TRAIN CUB-200 RESNET50 TEACHER ({initialization_label}, 224 x 224)"
+    )
     common.log("=" * 80)
     common.log(
         f"[MODE] mode={mode} actual_epochs={epochs} "
@@ -315,27 +360,33 @@ def train(args: argparse.Namespace) -> None:
     )
     common.log(f"[PATH] run_dir={run_dir.resolve()}")
     common.log(
-        "[PROTOCOL_FAMILY] cub200_common_transfer_resnet50_224 "
+        f"[PROTOCOL_FAMILY] {protocol_family} "
         "separate_from=cub200_resnet56_32_scratch"
     )
     common.log(
         "[PROTOCOL] official_split train=5994 test=5794 architecture=ResNet50 "
-        "input=224 pretrained=ImageNet1K_V2 full_finetune=True optimizer=SGD "
+        f"input=224 pretrained={'ImageNet1K_V2' if use_pretrained else 'False'} "
+        "full_finetune=True optimizer=SGD "
         "lr=0.01 momentum=0.9 nesterov=True weight_decay=0.0005 "
         "cosine=200ep batch=64 seed=1 fp32=True"
     )
-    common.log(
-        "[PRETRAINING_NOTICE] The official CUB page warns that CUB images may "
-        "overlap ImageNet. Report this transfer-learning family separately "
-        "from scratch-teacher results."
-    )
-
-    use_pretrained = not args.no_pretrained_download
+    if use_pretrained:
+        common.log(
+            "[PRETRAINING_NOTICE] The official CUB page warns that CUB images may "
+            "overlap ImageNet. Report this transfer-learning family separately "
+            "from scratch-teacher results."
+        )
+    else:
+        common.log(
+            "[CONTROLLED_ABLATION] teacher_initialization=random; "
+            "architecture=ResNet50 input=224 data/split/optimizer/schedule "
+            "match the pretrained-teacher family"
+        )
     model = ResNet50CUB200(pretrained=use_pretrained)
-    if not use_pretrained:
+    if args.no_pretrained_download:
         common.log(
             "[TEST_ONLY_DEVIATION] ResNet50 pretrained download disabled; "
-            "this is not the locked common-transfer protocol."
+            "use --initialization scratch for production runs."
         )
     protocol_check(model)
     model.to(device)
@@ -407,6 +458,9 @@ def train(args: argparse.Namespace) -> None:
             epoch_times=epoch_times,
             mode=mode,
             pretrained=use_pretrained,
+            model_name=model_name,
+            recipe_name=recipe_name,
+            protocol_family=protocol_family,
         )
         common.atomic_torch_save(payload, latest_path)
         if is_best:
@@ -435,7 +489,12 @@ def train(args: argparse.Namespace) -> None:
         )
 
     best_payload = torch.load(best_path, map_location="cpu", weights_only=False)
-    manifest_path = write_manifest(run_dir, best_path, best_payload)
+    manifest_path = write_manifest(
+        run_dir,
+        best_path,
+        best_payload,
+        protocol_family=protocol_family,
+    )
     elapsed = time.time() - start
     average_epoch = sum(epoch_times) / len(epoch_times)
     summary = {
@@ -443,8 +502,9 @@ def train(args: argparse.Namespace) -> None:
         "mode": mode,
         "dataset": "cub200",
         "dataset_root": str(dataset_root),
-        "protocol_family": "cub200_common_transfer_resnet50_224",
-        "model_name": MODEL_NAME,
+        "protocol_family": protocol_family,
+        "model_name": model_name,
+        "recipe_name": recipe_name,
         "input_resolution": IMAGE_SIZE,
         "pretrained": use_pretrained,
         "pretrained_source": PRETRAINED_SOURCE if use_pretrained else None,
@@ -473,7 +533,9 @@ def train(args: argparse.Namespace) -> None:
     )
     common.log(f"[FINAL_RESULT] manifest={manifest_path.resolve()}")
     common.log(
-        "[DONE] CUB-200 ResNet50-224 transfer teacher training completed successfully."
+        f"[DONE] CUB-200 ResNet50-224 "
+        f"{'transfer' if use_pretrained else 'scratch'} teacher training "
+        "completed successfully."
     )
 
 

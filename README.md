@@ -36,6 +36,14 @@ Because the official CUB page warns that some images overlap ImageNet, results
 from this pretrained family must be reported separately from scratch-teacher
 results.
 
+A third isolated CUB ablation keeps ResNet50 and both inputs at **224 x 224**
+but changes the teacher initialization from ImageNet1K-V2 to random. It runs
+two teacher-free Vanilla baselines before the corresponding LG/ALG and Ours
+comparisons. The protocol, six-task runner, and copyable timing Issue are under
+[`methods/cub200_resnet50_224_scratch/`](methods/cub200_resnet50_224_scratch/).
+Its output root carries `resnet50_224_scratch` and cannot overwrite either
+existing CUB family.
+
 The Flowers implementation uses the official `train+val` split (2,040 images)
 for training and the official test split (6,149 images) for evaluation.
 

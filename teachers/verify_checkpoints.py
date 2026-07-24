@@ -47,6 +47,7 @@ MODEL_FACTORIES: dict[str, Callable[[], nn.Module]] = {
 }
 NAMED_MODEL_FACTORIES: dict[str, Callable[[], nn.Module]] = {
     "resnet50_cub200_imagenet1k_v2_224": ResNet50CUB200,
+    "resnet50_cub200_scratch_224": ResNet50CUB200,
 }
 
 
