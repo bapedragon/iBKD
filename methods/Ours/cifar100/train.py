@@ -11,9 +11,6 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from methods.Ours.core import cli_main
-
-
 PROTOCOL_DEFAULTS = (
     ("--protocol-name", "cifar100_deit_ti_ours_researcher_sync_v1"),
     ("--student-epochs", "300"),
@@ -53,4 +50,7 @@ if __name__ == "__main__":
     for option, value in reversed(PROTOCOL_DEFAULTS):
         if not has_option(option):
             sys.argv[1:1] = [option, value]
+
+    from methods.Ours.core import cli_main
+
     cli_main()

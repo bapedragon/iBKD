@@ -12,7 +12,6 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from methods.Ours.cifar100.train import PROTOCOL_DEFAULTS
-from methods.Ours.core import cli_main
 
 
 # Keep every researcher-sync-v1 setting unchanged except the train batch size.
@@ -62,4 +61,7 @@ if __name__ == "__main__":
     for option, value in reversed(ABLATION_DEFAULTS):
         if not has_option(option):
             sys.argv[1:1] = [option, value]
+
+    from methods.Ours.core import cli_main
+
     cli_main()

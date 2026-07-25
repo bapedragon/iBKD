@@ -41,3 +41,6 @@ python methods/Ours/cifar100/batch128_ablation/train.py \
 The entrypoint itself locks the dataset, batch size, protocol name, and all
 other Ours v1 defaults. Explicit locked values are accepted when they match;
 conflicting overrides stop before data loading or training.
+
+The batch-128 lambda controls are isolated under
+[`lambda_sweep/`](lambda_sweep/README.md).
