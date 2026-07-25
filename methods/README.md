@@ -56,10 +56,14 @@ The measured estimate is `8h 18m 18s`, leaving `1h 41m 42s` under the
 600-minute Pod limit. Execution is short-first (`Chaoyang -> Flowers-102`),
 and every method writes an independent result directory.
 
-All datasets use scratch DeiT-Ti (`deit_tiny_patch16_224`), AdamW with initial
+The established low-resolution and historical CUB families use scratch
+DeiT-Ti (`deit_tiny_patch16_224`), AdamW with initial
 learning rate `5e-4` and weight decay `0.05`, cosine decay after warm-up, label
 smoothing `0.1`, CUDA AMP, seed `42`, and test Top-1 evaluation. No external
-student pretrained weights are used.
+student pretrained weights are used in those families. The separately labeled
+CUB full-transfer experiment under
+[`cub200_full_transfer/`](cub200_full_transfer/) is the explicit exception:
+both ResNet50 and DeiT-Ti use ImageNet initialization.
 
 Training uses random resized crop to 224 (`scale=0.8-1.0`, bicubic) and random
 horizontal flip. Evaluation uses resize to 256 and center crop to 224.

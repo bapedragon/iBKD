@@ -53,6 +53,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=Path("./outputs"))
     parser.add_argument("--run-name", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=4)
+    parser.add_argument(
+        "--student-pretrained",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+        help="Initialize DeiT-Ti from timm's explicit ImageNet-1K weights.",
+    )
     raw_args = sys.argv[1:] if argv is None else argv
     return parser.parse_args(
         argument for argument in raw_args if argument.strip()
@@ -129,6 +135,7 @@ def create_student_and_optimizer(
             timm,
             NUM_CLASSES,
             DROP_PATH_RATE,
+            pretrained=args.student_pretrained,
         ).to(device)
         optimizer = torch.optim.AdamW(
             official_student_parameter_groups(student),
@@ -145,6 +152,7 @@ def create_student_and_optimizer(
             "deit_ti",
             NUM_CLASSES,
             DROP_PATH_RATE,
+            pretrained=args.student_pretrained,
         ).to(device)
         optimizer = torch.optim.AdamW(
             student.parameters(),
@@ -225,7 +233,10 @@ def train(args: argparse.Namespace) -> None:
     )
     lg_runtime.log(
         f"[VANILLA_PROTOCOL] profile={args.profile} teacher=none "
-        f"guidance=none loss=CE-only student_pretrained=False "
+        f"guidance=none loss=CE-only "
+        f"student_pretrained={args.student_pretrained} "
+        f"student_pretrained_source="
+        f"{lg_runtime.STUDENT_PRETRAINED_SOURCES['deit_ti'] if args.student_pretrained else 'none'} "
         f"student_input=224 batch={batch_size} seed={SEED}"
     )
     lg_runtime.log(
@@ -298,7 +309,12 @@ def train(args: argparse.Namespace) -> None:
             "method": "Vanilla",
             "dataset": "cub200",
             "student": "deit_ti",
-            "student_pretrained": False,
+            "student_pretrained": bool(args.student_pretrained),
+            "student_pretrained_source": (
+                lg_runtime.STUDENT_PRETRAINED_SOURCES["deit_ti"]
+                if args.student_pretrained
+                else None
+            ),
             "input_resolution": 224,
             "profile": args.profile,
             "batch_size": batch_size,
@@ -317,7 +333,12 @@ def train(args: argparse.Namespace) -> None:
             "dataset": "cub200",
             "profile": args.profile,
             "student": "deit_ti",
-            "student_pretrained": False,
+            "student_pretrained": bool(args.student_pretrained),
+            "student_pretrained_source": (
+                lg_runtime.STUDENT_PRETRAINED_SOURCES["deit_ti"]
+                if args.student_pretrained
+                else None
+            ),
             "teacher": None,
             "loss": "cross_entropy_only",
             "input_resolution": 224,

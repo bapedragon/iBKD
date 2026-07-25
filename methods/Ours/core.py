@@ -28,6 +28,8 @@ from methods.Ours.ours import Ours
 from methods.KD.core import (
     NUM_CLASSES,
     STUDENT_MODELS,
+    STUDENT_PRETRAINED_MODELS,
+    STUDENT_PRETRAINED_SOURCES,
     VANILLA_TOP1,
     autocast_context,
     atomic_torch_save,
@@ -216,6 +218,15 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", choices=tuple(NUM_CLASSES), default="cifar100")
     parser.add_argument("--student", choices=("deit_ti",), default="deit_ti")
+    parser.add_argument(
+        "--student-pretrained",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+        help=(
+            "Initialize DeiT-Ti from its explicit timm ImageNet-1K checkpoint "
+            "before applying the unchanged Ours objective."
+        ),
+    )
     parser.add_argument("--protocol-name", type=str, default="manual")
     parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument("--teacher-root", type=Path, default=DEFAULT_CHECKPOINT_ROOT)
@@ -661,12 +672,17 @@ def create_ours_student(
     student_key: str,
     num_classes: int,
     drop_path_rate: float,
+    pretrained: bool = False,
 ) -> torch.nn.Module:
-    timm_name = STUDENT_MODELS[student_key]
+    timm_name = (
+        STUDENT_PRETRAINED_MODELS[student_key]
+        if pretrained
+        else STUDENT_MODELS[student_key]
+    )
     try:
         return timm.create_model(
             timm_name,
-            pretrained=False,
+            pretrained=pretrained,
             num_classes=num_classes,
             drop_path_rate=drop_path_rate,
         )
@@ -784,7 +800,17 @@ def checkpoint_payload(
         "best_accuracy": best_accuracy,
         "method": "Ours",
         "student": args.student,
-        "timm_model": STUDENT_MODELS[args.student],
+        "timm_model": (
+            STUDENT_PRETRAINED_MODELS[args.student]
+            if args.student_pretrained
+            else STUDENT_MODELS[args.student]
+        ),
+        "student_pretrained": bool(args.student_pretrained),
+        "student_pretrained_source": (
+            STUDENT_PRETRAINED_SOURCES[args.student]
+            if args.student_pretrained
+            else None
+        ),
         "dataset": args.dataset,
         "num_classes": NUM_CLASSES[args.dataset],
         "teacher": teacher_spec,
@@ -823,7 +849,19 @@ def write_summary(
         "method": "Ours",
         "dataset": args.dataset,
         "student": args.student,
-        "timm_model": STUDENT_MODELS[args.student],
+        "timm_model": (
+            STUDENT_PRETRAINED_MODELS[args.student]
+            if args.student_pretrained
+            else STUDENT_MODELS[args.student]
+        ),
+        "student_pretrained": bool(args.student_pretrained),
+        "student_pretrained_source": (
+            STUDENT_PRETRAINED_SOURCES[args.student]
+            if args.student_pretrained
+            else None
+        ),
+        "input_resolution": args.image_size,
+        "batch_size": args.batch_size,
         "teacher": teacher_spec,
         "source_snippet_sha256": SOURCE_SNIPPET_SHA256,
         "paper_loss_equation": (
@@ -947,7 +985,11 @@ def main() -> None:
         f"warmup={args.warmup_epochs} "
         f"cosine batch={args.batch_size} image={args.image_size} "
         f"label_smoothing={args.label_smoothing} "
-        f"drop_path={args.drop_path_rate} base={args.base_protocol}"
+        f"drop_path={args.drop_path_rate} "
+        f"student_pretrained={args.student_pretrained} "
+        f"student_pretrained_source="
+        f"{STUDENT_PRETRAINED_SOURCES[args.student] if args.student_pretrained else 'none'} "
+        f"base={args.base_protocol}"
     )
     if args.base_protocol == "lg_official":
         log(
@@ -1076,6 +1118,7 @@ def main() -> None:
         args.student,
         NUM_CLASSES[args.dataset],
         args.drop_path_rate,
+        pretrained=args.student_pretrained,
     ).to(device)
     ours = Ours(
         student_channels=STUDENT_CHANNELS,

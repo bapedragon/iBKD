@@ -38,6 +38,8 @@ from methods.KD.core import (
     IMAGENET_STD,
     NUM_CLASSES as SHARED_NUM_CLASSES,
     STUDENT_MODELS,
+    STUDENT_PRETRAINED_MODELS,
+    STUDENT_PRETRAINED_SOURCES,
     atomic_torch_save,
     autocast_context,
     count_parameters,
@@ -304,6 +306,16 @@ def parse_args() -> argparse.Namespace:
         default="chaoyang",
     )
     parser.add_argument("--student", choices=("deit_ti",), default="deit_ti")
+    parser.add_argument(
+        "--student-pretrained",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+        help=(
+            "Initialize the DeiT-Ti backbone from the explicit timm "
+            "ImageNet-1K checkpoint. The classifier remains the official "
+            "LG zero-initialized dataset head."
+        ),
+    )
     parser.add_argument("--protocol-name", type=str, default="manual")
     parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument("--teacher-root", type=Path, default=DEFAULT_CHECKPOINT_ROOT)
@@ -887,10 +899,16 @@ def create_student(
     timm: Any,
     num_classes: int,
     drop_path_rate: float,
+    pretrained: bool = False,
 ) -> torch.nn.Module:
+    timm_name = (
+        STUDENT_PRETRAINED_MODELS["deit_ti"]
+        if pretrained
+        else STUDENT_MODELS["deit_ti"]
+    )
     student = timm.create_model(
-        STUDENT_MODELS["deit_ti"],
-        pretrained=False,
+        timm_name,
+        pretrained=pretrained,
         num_classes=num_classes,
         drop_path_rate=drop_path_rate,
     )
@@ -1117,7 +1135,17 @@ def checkpoint_payload(
         "method": method,
         "dataset": args.dataset,
         "student": "deit_ti",
-        "timm_model": STUDENT_MODELS["deit_ti"],
+        "timm_model": (
+            STUDENT_PRETRAINED_MODELS["deit_ti"]
+            if args.student_pretrained
+            else STUDENT_MODELS["deit_ti"]
+        ),
+        "student_pretrained": bool(args.student_pretrained),
+        "student_pretrained_source": (
+            STUDENT_PRETRAINED_SOURCES["deit_ti"]
+            if args.student_pretrained
+            else None
+        ),
         "num_classes": NUM_CLASSES[args.dataset],
         "teacher": teacher_spec,
         "controller": controller.state_dict(),
@@ -1157,6 +1185,19 @@ def write_summary(
         "method": method,
         "dataset": args.dataset,
         "student": "deit_ti",
+        "timm_model": (
+            STUDENT_PRETRAINED_MODELS["deit_ti"]
+            if args.student_pretrained
+            else STUDENT_MODELS["deit_ti"]
+        ),
+        "student_pretrained": bool(args.student_pretrained),
+        "student_pretrained_source": (
+            STUDENT_PRETRAINED_SOURCES["deit_ti"]
+            if args.student_pretrained
+            else None
+        ),
+        "input_resolution": STUDENT_IMAGE_SIZE,
+        "batch_size": args.batch_size,
         "teacher": teacher_spec,
         "objective": (
             "CE + beta * LG while ALG paper controller is active"
@@ -1270,7 +1311,10 @@ def main(method: str = "ALG") -> None:
         f"cosine batch={args.batch_size} eval_batch={args.eval_batch_size} "
         f"student_image=224 teacher_image={args.teacher_image_size} "
         f"drop_path={args.drop_path_rate} "
-        f"label_smoothing={args.label_smoothing} pretrained=False "
+        f"label_smoothing={args.label_smoothing} "
+        f"student_pretrained={args.student_pretrained} "
+        f"student_pretrained_source="
+        f"{STUDENT_PRETRAINED_SOURCES['deit_ti'] if args.student_pretrained else 'none'} "
         f"base={args.base_protocol} eval_resize={args.eval_resize_mode} "
         f"eval_interpolation={args.eval_interpolation}"
     )
@@ -1366,6 +1410,7 @@ def main(method: str = "ALG") -> None:
         timm,
         NUM_CLASSES[args.dataset],
         args.drop_path_rate,
+        pretrained=args.student_pretrained,
     ).to(device)
     guidance = LocalityGuidance(teacher_channels=teacher_channels).to(device)
 

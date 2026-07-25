@@ -1,4 +1,4 @@
-# CUB-200 ResNet50-224 transfer family
+# CUB-200 ResNet50-224 teacher-transfer family
 
 This directory documents a separate CUB-200 experiment family. It never
 reuses or overwrites the existing `cub200_resnet56_32_scratch` teacher.
@@ -15,7 +15,13 @@ ResNet50 + ImageNet pretraining + 224-pixel setup:
 - teacher evaluation: Resize(256), CenterCrop(224), ImageNet normalization
 - optimization: full fine-tuning, SGD, LR `0.01`, momentum `0.9`, Nesterov,
   weight decay `5e-4`, cosine decay, batch `64`, 200 epochs, seed `1`, FP32
-- students: DeiT-Ti at **224 x 224**, 300 epochs, seed `1`
+- students: **random-initialized** DeiT-Ti at **224 x 224**, 300 epochs,
+  seed `1`
+
+This historical family pretrains only the teacher. It is not the conventional
+full-transfer comparison in which both teacher and student use ImageNet
+initialization. That separate experiment is documented in
+[`../cub200_full_transfer/`](../cub200_full_transfer/).
 
 The CUB project page warns that the dataset contains images that overlap
 ImageNet. Therefore this pretrained family is not a clean scratch comparison

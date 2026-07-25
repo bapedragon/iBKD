@@ -43,6 +43,12 @@ STUDENT_MODELS = {
     "pit": "pit_ti_224",
     "pvtv2": "pvt_v2_b0",
 }
+STUDENT_PRETRAINED_MODELS = {
+    "deit_ti": "deit_tiny_patch16_224.fb_in1k",
+}
+STUDENT_PRETRAINED_SOURCES = {
+    "deit_ti": "timm/deit_tiny_patch16_224.fb_in1k",
+}
 PENDING_OFFICIAL_INTEGRATION = ("cvt", "t2t_7", "t2t_14")
 TEACHER_IMAGE_SIZE = 32
 STUDENT_IMAGE_SIZE = 224

@@ -24,11 +24,12 @@ accounts are under
 reported as a protocol transfer because the LG/ALG sources do not publish a
 CUB configuration.
 
-An additional, strictly separate CUB transfer-learning family uses an
-ImageNet1K-V2-pretrained ResNet50 teacher fine-tuned at **224 x 224**. Its
-teacher, LG adaptation, ALG adaptation, Ours run, output paths, timing runner,
-and H200 Issues all carry `resnet50_224` names so they cannot be confused with
-the scratch ResNet56-32 family. See
+An additional, strictly separate CUB teacher-transfer family uses an
+ImageNet1K-V2-pretrained ResNet50 teacher fine-tuned at **224 x 224**, while
+its DeiT-Ti students still start from scratch. Its teacher, LG adaptation,
+ALG adaptation, Ours run, output paths, timing runner, and H200 Issues all
+carry `resnet50_224` names so they cannot be confused with the scratch
+ResNet56-32 family. See
 [`methods/cub200_resnet50_224/README.md`](methods/cub200_resnet50_224/README.md)
 and
 [`methods/cub200_resnet50_224/H200_ISSUE.md`](methods/cub200_resnet50_224/H200_ISSUE.md).
@@ -43,6 +44,15 @@ comparisons. The protocol, six-task runner, and copyable timing/full Issues are 
 [`methods/cub200_resnet50_224_scratch/`](methods/cub200_resnet50_224_scratch/).
 Its output root carries `resnet50_224_scratch` and cannot overwrite either
 existing CUB family.
+
+The conventional full-transfer family initializes **both** the ResNet50
+teacher and every DeiT-Ti student from ImageNet weights at **224 x 224**. Its
+six-task sequence is Teacher, Vanilla-b128, LG, ALG, Ours-b64, and Ours-b128.
+It is documented under
+[`methods/cub200_full_transfer/`](methods/cub200_full_transfer/), including
+separate copyable timing and full H200 Issues. The output root and protocol ID
+carry `full_transfer` / `both_imagenet_pretrained` and cannot overwrite the
+three earlier CUB families.
 
 The Flowers implementation uses the official `train+val` split (2,040 images)
 for training and the official test split (6,149 images) for evaluation.
