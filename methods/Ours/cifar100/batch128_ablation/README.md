@@ -31,11 +31,13 @@ python methods/Ours/cifar100/batch128_ablation/train.py \
 
 ```bash
 python methods/Ours/cifar100/batch128_ablation/train.py \
+  --student-epochs 300 \
+  --batch-size 128 \
   --num-workers 4 \
   --run-name ours_v1_cifar100_batch128_300ep_seed1 \
   --output-dir /app/output
 ```
 
 The entrypoint itself locks the dataset, batch size, protocol name, and all
-other Ours v1 defaults. The full-run command therefore does not repeat the
-300-epoch or batch-size arguments.
+other Ours v1 defaults. Explicit locked values are accepted when they match;
+conflicting overrides stop before data loading or training.

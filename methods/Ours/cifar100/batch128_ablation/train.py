@@ -35,18 +35,28 @@ def has_option(option: str) -> bool:
     )
 
 
+def supplied_value(option: str) -> str | None:
+    arguments = sys.argv[1:]
+    for index, argument in enumerate(arguments):
+        if argument.startswith(f"{option}="):
+            return argument.split("=", 1)[1]
+        if argument == option:
+            if index + 1 >= len(arguments):
+                raise SystemExit(f"{option} requires a value.")
+            return arguments[index + 1]
+    return None
+
+
 if __name__ == "__main__":
-    locked_options = set(ABLATION_OVERRIDES)
-    supplied_locked = sorted(
-        option for option in locked_options if has_option(option)
-    )
-    if supplied_locked:
-        joined = ", ".join(supplied_locked)
-        raise SystemExit(
-            f"This entrypoint locks {joined}; remove the command-line override."
-        )
     if has_option("--dataset"):
         raise SystemExit("This wrapper fixes --dataset cifar100; remove --dataset.")
+
+    for option, expected in ABLATION_DEFAULTS:
+        actual = supplied_value(option)
+        if actual is not None and actual != expected:
+            raise SystemExit(
+                f"This ablation locks {option}={expected}; received {actual}."
+            )
 
     sys.argv[1:1] = ["--dataset", "cifar100"]
     for option, value in reversed(ABLATION_DEFAULTS):
