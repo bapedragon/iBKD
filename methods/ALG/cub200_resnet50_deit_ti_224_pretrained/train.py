@@ -19,7 +19,7 @@ PROTOCOL_DEFAULTS = (
         "--protocol-name",
         "cub200_deit_ti_alg_resnet50_224_both_imagenet_pretrained_v1",
     ),
-    ("--student-epochs", "300"),
+    ("--student-epochs", "100"),
     ("--batch-size", "128"),
     ("--eval-batch-size", "200"),
     ("--lr", "0.0005"),

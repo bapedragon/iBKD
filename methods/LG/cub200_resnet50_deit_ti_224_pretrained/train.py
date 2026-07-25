@@ -31,6 +31,8 @@ if __name__ == "__main__":
         sys.argv[1:1] = ["--student-pretrained"]
     if not has_option("--teacher-image-size"):
         sys.argv[1:1] = ["--teacher-image-size", "224"]
+    if not has_option("--student-epochs"):
+        sys.argv[1:1] = ["--student-epochs", "100"]
     run_dataset(
         "cub200",
         "cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_v1",

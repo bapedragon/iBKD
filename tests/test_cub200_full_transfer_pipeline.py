@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import argparse
+import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -18,10 +20,12 @@ from methods.Ours import core as ours_core
 from methods.Ours.cub200_resnet50_deit_ti_224_pretrained.train import (
     PROTOCOL_DEFAULTS as OURS_DEFAULTS,
 )
+from methods import run_cub200_full_transfer_all as full_runner
 from methods.run_cub200_full_transfer_all import (
     EXPECTED_BATCH_SIZE,
     FINAL_RESULT_ORDER,
     METHOD_SCRIPTS,
+    STUDENT_EPOCHS,
     collect_best_top1,
     format_final_top1_summary,
     parse_args as parse_runner_args,
@@ -104,6 +108,8 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
     def test_wrappers_preserve_method_protocols_and_batches(self) -> None:
         alg = dict(ALG_DEFAULTS)
         ours = dict(OURS_DEFAULTS)
+        self.assertEqual(alg["--student-epochs"], "100")
+        self.assertEqual(ours["--student-epochs"], "100")
         self.assertEqual(alg["--batch-size"], "128")
         self.assertEqual(alg["--base-protocol"], "lg_official")
         self.assertEqual(alg["--alg-warmup-epochs"], "0")
@@ -115,6 +121,7 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
         self.assertIn("both_imagenet_pretrained", ours["--protocol-name"])
 
     def test_runner_order_has_one_vanilla_and_two_ours(self) -> None:
+        self.assertEqual(STUDENT_EPOCHS, 100)
         self.assertEqual(
             FINAL_RESULT_ORDER,
             (
@@ -158,6 +165,68 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
             ),
         )
 
+    def test_runner_passes_exactly_one_100_epoch_lock_to_each_student(
+        self,
+    ) -> None:
+        commands: dict[str, list[str]] = {}
+        teacher_summary = {
+            "pretrained": True,
+            "pretrained_source": (
+                "torchvision.ResNet50_Weights.IMAGENET1K_V2"
+            ),
+            "input_resolution": 224,
+            "model_name": "resnet50_cub200_imagenet1k_v2_224",
+            "protocol_family": "cub200_common_transfer_resnet50_224",
+            "planned_epochs": 200,
+            "best_top1": 80.0,
+            "estimated_planned_seconds": 1.0,
+        }
+        teacher_spec = {"pretrained": True, "input_resolution": 224}
+
+        def fake_run_tracked_task(**kwargs: object) -> dict[str, object]:
+            name = str(kwargs["name"])
+            commands[name] = list(kwargs["command"])  # type: ignore[arg-type]
+            if name == "teacher":
+                return teacher_summary
+            return {
+                "student_pretrained": True,
+                "student_pretrained_source": (
+                    "timm/deit_tiny_patch16_224.fb_in1k"
+                ),
+                "input_resolution": 224,
+                "batch_size": EXPECTED_BATCH_SIZE[name],
+                "planned_epochs": 100,
+                "teacher": None if name == "VanillaB128" else teacher_spec,
+                "best_top1": 81.0,
+                "estimated_planned_seconds": 1.0,
+            }
+
+        with tempfile.TemporaryDirectory() as temporary:
+            args = argparse.Namespace(
+                timing_run=True,
+                full_run=False,
+                data_dir=Path("./data/cub200"),
+                output_dir=Path(temporary),
+                num_workers=4,
+                no_download=True,
+            )
+            with (
+                mock.patch.object(full_runner, "parse_args", return_value=args),
+                mock.patch.object(
+                    full_runner,
+                    "run_tracked_task",
+                    side_effect=fake_run_tracked_task,
+                ),
+            ):
+                full_runner.main()
+
+        self.assertNotIn("--student-epochs", commands["teacher"])
+        for name in FINAL_RESULT_ORDER[1:]:
+            command = commands[name]
+            self.assertEqual(command.count("--student-epochs"), 1)
+            epoch_index = command.index("--student-epochs")
+            self.assertEqual(command[epoch_index + 1], "100")
+
     def test_identity_checks_reject_scratch_components(self) -> None:
         teacher = {
             "pretrained": True,
@@ -167,6 +236,7 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
             "input_resolution": 224,
             "model_name": "resnet50_cub200_imagenet1k_v2_224",
             "protocol_family": "cub200_common_transfer_resnet50_224",
+            "planned_epochs": 200,
         }
         validate_teacher_summary(teacher)
         with self.assertRaisesRegex(RuntimeError, "teacher identity"):
@@ -179,6 +249,7 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
             ),
             "input_resolution": 224,
             "batch_size": 128,
+            "planned_epochs": 100,
             "teacher": None,
         }
         validate_student_summary("VanillaB128", student)
@@ -199,12 +270,12 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
         timing_command = (
             "python methods/run_cub200_full_transfer_all.py --timing-run "
             "--num-workers 4 --output-dir "
-            "/app/output/cub200_full_transfer_all_timing_seed1"
+            "/app/output/cub200_full_transfer_all_100ep_timing_seed1"
         )
         full_command = (
             "python methods/run_cub200_full_transfer_all.py --full-run "
             "--num-workers 4 --output-dir "
-            "/app/output/cub200_full_transfer_all_full_seed1"
+            "/app/output/cub200_full_transfer_all_100ep_full_seed1"
         )
         for issue in (timing, full):
             self.assertIn("bapedragon", issue)
@@ -217,6 +288,9 @@ class Cub200FullTransferPipelineTest(unittest.TestCase):
         self.assertIn(full_command, full)
         self.assertNotIn(f"{timing_command} \\", timing)
         self.assertNotIn(f"{full_command} \\", full)
+        self.assertIn("100ep full training", full)
+        self.assertIn("각각 100 epochs", full)
+        self.assertNotIn("각각 300 epochs", full)
 
 
 if __name__ == "__main__":

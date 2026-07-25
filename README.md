@@ -48,6 +48,9 @@ existing CUB family.
 The conventional full-transfer family initializes **both** the ResNet50
 teacher and every DeiT-Ti student from ImageNet weights at **224 x 224**. Its
 six-task sequence is Teacher, Vanilla-b128, LG, ALG, Ours-b64, and Ours-b128.
+The teacher is fine-tuned for 200 epochs and all five pretrained students for
+100 epochs; the shorter student horizon follows common CUB transfer practice
+rather than the historical LG scratch schedule.
 It is documented under
 [`methods/cub200_full_transfer/`](methods/cub200_full_transfer/), including
 separate copyable timing and full H200 Issues. The output root and protocol ID

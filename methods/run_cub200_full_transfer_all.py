@@ -15,17 +15,19 @@ from typing import Any
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 POD_LIMIT_SECONDS = 600 * 60
 PROTOCOL_FAMILY = "cub200_resnet50_deit_ti_224_both_imagenet_pretrained"
+TEACHER_EPOCHS = 200
+STUDENT_EPOCHS = 100
 TEACHER_RUN_NAME = (
     "teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1"
 )
 RUN_NAMES = {
     "VanillaB128": (
-        "vanilla_cub200_deit_ti_imagenet1k_b128_300ep_seed1"
+        "vanilla_cub200_deit_ti_imagenet1k_b128_100ep_seed1"
     ),
-    "LG": "lg_cub200_both_imagenet_pretrained_b128_300ep_seed1",
-    "ALG": "alg_cub200_both_imagenet_pretrained_b128_300ep_seed1",
-    "OursB64": "ours_cub200_both_imagenet_pretrained_b64_300ep_seed1",
-    "OursB128": "ours_cub200_both_imagenet_pretrained_b128_300ep_seed1",
+    "LG": "lg_cub200_both_imagenet_pretrained_b128_100ep_seed1",
+    "ALG": "alg_cub200_both_imagenet_pretrained_b128_100ep_seed1",
+    "OursB64": "ours_cub200_both_imagenet_pretrained_b64_100ep_seed1",
+    "OursB128": "ours_cub200_both_imagenet_pretrained_b128_100ep_seed1",
 }
 METHOD_SCRIPTS = {
     "LG": (
@@ -71,7 +73,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("/app/output/cub200_full_transfer_all_seed1"),
+        default=Path("/app/output/cub200_full_transfer_all_100ep_seed1"),
     )
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--no-download", action="store_true")
@@ -121,6 +123,7 @@ def validate_teacher_summary(summary: dict[str, Any]) -> None:
         "input_resolution": 224,
         "model_name": "resnet50_cub200_imagenet1k_v2_224",
         "protocol_family": "cub200_common_transfer_resnet50_224",
+        "planned_epochs": TEACHER_EPOCHS,
     }
     mismatches = {
         key: {"expected": value, "actual": summary.get(key)}
@@ -145,6 +148,7 @@ def validate_student_summary(
         ),
         "input_resolution": 224,
         "batch_size": EXPECTED_BATCH_SIZE[name],
+        "planned_epochs": STUDENT_EPOCHS,
     }
     mismatches = {
         key: {"expected": value, "actual": summary.get(key)}
@@ -281,6 +285,10 @@ def main() -> None:
         "student_source=timm/deit_tiny_patch16_224.fb_in1k"
     )
     log(
+        f"[EPOCH_LOCK] teacher_planned_epochs={TEACHER_EPOCHS} "
+        f"all_students_planned_epochs={STUDENT_EPOCHS}"
+    )
+    log(
         "[SEQUENCE] Teacher -> VanillaB128 -> LG -> ALG -> OursB64 -> "
         "OursB128"
     )
@@ -344,6 +352,8 @@ def main() -> None:
                 "--profile",
                 "lg_official_b128",
                 "--student-pretrained",
+                "--student-epochs",
+                str(STUDENT_EPOCHS),
                 "--timing-run" if timing else "--full-run",
                 "--data-dir",
                 str(args.data_dir),
@@ -369,6 +379,8 @@ def main() -> None:
                 run_name,
                 "--num-workers",
                 str(args.num_workers),
+                "--student-epochs",
+                str(STUDENT_EPOCHS),
             ]
             if name in {"OursB64", "OursB128"}:
                 command.extend(

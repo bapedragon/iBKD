@@ -24,7 +24,7 @@ from methods.LG import runtime as lg_runtime  # noqa: E402
 from methods.Ours import core as ours_core  # noqa: E402
 
 
-PLANNED_EPOCHS = 300
+DEFAULT_STUDENT_EPOCHS = 300
 NUM_CLASSES = 200
 LR = 5e-4
 MIN_LR = 5e-6
@@ -53,6 +53,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=Path("./outputs"))
     parser.add_argument("--run-name", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=4)
+    parser.add_argument(
+        "--student-epochs",
+        type=int,
+        default=DEFAULT_STUDENT_EPOCHS,
+        help="Planned training horizon; timing mode still executes two epochs.",
+    )
     parser.add_argument(
         "--student-pretrained",
         default=False,
@@ -206,12 +212,14 @@ def atomic_json_save(payload: dict[str, Any], path: Path) -> None:
 def train(args: argparse.Namespace) -> None:
     if args.num_workers < 0:
         raise ValueError("--num-workers must be non-negative")
+    if args.student_epochs <= 0:
+        raise ValueError("--student-epochs must be positive")
     lg_runtime.install_signal_handlers()
     lg_runtime.seed_everything(SEED)
     torch.backends.cudnn.benchmark = False
     timm = lg_runtime.ensure_timm()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    actual_epochs = 2 if args.timing_run else PLANNED_EPOCHS
+    actual_epochs = 2 if args.timing_run else args.student_epochs
     mode = "timing" if args.timing_run else "full"
     batch_size = PROFILE_BATCH_SIZE[args.profile]
     run_name = args.run_name or (
@@ -229,7 +237,7 @@ def train(args: argparse.Namespace) -> None:
     lg_runtime.log("=" * 80)
     lg_runtime.log(
         f"[MODE] mode={mode} actual_epochs={actual_epochs} "
-        f"planned_epochs={PLANNED_EPOCHS}"
+        f"planned_epochs={args.student_epochs}"
     )
     lg_runtime.log(
         f"[VANILLA_PROTOCOL] profile={args.profile} teacher=none "
@@ -269,7 +277,7 @@ def train(args: argparse.Namespace) -> None:
     lg_runtime.log(f"[OPTIMIZER] {optimizer_description}")
     scheduler = lg_runtime.create_scheduler(
         optimizer,
-        planned_epochs=PLANNED_EPOCHS,
+        planned_epochs=args.student_epochs,
         lr=LR,
         min_lr=MIN_LR,
         warmup_epochs=WARMUP_EPOCHS,
@@ -345,13 +353,13 @@ def train(args: argparse.Namespace) -> None:
             "batch_size": batch_size,
             "completed_epoch": epoch,
             "actual_epochs": actual_epochs,
-            "planned_epochs": PLANNED_EPOCHS,
+            "planned_epochs": args.student_epochs,
             "latest_top1": latest_accuracy,
             "best_top1": best_accuracy,
             "avg_epoch_seconds": average_epoch,
-            "estimated_planned_seconds": average_epoch * PLANNED_EPOCHS,
+            "estimated_planned_seconds": average_epoch * args.student_epochs,
             "estimated_planned_human": lg_runtime.format_duration(
-                average_epoch * PLANNED_EPOCHS
+                average_epoch * args.student_epochs
             ),
             "elapsed_seconds": elapsed,
             "paths": {
@@ -378,7 +386,7 @@ def train(args: argparse.Namespace) -> None:
     )
     lg_runtime.log(
         f"[TIMING] avg_epoch={summary['avg_epoch_seconds']:.1f}s "
-        f"planned_epochs={PLANNED_EPOCHS} "
+        f"planned_epochs={args.student_epochs} "
         f"estimated_total={summary['estimated_planned_human']}"
     )
     lg_runtime.log(f"[FINAL_RESULT] summary={summary_path.resolve()}")
