@@ -37,6 +37,12 @@ Because the official CUB page warns that some images overlap ImageNet, results
 from this pretrained family must be reported separately from scratch-teacher
 results.
 
+Build 511 completed this historical teacher-only transfer sequence. The
+ResNet50 teacher reached **84.10%**, followed by LG **35.19%**, ALG **29.72%**,
+and Ours **30.65%**. All four available artifacts were verified and imported;
+the students remain random-initialized and use the historical 300-epoch
+horizon.
+
 A third isolated CUB ablation keeps ResNet50 and both inputs at **224 x 224**
 but changes the teacher initialization from ImageNet1K-V2 to random. It runs
 two teacher-free Vanilla baselines before the corresponding LG/ALG and Ours
@@ -44,6 +50,12 @@ comparisons. The protocol, six-task runner, and copyable timing/full Issues are 
 [`methods/cub200_resnet50_224_scratch/`](methods/cub200_resnet50_224_scratch/).
 Its output root carries `resnet50_224_scratch` and cannot overwrite either
 existing CUB family.
+
+Build 519 completed all six tasks: teacher **48.31%**, Vanilla-b128
+**17.52%**, LG **29.67%**, ALG **26.67%**, Vanilla-b64 **16.86%**, and Ours
+**30.17%**. The full log and all five student archives were supplied and
+verified. The teacher artifact directory itself was not included, so its
+value remains explicitly log-verified/pending rather than checkpoint-verified.
 
 The conventional full-transfer family initializes **both** the ResNet50
 teacher and every DeiT-Ti student from ImageNet weights at **224 x 224**. Its
@@ -144,6 +156,8 @@ IBAM_KD_H200_V2/
 │   ├── MGD/
 │   ├── OFA/
 │   ├── LG/
+│   ├── ALG/
+│   ├── Vanilla/
 │   ├── Ours/
 │   ├── OursV2/
 │   └── run_logs/
@@ -153,6 +167,7 @@ IBAM_KD_H200_V2/
     │   ├── flowers102/
     │   ├── chaoyang/
     │   ├── cub200/
+    │   ├── cub200_resnet50_224_imagenet1k_v2/
     │   ├── README.md
     │   └── manifest.json
     ├── README.md

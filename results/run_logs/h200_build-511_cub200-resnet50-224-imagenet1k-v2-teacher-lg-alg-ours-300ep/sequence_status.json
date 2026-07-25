@@ -1,0 +1,47 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "protocol_family": "cub200_common_transfer_resnet50_224",
+  "separate_from": "cub200_resnet56_32_scratch",
+  "completed_tasks": 4,
+  "total_tasks": 4,
+  "tasks": [
+    {
+      "name": "teacher",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_lg_alg_ours_full_seed1/teacher_resnet50_224/teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1/summary.json"
+    },
+    {
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_lg_alg_ours_full_seed1/LG/cub200_resnet50_224/lg_cub200_resnet50_224_deit_ti_300ep_seed1/summary.json"
+    },
+    {
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_lg_alg_ours_full_seed1/ALG/cub200_resnet50_224/alg_cub200_resnet50_224_deit_ti_300ep_seed1/summary.json"
+    },
+    {
+      "name": "Ours",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_lg_alg_ours_full_seed1/Ours/cub200_resnet50_224/ours_cub200_resnet50_224_deit_ti_300ep_seed1/summary.json"
+    }
+  ],
+  "started_at_unix": 1784894146.159841,
+  "protocols": {
+    "teacher": "ImageNet1K-V2 pretrained ResNet50, 224px, CUB fine-tune",
+    "LG": "official LG mechanics adapted to ResNet50 late stages",
+    "ALG": "ALG paper controller on the ResNet50-224 LG adaptation",
+    "Ours": "unchanged Ours method with ResNet50-224 teacher features"
+  },
+  "best_top1": {
+    "teacher": 84.10424577148774,
+    "LG": 35.191577493959265,
+    "ALG": 29.720400414221608,
+    "Ours": 30.652399033482915
+  },
+  "estimated_planned_seconds": 15758.629832744598,
+  "pod_limit_seconds": 36000,
+  "pod_limit_status": "PASS",
+  "finished_at_unix": 1784910211.097894
+}

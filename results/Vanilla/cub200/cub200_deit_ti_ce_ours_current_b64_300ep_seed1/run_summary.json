@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "method": "Vanilla",
+  "dataset": "cub200",
+  "profile": "ours_current_b64",
+  "student": "deit_ti",
+  "student_pretrained": false,
+  "teacher": null,
+  "loss": "cross_entropy_only",
+  "input_resolution": 224,
+  "batch_size": 64,
+  "completed_epoch": 300,
+  "actual_epochs": 300,
+  "planned_epochs": 300,
+  "latest_top1": 16.102865032792543,
+  "best_top1": 16.862271315153606,
+  "avg_epoch_seconds": 12.956133844852447,
+  "estimated_planned_seconds": 3886.8401534557343,
+  "estimated_planned_human": "1h 04m 47s",
+  "elapsed_seconds": 3905.436756849289,
+  "paths": {
+    "best": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/Vanilla/ours_current_b64/vanilla_cub200_224_ours_current_b64_300ep_seed1/student_best.pt",
+    "latest": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/Vanilla/ours_current_b64/vanilla_cub200_224_ours_current_b64_300ep_seed1/student_latest.pt"
+  }
+}

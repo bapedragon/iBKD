@@ -21,6 +21,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
             "ALG",
             "Ours",
             "OursV2",
+            "Vanilla",
         }
         for method_dir in RESULTS.iterdir():
             if not method_dir.is_dir() or method_dir.name not in methods:
@@ -41,7 +42,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
 
     def test_each_committed_protocol_directory_is_self_contained(self) -> None:
         summaries = sorted(RESULTS.glob("*/*/*/run_summary.json"))
-        self.assertEqual(len(summaries), 52)
+        self.assertEqual(len(summaries), 60)
         for summary_path in summaries:
             run_dir = summary_path.parent
             checkpoint_path = run_dir / "student_best.pt"
@@ -50,10 +51,16 @@ class ResultProtocolLayoutTest(unittest.TestCase):
             method, dataset = summary_path.parts[-4], summary_path.parts[-3]
             self.assertEqual(payload["method"], method)
             self.assertEqual(payload["dataset"], dataset)
-            args = payload["args"]
             protocol_id = run_dir.name
-            self.assertIn(str(args["student_epochs"]), protocol_id)
-            self.assertIn(f"seed{args['seed']}", protocol_id)
+            args = payload.get("args", {})
+            student_epochs = args.get(
+                "student_epochs", payload.get("planned_epochs")
+            )
+            seed = args.get("seed", 1 if method == "Vanilla" else None)
+            self.assertIsNotNone(student_epochs, run_dir)
+            self.assertIsNotNone(seed, run_dir)
+            self.assertIn(str(student_epochs), protocol_id)
+            self.assertIn(f"seed{seed}", protocol_id)
 
     def test_researcher_sync_import_destinations_are_explicit(self) -> None:
         expected = (
@@ -90,6 +97,46 @@ class ResultProtocolLayoutTest(unittest.TestCase):
         for run_dir in expected:
             self.assertTrue((run_dir / "run_summary.json").is_file(), run_dir)
             self.assertTrue((run_dir / "student_best.pt").is_file(), run_dir)
+
+    def test_cub200_resnet50_224_import_destinations_are_explicit(self) -> None:
+        expected = (
+            RESULTS
+            / "LG/cub200/cub200_deit_ti_lg_resnet50_224_transfer_adaptation_v1_300ep_seed1",
+            RESULTS
+            / "ALG/cub200/cub200_deit_ti_alg_resnet50_224_transfer_adaptation_v1_300ep_seed1",
+            RESULTS
+            / "Ours/cub200/cub200_deit_ti_ours_resnet50_224_transfer_v1_300ep_seed1",
+            RESULTS
+            / "Vanilla/cub200/cub200_deit_ti_ce_lg_official_b128_300ep_seed1",
+            RESULTS
+            / "LG/cub200/cub200_deit_ti_lg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1",
+            RESULTS
+            / "ALG/cub200/cub200_deit_ti_alg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1",
+            RESULTS
+            / "Vanilla/cub200/cub200_deit_ti_ce_ours_current_b64_300ep_seed1",
+            RESULTS
+            / "Ours/cub200/cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1",
+        )
+        for run_dir in expected:
+            self.assertTrue((run_dir / "run_summary.json").is_file(), run_dir)
+            self.assertTrue((run_dir / "student_best.pt").is_file(), run_dir)
+
+        for run_dir in (expected[2], expected[7]):
+            self.assertTrue((run_dir / "ours_module_best.pt").is_file(), run_dir)
+            self.assertTrue((run_dir / "artifact_manifest.json").is_file(), run_dir)
+
+    def test_cub200_resnet50_teacher_artifact_status_is_explicit(self) -> None:
+        transfer_teacher = (
+            ROOT / "teachers/checkpoints/cub200_resnet50_224_imagenet1k_v2"
+        )
+        self.assertTrue(
+            (transfer_teacher / "teacher_resnet50_cub200_224_best.pt").is_file()
+        )
+        self.assertTrue((transfer_teacher / "manifest.json").is_file())
+        self.assertTrue((transfer_teacher / "artifact_manifest.json").is_file())
+        pending = (RESULTS / "PENDING_IMPORTS.md").read_text(encoding="utf-8")
+        self.assertIn("cub200_resnet50_224_scratch_200ep_seed1", pending)
+        self.assertIn("48.31%", pending)
 
     def test_consolidated_table_uses_only_current_reporting_results(self) -> None:
         root_readme = (ROOT / "README.md").read_text(encoding="utf-8")

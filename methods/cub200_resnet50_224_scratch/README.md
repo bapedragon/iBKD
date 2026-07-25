@@ -60,3 +60,23 @@ Copyable H200 forms:
 
 - timing: `H200_TIMING_ISSUE.md`
 - full training: `H200_FULL_ISSUE.md`
+
+## Completed build 519 result
+
+The combined log records successful completion of all six tasks and a passing
+pod-limit check.
+
+| Task | Batch | Best epoch | Best Top-1 | Last Top-1 | Artifact status |
+|---|---:|---:|---:|---:|---|
+| Scratch ResNet50-224 teacher | 64 | 139 | **48.31%** | 47.70% | Log verified; archive missing |
+| Vanilla, LG profile | 128 | 236 | **17.52%** | 16.57% | Verified |
+| LG | 128 | 244 | **29.67%** | 29.29% | Verified |
+| ALG | 128 | 275 | **26.67%** | 26.20% | Verified |
+| Vanilla, Ours profile | 64 | 165 | **16.86%** | 16.10% | Verified |
+| Ours | 64 | 103 | **30.17%** | 29.01% | Verified |
+
+The supplied build-519 folder contains the five student best/latest pairs,
+their summaries, the full sequence log, and sequence status. It does not
+contain the teacher `best`, `latest`, `manifest`, `metrics`, or `summary`
+files. Consequently, the students are committed as verified artifacts while
+the teacher remains explicitly listed in `results/PENDING_IMPORTS.md`.

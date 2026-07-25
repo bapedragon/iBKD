@@ -1,0 +1,11 @@
+{
+  "format_version": 1,
+  "source_checkpoint": "/Users/bagcheolhyeon/IBAM_weight/511/teacher_resnet50_cub200_224_best/teacher_resnet50_cub200_224_best.pt",
+  "source_checkpoint_sha256": "7cfed8c7d7e55f24466e196134503d4bd370a7f371048d1f07878bab37e19516",
+  "committed_checkpoint_sha256": "8d767d19339e231871a27a0b23f8f8b0d43ac57d6ab3771d62465839bb42d6b3",
+  "committed_checkpoint_bytes": 95999893,
+  "removed": [
+    "optimizer_state"
+  ],
+  "model_tensors_unchanged": true
+}

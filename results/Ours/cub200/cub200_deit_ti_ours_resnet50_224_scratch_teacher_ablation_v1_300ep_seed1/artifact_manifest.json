@@ -1,0 +1,18 @@
+{
+  "format_version": 1,
+  "source_checkpoint": "/Users/bagcheolhyeon/IBAM_weight/519/LG/Ours/cub200_resnet50_224_scratch/ours_cub200_resnet50_224_scratch_deit_ti_300ep_seed1/student_best.pt",
+  "source_checkpoint_sha256": "1c90c9fd107a172a2107e60a77e5f7f9bd97f1408626d460e352891da0bbe77a",
+  "committed_files": {
+    "student_best.pt": {
+      "sha256": "9ae9e1092e41a89cde27d2225bcfd35846b424191c6fb3a8020c095c3946aae6",
+      "bytes": 22316261,
+      "contents": "student model state and checkpoint metadata"
+    },
+    "ours_module_best.pt": {
+      "sha256": "3af234814fc2b5f79585cb47bc762e897bd6b44886e3c33c9244ae3b61595832",
+      "bytes": 93725521,
+      "contents": "Ours auxiliary module state"
+    }
+  },
+  "reassembly": "Load both files and assign auxiliary['state_dict'] to student_checkpoint['ours']."
+}

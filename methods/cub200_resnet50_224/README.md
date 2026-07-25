@@ -88,6 +88,26 @@ Submit only after the timing run passes:
 python methods/run_cub200_resnet50_224_lg_alg_ours.py --full-run --num-workers 4 --output-dir /app/output/cub200_resnet50_224_lg_alg_ours_full_seed1
 ```
 
+## Completed build 511 result
+
+The full four-task sequence completed and its available artifacts passed
+SHA-256, strict state-dict, metadata, and finite-forward checks.
+
+| Task | Best epoch | Best Top-1 | Last Top-1 | Artifact status |
+|---|---:|---:|---:|---|
+| ResNet50-224 teacher | 161 | **84.10%** | 83.79% | Verified |
+| LG adaptation | 263 | **35.19%** | 34.54% | Verified |
+| ALG adaptation | 118 | **29.72%** | 27.58% | Verified |
+| Ours | 93 | **30.65%** | 27.98% | Verified |
+
+The teacher's source SHA-256 is
+`7cfed8c7d7e55f24466e196134503d4bd370a7f371048d1f07878bab37e19516`.
+Its complete source checkpoint remains in the local archive. The committed
+teacher checkpoint retains the exact model tensors but omits only the
+optimizer state to stay below GitHub's per-file limit. The Ours student and
+auxiliary module are likewise stored in two exact, independently verified
+files.
+
 ## References
 
 - [Official CUB-200-2011 dataset page and ImageNet-overlap warning](https://www.vision.caltech.edu/datasets/cub_200_2011/)

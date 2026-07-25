@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "teachers": {
+    "cub200": {
+      "selected_kind": "best",
+      "checkpoint": "teacher_resnet50_cub200_224_best.pt",
+      "sha256": "8d767d19339e231871a27a0b23f8f8b0d43ac57d6ab3771d62465839bb42d6b3",
+      "epoch": 161,
+      "top1": 84.10424577148774,
+      "model_name": "resnet50_cub200_imagenet1k_v2_224",
+      "architecture": "TorchVision ResNet50",
+      "num_classes": 200,
+      "input_resolution": 224,
+      "feature_stage_names": [
+        "layer2",
+        "layer3",
+        "layer4"
+      ],
+      "feature_channels": [
+        512,
+        1024,
+        2048
+      ],
+      "feature_spatial_sizes": [
+        28,
+        14,
+        7
+      ],
+      "recipe_name": "cub200_common_transfer_resnet50_224_imagenet1k_v2_200ep_seed1",
+      "pretrained": true,
+      "pretrained_source": "torchvision.ResNet50_Weights.IMAGENET1K_V2",
+      "protocol_family": "cub200_common_transfer_resnet50_224",
+      "source_checkpoint_sha256": "7cfed8c7d7e55f24466e196134503d4bd370a7f371048d1f07878bab37e19516"
+    }
+  },
+  "artifact_note": "Committed checkpoint retains exact model tensors and omits only optimizer_state to satisfy GitHub's per-file limit."
+}

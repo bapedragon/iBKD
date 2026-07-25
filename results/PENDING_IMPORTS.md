@@ -7,17 +7,22 @@ verified in this repository. Accuracy cells intentionally remain blank.
 ## Current status
 
 The overnight batch received on 2026-07-22 and builds 479, 480, 482, 484,
-485, 488, 490, 493, 494, 496, 503, and 509 received through 2026-07-25 have
-been imported. One completed run still awaits its checkpoint archive:
+485, 488, 490, 493, 494, 496, 503, 509, 511, and 519 received through
+2026-07-25 have been imported where artifacts were present. Two completed
+results still await checkpoint artifacts:
 
 | Method | Dataset | Protocol ID | Log-verified result | Expected destination | Missing artifacts |
 |---|---|---|---:|---|---|
 | Ours | Chaoyang | `researcher_sync_v1_300ep_seed1` | 81.95% | `results/Ours/chaoyang/researcher_sync_v1_300ep_seed1/` | `student_best.pt`, `run_summary.json` |
+| Teacher | CUB-200 | `cub200_resnet50_224_scratch_200ep_seed1` | 48.31% | `teachers/checkpoints/cub200_resnet50_224_scratch/` | `teacher_resnet50_cub200_224_scratch_best.pt`, `teacher_resnet50_cub200_224_scratch_latest.pt`, `manifest.json`, `metrics.csv`, `summary.json` |
 
-The completed H200 log reports best epoch 292, last Top-1 81.11%, guidance
-stop epoch 193, and selected best Top-1 81.95%. This value may be shown with a
-pending-artifact marker, but it is not counted among the committed and
-PyTorch-verified checkpoints.
+The completed Chaoyang H200 log reports best epoch 292, last Top-1 81.11%,
+guidance stop epoch 193, and selected best Top-1 81.95%. Build 519 reports
+the CUB scratch teacher's best Top-1 48.31% at epoch 139 and final-epoch
+Top-1 47.70%; its five student archives and six-task log are present, but the
+teacher output directory is absent from the supplied folder. These values may
+be shown with pending-artifact markers, but neither pending result is counted
+among the committed and PyTorch-verified checkpoints.
 
 The following received families were loaded with PyTorch, checked against
 their JSON summaries, and imported without replacing historical results:
@@ -57,6 +62,18 @@ their JSON summaries, and imported without replacing historical results:
   `cub200_deit_ti_alg_paper_official_lg_v1_300ep_seed1`, and
   `cub200_deit_ti_ours_scratch_teacher_v1_300ep_seed1`: the shared-teacher
   CUB-200 LG/ALG/Ours sequence from build 509.
+- `cub200_deit_ti_lg_resnet50_224_transfer_adaptation_v1_300ep_seed1`,
+  `cub200_deit_ti_alg_resnet50_224_transfer_adaptation_v1_300ep_seed1`, and
+  `cub200_deit_ti_ours_resnet50_224_transfer_v1_300ep_seed1`: the build-511
+  students using the verified ImageNet1K-V2 ResNet50-224 teacher; that teacher
+  is stored under `teachers/checkpoints/cub200_resnet50_224_imagenet1k_v2/`;
+- `cub200_deit_ti_ce_lg_official_b128_300ep_seed1`,
+  `cub200_deit_ti_lg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1`,
+  `cub200_deit_ti_alg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1`,
+  `cub200_deit_ti_ce_ours_current_b64_300ep_seed1`, and
+  `cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1`:
+  the five verified build-519 students. Their summaries preserve the missing
+  scratch teacher's reported SHA-256.
 
 Add new jobs below this section only after submission, and remove their rows
 after the same import gate has passed.

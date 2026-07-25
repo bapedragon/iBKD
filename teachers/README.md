@@ -10,6 +10,7 @@ teachers/
 │   ├── flowers102/
 │   ├── chaoyang/
 │   ├── cub200/
+│   ├── cub200_resnet50_224_imagenet1k_v2/
 │   ├── README.md
 │   └── manifest.json
 ├── train_teacher_cifar100.py
@@ -27,3 +28,8 @@ Verify all four selected teacher checkpoints from the repository root:
 ```bash
 python teachers/verify_checkpoints.py --dataset all
 ```
+
+The separate verified CUB ImageNet1K-V2 ResNet50-224 teacher from build 511
+is stored under `checkpoints/cub200_resnet50_224_imagenet1k_v2/` with its own
+manifest. Build 519's random-init ResNet50-224 teacher is not stored here
+because its teacher artifact directory was absent from the supplied archive.

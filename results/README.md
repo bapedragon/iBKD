@@ -49,6 +49,14 @@ dataset. The canonical IDs currently used are:
 | `cub200_deit_ti_official_lg_v1_300ep_seed1` | CUB-200 transfer of official static LG mechanics |
 | `cub200_deit_ti_alg_paper_official_lg_v1_300ep_seed1` | CUB-200 ALG paper controller on the official LG base |
 | `cub200_deit_ti_ours_scratch_teacher_v1_300ep_seed1` | CUB-200 Ours with the shared scratch ResNet56 teacher |
+| `cub200_deit_ti_lg_resnet50_224_transfer_adaptation_v1_300ep_seed1` | CUB-200 LG adaptation with the ImageNet1K-V2 ResNet50-224 teacher |
+| `cub200_deit_ti_alg_resnet50_224_transfer_adaptation_v1_300ep_seed1` | CUB-200 ALG adaptation with the ImageNet1K-V2 ResNet50-224 teacher |
+| `cub200_deit_ti_ours_resnet50_224_transfer_v1_300ep_seed1` | CUB-200 Ours with the ImageNet1K-V2 ResNet50-224 teacher |
+| `cub200_deit_ti_ce_lg_official_b128_300ep_seed1` | CUB-200 teacher-free Vanilla control for the LG/ALG batch-128 profile |
+| `cub200_deit_ti_lg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 LG with the random-init ResNet50-224 teacher |
+| `cub200_deit_ti_alg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 ALG with the random-init ResNet50-224 teacher |
+| `cub200_deit_ti_ce_ours_current_b64_300ep_seed1` | CUB-200 teacher-free Vanilla control for the Ours batch-64 profile |
+| `cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 Ours with the random-init ResNet50-224 teacher |
 
 Account names and H200 build numbers are kept only under `run_logs`; they do
 not determine checkpoint placement. `PENDING_IMPORTS.md` records jobs that
@@ -57,9 +65,14 @@ have started but whose output archives have not yet been verified and added.
 Only the selected best checkpoint is committed. The original downloaded
 outputs retain `student_latest.pt`; its exact final-epoch accuracy is also
 preserved in `run_summary.json`. This avoids doubling repository size and H200
-clone time without discarding the reported result.
+clone time without discarding the reported result. For the two ResNet50-224
+Ours runs, the exact student and auxiliary-module states are committed as
+`student_best.pt` and `ours_module_best.pt`, respectively, because the
+combined source checkpoint exceeds GitHub's per-file limit. The adjacent
+`artifact_manifest.json` records source and committed hashes and the
+lossless reassembly rule.
 
-All 52 currently committed checkpoints were loaded with PyTorch and verified against
+All 60 currently committed student checkpoints were loaded with PyTorch and verified against
 their summaries for dataset, method, best accuracy, and checkpoint epoch.
 The Top-1 value is read from the adjacent summary; file names are deliberately
 stable (`student_best.pt`) inside the provenance-rich protocol directory.
@@ -191,6 +204,49 @@ only the paper controller on that base. Ours retains its researcher-sync
 batch-64 protocol and feature module. Because the source LG/ALG work does not
 publish a CUB configuration, these rows are reported as controlled protocol
 transfers rather than source-paper reproductions.
+
+## CUB-200-2011 — ImageNet-pretrained ResNet50-224 teacher
+
+Build 511 is the historical teacher-only transfer family: the ResNet50 teacher
+starts from ImageNet1K-V2 and is fine-tuned for 200 epochs, while every
+DeiT-Ti student starts from random initialization and trains for 300 epochs.
+It is separate from the newer full-transfer family, which also pretrains its
+students and uses a 100-epoch student horizon.
+
+| Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Status |
+|---|---:|---:|---:|---:|---|
+| Teacher, ResNet50-224 | 64 | 161 | **84.10%** | 83.79% | Verified checkpoint and manifest |
+| LG adaptation | 128 | 263 | **35.19%** | 34.54% | Verified |
+| ALG adaptation | 128 | 118 | **29.72%** | 27.58% | Verified |
+| Ours | 64 | 93 | **30.65%** | 27.98% | Verified |
+
+The teacher model tensors are exact. Its source checkpoint also contains an
+optimizer state and is 191.7 MB, so the committed checkpoint omits only that
+retraining state and remains below GitHub's 100 MB single-file limit. The
+original full teacher `best` and `latest` files remain in the local
+`IBAM_weight` archive. The committed manifest records both hashes.
+
+## CUB-200-2011 — random-init ResNet50-224 teacher ablation
+
+Build 519 completed all six tasks. The sequence log and five student
+checkpoint/summary pairs were received and verified. The teacher files
+themselves were not present in the supplied `519` folder, so the teacher row
+is log-verified but remains pending artifact import.
+
+| Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Status |
+|---|---:|---:|---:|---:|---|
+| Teacher, random-init ResNet50-224 | 64 | 139 | **48.31%** | 47.70% | Log verified; teacher artifact missing |
+| Vanilla, LG profile | 128 | 236 | **17.52%** | 16.57% | Verified |
+| LG | 128 | 244 | **29.67%** | 29.29% | Verified |
+| ALG | 128 | 275 | **26.67%** | 26.20% | Verified |
+| Vanilla, Ours profile | 64 | 165 | **16.86%** | 16.10% | Verified |
+| Ours | 64 | 103 | **30.17%** | 29.01% | Verified |
+
+The LG/ALG/Ours summaries consistently reference the missing teacher source
+SHA-256
+`6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7`.
+That identity is preserved in the imported summaries but cannot be
+independently rehashed until the teacher archive is supplied.
 
 ## Flowers-102 — completed 300-epoch results
 
@@ -361,6 +417,12 @@ in separate protocol directories; no old checkpoint was overwritten.
 - `run_logs/h200_build-509_cub200-shared-teacher-lg-alg-ours-300ep/`:
   shared scratch ResNet56 teacher followed by LG, ALG, and Ours CUB-200
   students; the directory preserves the combined log and sequence status.
+- `run_logs/h200_build-511_cub200-resnet50-224-imagenet1k-v2-teacher-lg-alg-ours-300ep/`:
+  ImageNet1K-V2 ResNet50-224 teacher followed by scratch LG, ALG, and Ours
+  students.
+- `run_logs/h200_build-519_cub200-resnet50-224-scratch-teacher-vanilla-lg-alg-ours-300ep/`:
+  random-init ResNet50-224 teacher, two profile-matched Vanilla controls, LG,
+  ALG, and Ours; all six tasks are log-complete.
 - `run_logs/h200_build-482_table4-grid-permutation-cifar100-300ep.log`:
   Table 4 grid-permutation control (`81.79%`).
 - `run_logs/h200_build-484_table7-lambda0-cifar100-300ep.log`:

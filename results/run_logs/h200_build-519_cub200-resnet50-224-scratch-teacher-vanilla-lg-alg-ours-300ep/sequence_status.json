@@ -1,0 +1,64 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "protocol_family": "cub200_resnet50_224_scratch",
+  "separate_from": [
+    "cub200_resnet56_32_scratch",
+    "cub200_common_transfer_resnet50_224"
+  ],
+  "completed_tasks": 6,
+  "total_tasks": 6,
+  "tasks": [
+    {
+      "name": "teacher",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/teacher_resnet50_224_scratch/teacher_cub200_resnet50_224_scratch_200ep_seed1/summary.json"
+    },
+    {
+      "name": "VanillaB128",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/Vanilla/lg_official_b128/vanilla_cub200_224_lg_official_b128_300ep_seed1/summary.json"
+    },
+    {
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/LG/cub200_resnet50_224_scratch/lg_cub200_resnet50_224_scratch_deit_ti_300ep_seed1/summary.json"
+    },
+    {
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/ALG/cub200_resnet50_224_scratch/alg_cub200_resnet50_224_scratch_deit_ti_300ep_seed1/summary.json"
+    },
+    {
+      "name": "VanillaB64",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/Vanilla/ours_current_b64/vanilla_cub200_224_ours_current_b64_300ep_seed1/summary.json"
+    },
+    {
+      "name": "Ours",
+      "status": "complete",
+      "summary": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/Ours/cub200_resnet50_224_scratch/ours_cub200_resnet50_224_scratch_deit_ti_300ep_seed1/summary.json"
+    }
+  ],
+  "started_at_unix": 1784926782.879088,
+  "protocols": {
+    "teacher": "random-init ResNet50, 224px, same recipe as transfer teacher",
+    "VanillaB128": "official-LG-base DeiT-Ti, CE-only, batch 128",
+    "LG": "official LG mechanics, scratch ResNet50-224 features",
+    "ALG": "ALG paper controller, scratch ResNet50-224 features",
+    "VanillaB64": "Ours-base DeiT-Ti, CE-only, batch 64",
+    "Ours": "unchanged Ours, scratch ResNet50-224 features"
+  },
+  "best_top1": {
+    "teacher": 48.30859509837763,
+    "VanillaB128": 17.518122195374524,
+    "LG": 29.668622713151535,
+    "ALG": 26.66551605108733,
+    "VanillaB64": 16.862271315153606,
+    "Ours": 30.16914049016224
+  },
+  "estimated_planned_seconds": 22926.55540204048,
+  "pod_limit_seconds": 36000,
+  "pod_limit_status": "PASS",
+  "finished_at_unix": 1784950472.7172372
+}
