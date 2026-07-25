@@ -57,6 +57,14 @@ separate copyable timing and full H200 Issues. The output root and protocol ID
 carry `full_transfer` / `both_imagenet_pretrained` and cannot overwrite the
 three earlier CUB families.
 
+Its initialization-only paired control keeps that exact six-task order,
+224 x 224 inputs, teacher 200-epoch horizon, student 100-epoch horizon, and
+batch sizes, but initializes both ResNet50 and every DeiT-Ti from scratch.
+It is isolated from the historical 300-epoch scratch family under
+[`methods/cub200_both_scratch_100ep/`](methods/cub200_both_scratch_100ep/).
+The dedicated runner, output names, validation locks, compact final summary,
+and copyable timing/full H200 Issues all carry `both_scratch_100ep`.
+
 The Flowers implementation uses the official `train+val` split (2,040 images)
 for training and the official test split (6,149 images) for evaluation.
 
