@@ -35,5 +35,9 @@ Full run only after the timing log and teacher audit pass:
 python methods/Ours/cifar100/train.py --student-epochs 300 --num-workers 4 --run-name ours_cifar100_deit_ti_researcher_sync_300ep_seed1 --output-dir /app/output
 ```
 
+The controlled train-batch-size-128 comparison is isolated under
+[`batch128_ablation/`](batch128_ablation/README.md). It keeps every setting
+above fixed and changes only the train batch from 64 to 128.
+
 See [`../PAPER_AUDIT.md`](../PAPER_AUDIT.md) for the paper/source/researcher
 evidence split.
