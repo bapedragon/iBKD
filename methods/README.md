@@ -16,9 +16,11 @@ they launch those independent entry points as subprocesses and keep every run
 in a separate output directory.
 
 The isolated [`table1_cub200/`](table1_cub200/) family extends the locality
-comparison to all seven Table-1 students with the shared CUB ResNet56-32
-teacher. Its timing matrix contains Vanilla/LG/ALG plus Ours batch 64 and 128,
-for `1 + 7 * 5 = 36` tasks.
+comparison to all seven Table-1 students with its dedicated build-543 CUB
+ResNet56-32 teacher. Its timing matrix contains Vanilla/LG/ALG plus Ours batch
+64 and 128, for `1 + 7 * 5 = 36` tasks. Every future guided Table-1 student
+is hash-locked to that exact teacher; it does not use the primary build-509
+CUB teacher.
 
 `run_alg_batch_ablation_ours_chaoyang.py` is the four-task method-isolated
 batch runner. It executes pure ALG Flowers batch 64, pure ALG Chaoyang batch

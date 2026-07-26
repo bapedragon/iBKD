@@ -9,7 +9,7 @@ mixing it with the separate ResNet50-224 transfer or scratch families.
 |---|---|
 | Dataset | CUB-200-2011 official train/test split, `5,994 / 5,794` |
 | Annotations | class labels only; no box, part, or attribute supervision |
-| Teacher | one shared scratch CIFAR-style ResNet56, `32x32`, 300 epochs |
+| Teacher | fixed build-543 scratch CIFAR-style ResNet56, `32x32`, 300 epochs, **36.40%** |
 | Students | DeiT-Ti, ConViT-Ti, CvT-13, PiT-Ti, PVTv2-B0, T2T-ViT-7, T2T-ViT-14 |
 | Student initialization/input | scratch / `224x224` |
 | Student schedule | 300 epochs, AdamW `5e-4 -> 5e-6`, weight decay `0.05`, 20-epoch warm-up |
@@ -23,10 +23,13 @@ The complete matrix is **36 tasks**, not 29:
 1 teacher + 7 backbones * 5 student settings = 36
 ```
 
-Every guided student loads and hash-verifies the same completed
-`teacher_resnet56_cub200_32_best.pt`. The two-epoch teacher timing checkpoint is
-measured only to estimate teacher training time and is never supplied to a
-student.
+Every guided student loads and hash-verifies the exact build-543 checkpoint
+`teachers/checkpoints/cub200_table1_resnet56_32/teacher_resnet56_cub200_32_best.pt`
+(epoch 275, **36.40%**, SHA-256
+`06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5`).
+`train.py` rejects any other teacher manifest. The two-epoch teacher timing
+checkpoint is measured only to estimate teacher training time and is never
+supplied to a student.
 
 ## Backbone provenance
 
@@ -95,17 +98,45 @@ and preserves all earlier summaries. The batch or experiment grouping must
 then be revised based on the recorded failure rather than silently omitting the
 model.
 
-## First full-training group: Teacher + DeiT-Ti LG/ALG
+## Completed first full-training group: build 543
 
-The first bounded full run deliberately retrains the scratch ResNet56-32
-teacher and then supplies that exact run's best checkpoint and manifest to
-DeiT-Ti LG and ALG:
+The first bounded full run trained the scratch ResNet56-32 teacher and then
+supplied that exact run's best checkpoint and manifest to DeiT-Ti LG and ALG:
 
 ```bash
 python methods/table1_cub200/run_deit_lg_alg.py --full-run --data-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200 --output-dir /app/output/table1_cub200_deit_lg_alg_full_seed1 --num-workers 4
 ```
 
-All three tasks run for 300 epochs. The measured timing estimate is 2h 53m
-58s, below the 600-minute pod limit. The final log repeats the Teacher, LG,
-and ALG best Top-1 values. Copyable Issue fields are in
-`H200_DEIT_LG_ALG_FULL_ISSUE.md`.
+All three tasks completed for 300 epochs:
+
+| Task | Best epoch | Best Top-1 | Last Top-1 |
+|---|---:|---:|---:|
+| ResNet56-32 teacher | 275 | **36.40%** | 36.12% |
+| DeiT-Ti LG, batch 128 | 241 | **44.51%** | 43.61% |
+| DeiT-Ti ALG, batch 128 | 286 | **47.70%** | 47.53% |
+
+The verified artifacts are under `teachers/checkpoints/cub200_table1_resnet56_32/`,
+`results/{LG,ALG}/cub200/table1_cub200_deit_ti_*`, and
+`results/run_logs/h200_build-543_*`. The producer command above and its Issue
+fields remain for provenance.
+
+## Future Table-1 student training
+
+Do not retrain or substitute the teacher. Run each remaining student directly
+through `train.py`; its default `--teacher-root` is the fixed build-543
+directory, and the exact hash is checked before training:
+
+```bash
+python methods/table1_cub200/train.py \
+  --full-run \
+  --student convit_ti \
+  --method lg \
+  --batch-size 128 \
+  --data-dir /app/output/data/cub200 \
+  --output-dir /app/output/table1_cub200_students \
+  --num-workers 4
+```
+
+Valid student keys are `deit_ti`, `convit_ti`, `cvt_13`, `pit_ti`,
+`pvtv2_b0`, `t2t_vit_7`, and `t2t_vit_14`. Guided LG, ALG, and Ours jobs all
+fail closed if the manifest does not identify the build-543 teacher above.

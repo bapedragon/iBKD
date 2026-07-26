@@ -42,7 +42,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
 
     def test_each_committed_protocol_directory_is_self_contained(self) -> None:
         summaries = sorted(RESULTS.glob("*/*/*/run_summary.json"))
-        self.assertEqual(len(summaries), 66)
+        self.assertEqual(len(summaries), 68)
         for summary_path in summaries:
             run_dir = summary_path.parent
             checkpoint_path = run_dir / "student_best.pt"
@@ -141,9 +141,28 @@ class ResultProtocolLayoutTest(unittest.TestCase):
             "80f46b08ea2b2c5398c951268b937f3be0abe47f08bf7617e6dcd4e49a4db82b",
             manifest["teachers"]["cub200"]["equivalent_source_checkpoint_sha256"],
         )
+        scratch_teacher = (
+            ROOT / "teachers/checkpoints/cub200_resnet50_224_scratch"
+        )
+        self.assertTrue(
+            (
+                scratch_teacher
+                / "teacher_resnet50_cub200_224_scratch_best.pt"
+            ).is_file()
+        )
+        self.assertTrue((scratch_teacher / "manifest.json").is_file())
+        self.assertTrue((scratch_teacher / "artifact_manifest.json").is_file())
+        scratch_manifest = json.loads(
+            (scratch_teacher / "manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            scratch_manifest["teachers"]["cub200"][
+                "source_checkpoint_sha256"
+            ],
+            "6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7",
+        )
         pending = (RESULTS / "PENDING_IMPORTS.md").read_text(encoding="utf-8")
-        self.assertIn("cub200_resnet50_224_scratch_200ep_seed1", pending)
-        self.assertIn("48.31%", pending)
+        self.assertNotIn("cub200_resnet50_224_scratch_200ep_seed1", pending)
 
     def test_build_522_523_import_destinations_are_explicit(self) -> None:
         expected = (
@@ -167,6 +186,29 @@ class ResultProtocolLayoutTest(unittest.TestCase):
         for run_dir in expected[-2:]:
             self.assertTrue((run_dir / "ours_module_best.pt").is_file(), run_dir)
             self.assertTrue((run_dir / "artifact_manifest.json").is_file(), run_dir)
+
+    def test_build_543_table1_destinations_and_fixed_teacher_are_explicit(
+        self,
+    ) -> None:
+        teacher = ROOT / "teachers/checkpoints/cub200_table1_resnet56_32"
+        manifest = json.loads(
+            (teacher / "manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            manifest["teachers"]["cub200"]["sha256"],
+            "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5",
+        )
+        self.assertTrue(
+            (teacher / "teacher_resnet56_cub200_32_best.pt").is_file()
+        )
+        for method in ("LG", "ALG"):
+            protocol = (
+                "table1_cub200_deit_ti_"
+                f"{method.lower()}_b128_full_300ep_seed1"
+            )
+            run_dir = RESULTS / method / "cub200" / protocol
+            self.assertTrue((run_dir / "run_summary.json").is_file())
+            self.assertTrue((run_dir / "student_best.pt").is_file())
 
     def test_consolidated_table_uses_only_current_reporting_results(self) -> None:
         root_readme = (ROOT / "README.md").read_text(encoding="utf-8")

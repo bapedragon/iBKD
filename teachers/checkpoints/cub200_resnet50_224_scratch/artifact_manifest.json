@@ -1,0 +1,17 @@
+{
+  "committed_checkpoint": "teacher_resnet50_cub200_224_scratch_best.pt",
+  "committed_checkpoint_bytes": 96002053,
+  "committed_checkpoint_sha256": "a8187c0448a20152e388a1b0b6a2ca80506b416a2491fc5fec7e5f216b8b6092",
+  "format_version": 1,
+  "h200_build": 519,
+  "model_tensor_count": 320,
+  "model_tensors_unchanged": true,
+  "removed": [
+    "optimizer_state"
+  ],
+  "source_checkpoint": "/Users/bagcheolhyeon/IBAM_weight/teacher/Teacher_CUB200_ResNet50_224_Scratch_200ep_seed1_Top1-48.31/teacher_cub200_resnet50_224_scratch_200ep_seed1/teacher_resnet50_cub200_224_scratch_best.pt",
+  "source_checkpoint_bytes": 191733177,
+  "source_checkpoint_sha256": "6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7",
+  "source_latest_checkpoint": "/Users/bagcheolhyeon/IBAM_weight/teacher/Teacher_CUB200_ResNet50_224_Scratch_200ep_seed1_Top1-48.31/teacher_cub200_resnet50_224_scratch_200ep_seed1/teacher_resnet50_cub200_224_scratch_latest.pt",
+  "source_latest_checkpoint_sha256": "8bd3775bd7043022ad74342725abad6a2546f6b4d123eb72af24abcad8be8de5"
+}

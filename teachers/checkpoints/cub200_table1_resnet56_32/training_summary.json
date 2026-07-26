@@ -1,0 +1,24 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "dataset": "cub200",
+  "dataset_root": "/app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200/CUB_200_2011",
+  "pretrained": false,
+  "completed_epoch": 300,
+  "planned_epochs": 300,
+  "latest_top1": 36.12357611322057,
+  "best_top1": 36.39972385226096,
+  "avg_epoch_seconds": 7.165670448144277,
+  "estimated_planned_seconds": 2149.701134443283,
+  "estimated_planned_human": "35m 50s",
+  "elapsed_seconds": 2174.0051963329315,
+  "paths": {
+    "best": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/teacher_resnet56_cub200_32_best.pt",
+    "latest": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/teacher_resnet56_cub200_32_latest.pt",
+    "manifest": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/manifest.json",
+    "metrics": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/metrics.csv"
+  },
+  "sha256": {
+    "best": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5"
+  }
+}

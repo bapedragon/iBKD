@@ -1,0 +1,11 @@
+{
+  "checkpoint_is_exact_source_file": true,
+  "committed_checkpoint": "teacher_resnet56_cub200_32_best.pt",
+  "committed_checkpoint_bytes": 7145182,
+  "committed_checkpoint_sha256": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5",
+  "format_version": 1,
+  "h200_build": 543,
+  "role": "fixed_teacher_for_all_future_cub200_table1_students",
+  "source_checkpoint": "/Users/bagcheolhyeon/IBAM_weight/teacher/Teacher_CUB200_Table1_ResNet56_32x32_300ep_seed1_Top1-36.40/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/teacher_resnet56_cub200_32_best.pt",
+  "source_checkpoint_sha256": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5"
+}

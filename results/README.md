@@ -57,6 +57,8 @@ dataset. The canonical IDs currently used are:
 | `cub200_deit_ti_alg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 ALG with the random-init ResNet50-224 teacher |
 | `cub200_deit_ti_ce_ours_current_b64_300ep_seed1` | CUB-200 teacher-free Vanilla control for the Ours batch-64 profile |
 | `cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 Ours with the random-init ResNet50-224 teacher |
+| `table1_cub200_deit_ti_lg_b128_full_300ep_seed1` | CUB Table-1 DeiT-Ti LG using the fixed build-543 ResNet56-32 teacher |
+| `table1_cub200_deit_ti_alg_b128_full_300ep_seed1` | CUB Table-1 DeiT-Ti ALG using the fixed build-543 ResNet56-32 teacher |
 | `researcher_sync_v1_batch128_ablation_300ep_seed1` | CIFAR-100 Ours v1 with only train batch changed to 128 |
 | `cub200_deit_ti_ce_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained DeiT-Ti Vanilla control |
 | `cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti LG |
@@ -78,7 +80,7 @@ student and auxiliary-module states are committed as
 `artifact_manifest.json` records source and committed hashes and the
 lossless reassembly rule.
 
-All 66 currently committed student checkpoints were loaded with PyTorch and verified against
+All 68 currently committed student checkpoints were loaded with PyTorch and verified against
 their summaries for dataset, method, best accuracy, and checkpoint epoch.
 The Top-1 value is read from the adjacent summary; file names are deliberately
 stable (`student_best.pt`) inside the provenance-rich protocol directory.
@@ -215,6 +217,26 @@ batch-64 protocol and feature module. Because the source LG/ALG work does not
 publish a CUB configuration, these rows are reported as controlled protocol
 transfers rather than source-paper reproductions.
 
+## CUB-200-2011 — separate Table-1 extension
+
+Build 543 is the first completed group in the separate seven-backbone Table-1
+family. It trained its own scratch ResNet56 at 32 x 32, then trained DeiT-Ti
+LG and ALG at 224 x 224 for 300 epochs. It does not reuse or replace the
+primary build-509 CUB teacher above.
+
+| Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Status |
+|---|---:|---:|---:|---:|---|
+| Table-1 teacher, ResNet56-32 | 128 | 275 | **36.40%** | 36.12% | Verified and fixed for future Table-1 students |
+| Table-1 DeiT-Ti LG | 128 | 241 | **44.51%** | 43.61% | Verified |
+| Table-1 DeiT-Ti ALG | 128 | 286 | **47.70%** | 47.53% | Verified |
+
+The fixed teacher is
+`teachers/checkpoints/cub200_table1_resnet56_32/teacher_resnet56_cub200_32_best.pt`
+with SHA-256
+`06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5`.
+Every future guided Table-1 student must use that exact checkpoint; the
+Table-1 training entry point rejects any different manifest or hash.
+
 ## CUB-200-2011 — ImageNet-pretrained ResNet50-224 teacher
 
 Build 511 is the historical teacher-only transfer family: the ResNet50 teacher
@@ -262,25 +284,25 @@ hashes, manifests, metrics, and summaries instead of committing a duplicate
 
 ## CUB-200-2011 — random-init ResNet50-224 teacher ablation
 
-Build 519 completed all six tasks. The sequence log and five student
-checkpoint/summary pairs were received and verified. The teacher files
-themselves were not present in the supplied `519` folder, so the teacher row
-is log-verified but remains pending artifact import.
+Build 519 completed all six tasks. The sequence log, five student
+checkpoint/summary pairs, and the re-supplied teacher directory were received
+and verified.
 
 | Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Status |
 |---|---:|---:|---:|---:|---|
-| Teacher, random-init ResNet50-224 | 64 | 139 | **48.31%** | 47.70% | Log verified; teacher artifact missing |
+| Teacher, random-init ResNet50-224 | 64 | 139 | **48.31%** | 47.70% | Verified checkpoint, manifest, metrics, and summary |
 | Vanilla, LG profile | 128 | 236 | **17.52%** | 16.57% | Verified |
 | LG | 128 | 244 | **29.67%** | 29.29% | Verified |
 | ALG | 128 | 275 | **26.67%** | 26.20% | Verified |
 | Vanilla, Ours profile | 64 | 165 | **16.86%** | 16.10% | Verified |
 | Ours | 64 | 103 | **30.17%** | 29.01% | Verified |
 
-The LG/ALG/Ours summaries consistently reference the missing teacher source
-SHA-256
-`6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7`.
-That identity is preserved in the imported summaries but cannot be
-independently rehashed until the teacher archive is supplied.
+The LG/ALG/Ours summaries consistently reference the teacher source SHA-256
+`6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7`,
+which was independently rehashed and matched. The source checkpoint includes
+optimizer state and exceeds GitHub's single-file limit; the committed form
+retains the exact 320 model tensors and all metadata while omitting only
+`optimizer_state`. Its compaction manifest records both hashes.
 
 ## Flowers-102 — completed 300-epoch results
 
@@ -462,6 +484,9 @@ in separate protocol directories; no old checkpoint was overwritten.
 - `run_logs/h200_build-523_cub200-full-transfer-pretrained-teacher-students-100ep/`:
   pretrained ResNet50 teacher followed by pretrained Vanilla, LG, ALG, and
   Ours batches 64/128; all six tasks completed.
+- `run_logs/h200_build-543_table1-cub200-resnet56-32-deit-ti-lg-alg-300ep/`:
+  separate Table-1 ResNet56-32 teacher followed by DeiT-Ti LG and ALG; all
+  three tasks completed and the teacher is fixed for future Table-1 students.
 - `run_logs/h200_build-482_table4-grid-permutation-cifar100-300ep.log`:
   Table 4 grid-permutation control (`81.79%`).
 - `run_logs/h200_build-484_table7-lambda0-cifar100-300ep.log`:

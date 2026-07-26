@@ -1,0 +1,39 @@
+{
+  "teachers": {
+    "cub200": {
+      "architecture": "TorchVision ResNet50",
+      "artifact_format": "compact_without_optimizer_state",
+      "checkpoint": "teacher_resnet50_cub200_224_scratch_best.pt",
+      "epoch": 139,
+      "feature_channels": [
+        512,
+        1024,
+        2048
+      ],
+      "feature_spatial_sizes": [
+        28,
+        14,
+        7
+      ],
+      "feature_stage_names": [
+        "layer2",
+        "layer3",
+        "layer4"
+      ],
+      "h200_build": 519,
+      "input_resolution": 224,
+      "model_name": "resnet50_cub200_scratch_224",
+      "num_classes": 200,
+      "pretrained": false,
+      "pretrained_source": null,
+      "protocol_family": "cub200_resnet50_224_scratch",
+      "recipe_name": "cub200_resnet50_224_scratch_200ep_seed1",
+      "selected_kind": "best",
+      "sha256": "a8187c0448a20152e388a1b0b6a2ca80506b416a2491fc5fec7e5f216b8b6092",
+      "source_checkpoint_sha256": "6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7",
+      "source_latest_checkpoint_sha256": "8bd3775bd7043022ad74342725abad6a2546f6b4d123eb72af24abcad8be8de5",
+      "top1": 48.30859509837763
+    }
+  },
+  "version": 1
+}

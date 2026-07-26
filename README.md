@@ -24,14 +24,19 @@ accounts are under
 reported as a protocol transfer because the LG/ALG sources do not publish a
 CUB configuration.
 
-The new Table-1 CUB extension keeps that shared ResNet56-32 teacher and adds
-the seven paper backbones: DeiT-Ti, ConViT-Ti, CvT-13, PiT-Ti, PVTv2-B0,
-T2T-ViT-7, and T2T-ViT-14. Each backbone runs Vanilla-b128, LG-b128,
-ALG-b128, Ours-b64, and Ours-b128. Its complete **36-task** timing runner,
-audited official-LG model sources, protocol, and separately copyable H200
-Issue fields are under
+The new Table-1 CUB extension is a separate experiment family with the seven
+paper backbones: DeiT-Ti, ConViT-Ti, CvT-13, PiT-Ti, PVTv2-B0, T2T-ViT-7,
+and T2T-ViT-14. Each backbone runs Vanilla-b128, LG-b128, ALG-b128, Ours-b64,
+and Ours-b128. Build 543 completed its dedicated ResNet56-32 teacher
+(**36.40%**, epoch 275), DeiT-Ti LG (**44.51%**), and DeiT-Ti ALG
+(**47.70%**). Every future guided Table-1 student is code-locked to that
+build-543 teacher and SHA-256
+`06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5`.
+The complete **36-task** timing runner, audited official-LG model sources,
+protocol, and full-run instructions are under
 [`methods/table1_cub200/`](methods/table1_cub200/). This family never imports
-the ResNet50-224 or ImageNet-pretrained CUB settings.
+the primary build-509 teacher, ResNet50-224, or ImageNet-pretrained CUB
+settings.
 
 An additional, strictly separate CUB teacher-transfer family uses an
 ImageNet1K-V2-pretrained ResNet50 teacher fine-tuned at **224 x 224**, while
@@ -62,9 +67,11 @@ existing CUB family.
 
 Build 519 completed all six tasks: teacher **48.31%**, Vanilla-b128
 **17.52%**, LG **29.67%**, ALG **26.67%**, Vanilla-b64 **16.86%**, and Ours
-**30.17%**. The full log and all five student archives were supplied and
-verified. The teacher artifact directory itself was not included, so its
-value remains explicitly log-verified/pending rather than checkpoint-verified.
+**30.17%**. The re-supplied folder includes the previously missing teacher
+directory. Its best/latest files, manifest, 200-row metrics, summary, strict
+model load, and 224 x 224 forward pass were verified. The exact model tensors
+are committed in compact form without optimizer state; the source hash and
+lossless compaction record are preserved with the checkpoint.
 
 The conventional full-transfer family initializes **both** the ResNet50
 teacher and every DeiT-Ti student from ImageNet weights at **224 x 224**. Its

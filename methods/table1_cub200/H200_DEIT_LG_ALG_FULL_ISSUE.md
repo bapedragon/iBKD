@@ -1,5 +1,10 @@
 # CUB-200 Table-1 ResNet56-32 Teacher + DeiT-Ti LG/ALG full Issue
 
+> 완료 기록: H200 build 543에서 Teacher 36.40%, LG 44.51%, ALG 47.70%로
+> 3/3 완료했다. 이 문서는 최초 teacher 생성 실행의 provenance로
+> 보존한다. 이후 Table-1 student 학습은 이 명령으로 teacher를 다시
+> 만들지 않고 저장소의 고정 build-543 teacher를 사용한다.
+
 각 항목은 H200 Issue 입력란마다 각각 따로 복사한다.
 
 ## 제목

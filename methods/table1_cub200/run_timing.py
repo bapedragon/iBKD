@@ -22,7 +22,9 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from methods.table1_cub200.backbones import BACKBONES  # noqa: E402
-from teachers.verify_checkpoints import DEFAULT_CHECKPOINT_ROOT  # noqa: E402
+from methods.table1_cub200.teacher_contract import (  # noqa: E402
+    TABLE1_TEACHER_ROOT,
+)
 
 
 PLANNED_EPOCHS = 300
@@ -121,10 +123,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--teacher-root",
         type=Path,
-        default=DEFAULT_CHECKPOINT_ROOT,
+        default=TABLE1_TEACHER_ROOT,
         help=(
-            "Completed ResNet56-32 teacher used by all student timing tasks. "
-            "The separate two-epoch teacher timing output is never used as guidance."
+            "Fixed H200 build-543 ResNet56-32 teacher used by every student "
+            "timing task. The separate two-epoch teacher timing output is "
+            "never used as guidance."
         ),
     )
     parser.add_argument(

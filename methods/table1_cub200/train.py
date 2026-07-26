@@ -48,10 +48,12 @@ from methods.table1_cub200.backbones import (  # noqa: E402
     forward_student,
 )
 from teachers.cub200_dataset import CUB200Dataset, ensure_cub200  # noqa: E402
-from teachers.verify_checkpoints import (  # noqa: E402
-    DEFAULT_CHECKPOINT_ROOT,
-    load_teacher,
+from methods.table1_cub200.teacher_contract import (  # noqa: E402
+    TABLE1_TEACHER_BUILD,
+    TABLE1_TEACHER_ROOT,
+    validate_table1_teacher_spec,
 )
+from teachers.verify_checkpoints import load_teacher  # noqa: E402
 
 
 PLANNED_EPOCHS = 300
@@ -120,7 +122,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--teacher-root",
         type=Path,
-        default=DEFAULT_CHECKPOINT_ROOT,
+        default=TABLE1_TEACHER_ROOT,
+        help=(
+            "Fixed H200 build-543 Table-1 teacher directory. Guided Table-1 "
+            "runs reject any manifest with a different checkpoint identity."
+        ),
     )
     parser.add_argument("--output-dir", type=Path, default=Path("./outputs"))
     parser.add_argument("--run-name", type=str, default=None)
@@ -358,6 +364,7 @@ def train(args: argparse.Namespace) -> None:
             device=device,
             checkpoint_root=args.teacher_root,
         )
+        validate_table1_teacher_spec(teacher_spec)
         teacher.eval()
         for parameter in teacher.parameters():
             parameter.requires_grad = False
@@ -480,6 +487,13 @@ def train(args: argparse.Namespace) -> None:
         "teacher=ResNet56-scratch-32 student=scratch-224 "
         "epochs=300 AdamW=5e-4->5e-6 wd=0.05 warmup=20 seed=1 fp32=True"
     )
+    if teacher_spec is not None:
+        log(
+            "[FIXED_TEACHER_TABLE1_CUB200] "
+            f"h200_build={TABLE1_TEACHER_BUILD} "
+            f"root={args.teacher_root.resolve()} "
+            f"sha256={teacher_spec['sha256']}"
+        )
     log(
         f"[SOURCE] official_lg_repo={OFFICIAL_LG_REPOSITORY} "
         f"commit={OFFICIAL_LG_COMMIT}"

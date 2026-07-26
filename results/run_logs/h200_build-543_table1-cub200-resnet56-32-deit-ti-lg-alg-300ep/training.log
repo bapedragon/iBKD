@@ -1,0 +1,974 @@
+[BOOT] installing pinned requirements; missing_or_mismatched=['timm', 'fvcore', 'iopath', 'yacs']
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[BOOT] pinned requirements installed successfully
+================================================================================================
+TABLE-1 CUB-200: RESNET56-32 TEACHER -> DEIT-TI LG -> DEIT-TI ALG
+================================================================================================
+[PROTOCOL_LOCK_TABLE1_CUB200_DEIT_LG_ALG] teacher=ResNet56 scratch input=32 batch=128 epochs=300 students=DeiT-Ti scratch input=224 methods=LG,ALG batch=128 epochs=300 seed=1 fp32=True
+[TASK_COUNT_TABLE1_CUB200_DEIT_LG_ALG] total=3 order=Teacher,LG,ALG
+[POD_LIMIT_CHECK_TABLE1_CUB200_DEIT_LG_ALG] limit=600m estimated=2h 53m 58s status=PASS
+------------------------------------------------------------------------------------------------
+[TASK_START] 1/3 Teacher
+[COMMAND][Teacher] /usr/bin/python /app/scratch/input/bapedragon_543/teachers/train_teacher_cub200.py --data-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200 --output-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/teacher --run-name table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1 --num-workers 4
+[BOOT] Python process started: /usr/bin/python
+================================================================================
+TRAIN CUB-200-2011 RESNET56 TEACHER (SCRATCH, 32 x 32)
+================================================================================
+[MODE] mode=full actual_epochs=300 planned_epochs=300
+[PATH] run_dir=/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1
+[PROTOCOL] official_split train=5994 test=5794 pretrained=False optimizer=SGD lr=0.1 momentum=0.9 nesterov=True weight_decay=0.0005 cosine=300ep seed=1 fp32=True
+[LEAKAGE_GUARD] ImageNet-pretrained weights are disabled because the official CUB page warns that CUB images overlap with ImageNet.
+[PROTOCOL_CHECK] status=PASS features=((2, 16, 32, 32), (2, 32, 16, 16), (2, 64, 8, 8)) logits=(2, 200)
+[DATA] root=/app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200/CUB_200_2011 train_samples=5994 test_samples=5794 split=official_train/test
+[OPTIM] weight_decay_params=863,664 no_decay_params=4,456
+[TEACHER][001/300] loss=5.3808 train_acc=0.42% test_acc=0.60% best=0.60% lr=0.10000000 time=8.4s est_300=42m 04s saved_best
+[TEACHER][002/300] loss=5.3043 train_acc=0.17% test_acc=0.41% best=0.60% lr=0.09999726 time=7.4s est_300=39m 34s
+[TEACHER][003/300] loss=5.2959 train_acc=0.32% test_acc=0.55% best=0.60% lr=0.09998903 time=6.7s est_300=37m 31s
+[TEACHER][004/300] loss=5.2892 train_acc=0.44% test_acc=0.29% best=0.60% lr=0.09997533 time=6.9s est_300=36m 46s
+[TEACHER][005/300] loss=5.2899 train_acc=0.56% test_acc=0.66% best=0.66% lr=0.09995614 time=6.9s est_300=36m 16s saved_best
+[TEACHER][006/300] loss=5.2860 train_acc=0.59% test_acc=0.86% best=0.86% lr=0.09993148 time=6.9s est_300=35m 56s saved_best
+[TEACHER][007/300] loss=5.2818 train_acc=0.48% test_acc=0.93% best=0.93% lr=0.09990134 time=6.1s est_300=35m 08s saved_best
+[TEACHER][008/300] loss=5.2774 train_acc=0.70% test_acc=0.55% best=0.93% lr=0.09986572 time=6.1s est_300=34m 34s
+[TEACHER][009/300] loss=5.2705 train_acc=0.63% test_acc=0.97% best=0.97% lr=0.09982464 time=7.1s est_300=34m 42s saved_best
+[TEACHER][010/300] loss=5.2567 train_acc=0.65% test_acc=1.04% best=1.04% lr=0.09977810 time=7.4s est_300=34m 55s saved_best
+[TEACHER][011/300] loss=5.2371 train_acc=0.92% test_acc=0.98% best=1.04% lr=0.09972609 time=7.7s est_300=35m 15s
+[TEACHER][012/300] loss=5.1970 train_acc=0.83% test_acc=1.10% best=1.10% lr=0.09966864 time=7.2s est_300=35m 18s saved_best
+[TEACHER][013/300] loss=5.1759 train_acc=0.80% test_acc=0.90% best=1.10% lr=0.09960574 time=7.5s est_300=35m 28s
+[TEACHER][014/300] loss=5.1508 train_acc=0.85% test_acc=1.07% best=1.10% lr=0.09953739 time=7.6s est_300=35m 39s
+[TEACHER][015/300] loss=5.1340 train_acc=1.17% test_acc=1.59% best=1.59% lr=0.09946362 time=7.6s est_300=35m 47s saved_best
+[TEACHER][016/300] loss=5.1371 train_acc=0.90% test_acc=1.38% best=1.59% lr=0.09938442 time=7.7s est_300=35m 57s
+[TEACHER][017/300] loss=5.1194 train_acc=1.26% test_acc=1.61% best=1.61% lr=0.09929980 time=7.5s est_300=36m 03s saved_best
+[TEACHER][018/300] loss=5.0884 train_acc=1.48% test_acc=1.54% best=1.61% lr=0.09920978 time=7.5s est_300=36m 08s
+[TEACHER][019/300] loss=5.0787 train_acc=1.39% test_acc=2.04% best=2.04% lr=0.09911436 time=7.8s est_300=36m 17s saved_best
+[TEACHER][020/300] loss=5.0527 train_acc=1.41% test_acc=2.11% best=2.11% lr=0.09901356 time=8.2s est_300=36m 31s saved_best
+[TEACHER][021/300] loss=5.0299 train_acc=1.65% test_acc=2.83% best=2.83% lr=0.09890738 time=7.4s est_300=36m 32s saved_best
+[TEACHER][022/300] loss=5.0204 train_acc=1.44% test_acc=2.17% best=2.83% lr=0.09879584 time=8.0s est_300=36m 42s
+[TEACHER][023/300] loss=5.0020 train_acc=2.00% test_acc=2.50% best=2.83% lr=0.09867895 time=7.7s est_300=36m 47s
+[TEACHER][024/300] loss=4.9796 train_acc=1.89% test_acc=2.76% best=2.83% lr=0.09855671 time=7.5s est_300=36m 49s
+[TEACHER][025/300] loss=4.9474 train_acc=2.45% test_acc=3.19% best=3.19% lr=0.09842916 time=7.5s est_300=36m 50s saved_best
+[TEACHER][026/300] loss=4.9142 train_acc=2.63% test_acc=3.61% best=3.61% lr=0.09829629 time=7.2s est_300=36m 48s saved_best
+[TEACHER][027/300] loss=4.9200 train_acc=2.50% test_acc=3.37% best=3.61% lr=0.09815813 time=8.1s est_300=36m 56s
+[TEACHER][028/300] loss=4.9078 train_acc=3.09% test_acc=4.02% best=4.02% lr=0.09801468 time=8.2s est_300=37m 05s saved_best
+[TEACHER][029/300] loss=4.8798 train_acc=2.41% test_acc=4.06% best=4.06% lr=0.09786597 time=7.5s est_300=37m 06s saved_best
+[TEACHER][030/300] loss=4.8630 train_acc=2.75% test_acc=3.42% best=4.06% lr=0.09771202 time=8.0s est_300=37m 11s
+[TEACHER][031/300] loss=4.8247 train_acc=2.99% test_acc=4.54% best=4.54% lr=0.09755283 time=8.3s est_300=37m 20s saved_best
+[TEACHER][032/300] loss=4.8238 train_acc=3.26% test_acc=3.64% best=4.54% lr=0.09738842 time=7.2s est_300=37m 18s
+[TEACHER][033/300] loss=4.7910 train_acc=3.09% test_acc=4.59% best=4.59% lr=0.09721882 time=7.5s est_300=37m 18s saved_best
+[TEACHER][034/300] loss=4.7703 train_acc=3.52% test_acc=5.40% best=5.40% lr=0.09704404 time=6.8s est_300=37m 13s saved_best
+[TEACHER][035/300] loss=4.7485 train_acc=3.77% test_acc=5.01% best=5.40% lr=0.09686410 time=6.9s est_300=37m 08s
+[TEACHER][036/300] loss=4.7452 train_acc=3.52% test_acc=4.71% best=5.40% lr=0.09667902 time=6.9s est_300=37m 04s
+[TEACHER][037/300] loss=4.7522 train_acc=4.03% test_acc=5.35% best=5.40% lr=0.09648882 time=6.8s est_300=36m 59s
+[TEACHER][038/300] loss=4.7000 train_acc=4.52% test_acc=5.14% best=5.40% lr=0.09629353 time=7.6s est_300=37m 00s
+[TEACHER][039/300] loss=4.6946 train_acc=4.04% test_acc=5.94% best=5.94% lr=0.09609316 time=7.5s est_300=37m 01s saved_best
+[TEACHER][040/300] loss=4.6706 train_acc=4.30% test_acc=5.54% best=5.94% lr=0.09588773 time=7.4s est_300=37m 01s
+[TEACHER][041/300] loss=4.6535 train_acc=4.60% test_acc=5.14% best=5.94% lr=0.09567727 time=6.8s est_300=36m 57s
+[TEACHER][042/300] loss=4.6548 train_acc=4.59% test_acc=6.64% best=6.64% lr=0.09546181 time=6.9s est_300=36m 53s saved_best
+[TEACHER][043/300] loss=4.6157 train_acc=5.06% test_acc=6.06% best=6.64% lr=0.09524135 time=6.6s est_300=36m 48s
+[TEACHER][044/300] loss=4.6235 train_acc=4.76% test_acc=6.83% best=6.83% lr=0.09501594 time=5.9s est_300=36m 38s saved_best
+[TEACHER][045/300] loss=4.6106 train_acc=5.15% test_acc=5.38% best=6.83% lr=0.09478559 time=6.8s est_300=36m 35s
+[TEACHER][046/300] loss=4.5794 train_acc=5.50% test_acc=5.95% best=6.83% lr=0.09455033 time=6.7s est_300=36m 31s
+[TEACHER][047/300] loss=4.5534 train_acc=5.23% test_acc=5.63% best=6.83% lr=0.09431018 time=5.9s est_300=36m 22s
+[TEACHER][048/300] loss=4.5714 train_acc=5.21% test_acc=6.40% best=6.83% lr=0.09406517 time=6.0s est_300=36m 14s
+[TEACHER][049/300] loss=4.5415 train_acc=5.79% test_acc=6.47% best=6.83% lr=0.09381533 time=6.1s est_300=36m 07s
+[TEACHER][050/300] loss=4.5053 train_acc=6.20% test_acc=7.30% best=7.30% lr=0.09356069 time=7.1s est_300=36m 06s saved_best
+[TEACHER][051/300] loss=4.5411 train_acc=5.96% test_acc=7.80% best=7.80% lr=0.09330127 time=6.8s est_300=36m 04s saved_best
+[TEACHER][052/300] loss=4.5029 train_acc=6.13% test_acc=8.11% best=8.11% lr=0.09303710 time=6.6s est_300=36m 00s saved_best
+[TEACHER][053/300] loss=4.4808 train_acc=6.13% test_acc=7.78% best=8.11% lr=0.09276821 time=6.6s est_300=35m 57s
+[TEACHER][054/300] loss=4.4523 train_acc=7.57% test_acc=9.16% best=9.16% lr=0.09249463 time=7.0s est_300=35m 55s saved_best
+[TEACHER][055/300] loss=4.4646 train_acc=7.32% test_acc=7.97% best=9.16% lr=0.09221640 time=7.1s est_300=35m 55s
+[TEACHER][056/300] loss=4.3915 train_acc=7.57% test_acc=9.41% best=9.41% lr=0.09193353 time=6.8s est_300=35m 53s saved_best
+[TEACHER][057/300] loss=4.4270 train_acc=7.15% test_acc=8.32% best=9.41% lr=0.09164606 time=6.9s est_300=35m 51s
+[TEACHER][058/300] loss=4.4170 train_acc=7.08% test_acc=8.63% best=9.41% lr=0.09135403 time=6.8s est_300=35m 49s
+[TEACHER][059/300] loss=4.3790 train_acc=7.80% test_acc=10.15% best=10.15% lr=0.09105746 time=6.8s est_300=35m 48s saved_best
+[TEACHER][060/300] loss=4.3858 train_acc=7.69% test_acc=8.06% best=10.15% lr=0.09075639 time=6.7s est_300=35m 46s
+[TEACHER][061/300] loss=4.3551 train_acc=8.20% test_acc=8.94% best=10.15% lr=0.09045085 time=6.9s est_300=35m 44s
+[TEACHER][062/300] loss=4.3329 train_acc=8.58% test_acc=10.15% best=10.15% lr=0.09014087 time=6.9s est_300=35m 43s
+[TEACHER][063/300] loss=4.3527 train_acc=8.34% test_acc=10.10% best=10.15% lr=0.08982650 time=7.0s est_300=35m 42s
+[TEACHER][064/300] loss=4.3071 train_acc=9.00% test_acc=10.06% best=10.15% lr=0.08950775 time=6.9s est_300=35m 41s
+[TEACHER][065/300] loss=4.2892 train_acc=9.07% test_acc=11.46% best=11.46% lr=0.08918467 time=6.9s est_300=35m 40s saved_best
+[TEACHER][066/300] loss=4.2791 train_acc=9.04% test_acc=10.77% best=11.46% lr=0.08885730 time=8.0s est_300=35m 44s
+[TEACHER][067/300] loss=4.2883 train_acc=9.39% test_acc=10.01% best=11.46% lr=0.08852566 time=7.8s est_300=35m 47s
+[TEACHER][068/300] loss=4.2363 train_acc=9.66% test_acc=11.46% best=11.46% lr=0.08818980 time=7.9s est_300=35m 50s
+[TEACHER][069/300] loss=4.2645 train_acc=8.63% test_acc=10.27% best=11.46% lr=0.08784975 time=7.1s est_300=35m 50s
+[TEACHER][070/300] loss=4.2289 train_acc=9.27% test_acc=11.87% best=11.87% lr=0.08750555 time=6.9s est_300=35m 49s saved_best
+[TEACHER][071/300] loss=4.2241 train_acc=10.55% test_acc=10.94% best=11.87% lr=0.08715724 time=6.8s est_300=35m 47s
+[TEACHER][072/300] loss=4.2069 train_acc=9.63% test_acc=12.72% best=12.72% lr=0.08680485 time=6.9s est_300=35m 46s saved_best
+[TEACHER][073/300] loss=4.1996 train_acc=9.87% test_acc=10.65% best=12.72% lr=0.08644843 time=6.8s est_300=35m 44s
+[TEACHER][074/300] loss=4.1656 train_acc=10.65% test_acc=11.67% best=12.72% lr=0.08608801 time=7.4s est_300=35m 45s
+[TEACHER][075/300] loss=4.1701 train_acc=10.29% test_acc=12.36% best=12.72% lr=0.08572363 time=6.6s est_300=35m 43s
+[TEACHER][076/300] loss=4.1149 train_acc=11.33% test_acc=12.86% best=12.86% lr=0.08535534 time=6.8s est_300=35m 42s saved_best
+[TEACHER][077/300] loss=4.1838 train_acc=10.04% test_acc=11.98% best=12.86% lr=0.08498317 time=6.0s est_300=35m 37s
+[TEACHER][078/300] loss=4.1156 train_acc=11.62% test_acc=10.58% best=12.86% lr=0.08460716 time=6.0s est_300=35m 33s
+[TEACHER][079/300] loss=4.1294 train_acc=10.84% test_acc=11.72% best=12.86% lr=0.08422736 time=7.6s est_300=35m 35s
+[TEACHER][080/300] loss=4.1147 train_acc=11.62% test_acc=12.00% best=12.86% lr=0.08384380 time=7.3s est_300=35m 36s
+[TEACHER][081/300] loss=4.1005 train_acc=12.04% test_acc=14.12% best=14.12% lr=0.08345653 time=6.9s est_300=35m 35s saved_best
+[TEACHER][082/300] loss=4.0678 train_acc=12.81% test_acc=12.96% best=14.12% lr=0.08306559 time=6.9s est_300=35m 34s
+[TEACHER][083/300] loss=4.0614 train_acc=12.67% test_acc=12.75% best=14.12% lr=0.08267103 time=7.2s est_300=35m 35s
+[TEACHER][084/300] loss=4.0529 train_acc=11.85% test_acc=12.32% best=14.12% lr=0.08227288 time=8.0s est_300=35m 38s
+[TEACHER][085/300] loss=4.0568 train_acc=12.64% test_acc=13.82% best=14.12% lr=0.08187120 time=7.2s est_300=35m 38s
+[TEACHER][086/300] loss=4.0152 train_acc=13.03% test_acc=12.58% best=14.12% lr=0.08146602 time=6.9s est_300=35m 37s
+[TEACHER][087/300] loss=3.9992 train_acc=13.47% test_acc=13.69% best=14.12% lr=0.08105739 time=8.0s est_300=35m 40s
+[TEACHER][088/300] loss=4.0349 train_acc=12.26% test_acc=15.00% best=15.00% lr=0.08064535 time=8.1s est_300=35m 43s saved_best
+[TEACHER][089/300] loss=3.9945 train_acc=13.49% test_acc=14.84% best=15.00% lr=0.08022996 time=8.1s est_300=35m 47s
+[TEACHER][090/300] loss=4.0066 train_acc=13.28% test_acc=13.89% best=15.00% lr=0.07981124 time=8.1s est_300=35m 50s
+[TEACHER][091/300] loss=3.9810 train_acc=13.81% test_acc=14.31% best=15.00% lr=0.07938926 time=7.0s est_300=35m 49s
+[TEACHER][092/300] loss=3.9296 train_acc=14.40% test_acc=13.81% best=15.00% lr=0.07896406 time=7.2s est_300=35m 49s
+[TEACHER][093/300] loss=3.9351 train_acc=14.64% test_acc=15.45% best=15.45% lr=0.07853568 time=7.1s est_300=35m 49s saved_best
+[TEACHER][094/300] loss=3.9475 train_acc=14.10% test_acc=14.05% best=15.45% lr=0.07810417 time=7.3s est_300=35m 49s
+[TEACHER][095/300] loss=3.9462 train_acc=14.10% test_acc=16.69% best=16.69% lr=0.07766958 time=7.0s est_300=35m 49s saved_best
+[TEACHER][096/300] loss=3.8902 train_acc=15.23% test_acc=16.19% best=16.69% lr=0.07723195 time=6.9s est_300=35m 48s
+[TEACHER][097/300] loss=3.9185 train_acc=14.84% test_acc=16.00% best=16.69% lr=0.07679134 time=6.8s est_300=35m 47s
+[TEACHER][098/300] loss=3.8737 train_acc=14.78% test_acc=15.55% best=16.69% lr=0.07634779 time=6.1s est_300=35m 44s
+[TEACHER][099/300] loss=3.8776 train_acc=15.22% test_acc=16.52% best=16.69% lr=0.07590135 time=6.1s est_300=35m 40s
+[TEACHER][100/300] loss=3.8809 train_acc=14.81% test_acc=17.02% best=17.02% lr=0.07545207 time=6.2s est_300=35m 38s saved_best
+[TEACHER][101/300] loss=3.8446 train_acc=15.30% test_acc=16.21% best=17.02% lr=0.07500000 time=7.1s est_300=35m 38s
+[TEACHER][102/300] loss=3.8396 train_acc=15.59% test_acc=14.07% best=17.02% lr=0.07454519 time=7.9s est_300=35m 40s
+[TEACHER][103/300] loss=3.8903 train_acc=15.22% test_acc=15.53% best=17.02% lr=0.07408768 time=7.9s est_300=35m 42s
+[TEACHER][104/300] loss=3.8590 train_acc=15.34% test_acc=18.05% best=18.05% lr=0.07362754 time=7.8s est_300=35m 44s saved_best
+[TEACHER][105/300] loss=3.7983 train_acc=16.53% test_acc=17.67% best=18.05% lr=0.07316480 time=8.1s est_300=35m 47s
+[TEACHER][106/300] loss=3.8014 train_acc=16.25% test_acc=18.14% best=18.14% lr=0.07269952 time=8.1s est_300=35m 50s saved_best
+[TEACHER][107/300] loss=3.7830 train_acc=16.05% test_acc=15.43% best=18.14% lr=0.07223176 time=8.3s est_300=35m 53s
+[TEACHER][108/300] loss=3.7976 train_acc=16.68% test_acc=18.14% best=18.14% lr=0.07176155 time=8.7s est_300=35m 57s
+[TEACHER][109/300] loss=3.7638 train_acc=16.76% test_acc=17.50% best=18.14% lr=0.07128896 time=8.9s est_300=36m 02s
+[TEACHER][110/300] loss=3.7584 train_acc=17.41% test_acc=18.74% best=18.74% lr=0.07081404 time=8.4s est_300=36m 05s saved_best
+[TEACHER][111/300] loss=3.7456 train_acc=16.58% test_acc=19.21% best=19.21% lr=0.07033683 time=8.4s est_300=36m 08s saved_best
+[TEACHER][112/300] loss=3.7339 train_acc=17.54% test_acc=18.40% best=19.21% lr=0.06985739 time=8.2s est_300=36m 11s
+[TEACHER][113/300] loss=3.7622 train_acc=17.05% test_acc=19.50% best=19.50% lr=0.06937578 time=8.0s est_300=36m 13s saved_best
+[TEACHER][114/300] loss=3.7419 train_acc=16.69% test_acc=17.73% best=19.50% lr=0.06889204 time=8.0s est_300=36m 15s
+[TEACHER][115/300] loss=3.7182 train_acc=17.71% test_acc=18.24% best=19.50% lr=0.06840623 time=8.0s est_300=36m 17s
+[TEACHER][116/300] loss=3.6427 train_acc=18.60% test_acc=18.04% best=19.50% lr=0.06791840 time=6.8s est_300=36m 16s
+[TEACHER][117/300] loss=3.7198 train_acc=17.66% test_acc=17.95% best=19.50% lr=0.06742860 time=7.7s est_300=36m 17s
+[TEACHER][118/300] loss=3.7002 train_acc=18.24% test_acc=19.90% best=19.90% lr=0.06693690 time=7.8s est_300=36m 18s saved_best
+[TEACHER][119/300] loss=3.6991 train_acc=18.07% test_acc=19.78% best=19.90% lr=0.06644333 time=8.0s est_300=36m 20s
+[TEACHER][120/300] loss=3.6479 train_acc=17.93% test_acc=19.90% best=19.90% lr=0.06594797 time=8.0s est_300=36m 22s
+[TEACHER][121/300] loss=3.6833 train_acc=18.58% test_acc=19.05% best=19.90% lr=0.06545085 time=7.3s est_300=36m 22s
+[TEACHER][122/300] loss=3.6393 train_acc=18.90% test_acc=20.40% best=20.40% lr=0.06495204 time=8.0s est_300=36m 24s saved_best
+[TEACHER][123/300] loss=3.6848 train_acc=18.56% test_acc=19.99% best=20.40% lr=0.06445159 time=7.6s est_300=36m 25s
+[TEACHER][124/300] loss=3.6316 train_acc=18.48% test_acc=20.90% best=20.90% lr=0.06394956 time=8.0s est_300=36m 26s saved_best
+[TEACHER][125/300] loss=3.6114 train_acc=18.56% test_acc=18.50% best=20.90% lr=0.06344599 time=7.7s est_300=36m 27s
+[TEACHER][126/300] loss=3.6242 train_acc=19.02% test_acc=19.71% best=20.90% lr=0.06294095 time=7.5s est_300=36m 28s
+[TEACHER][127/300] loss=3.6090 train_acc=19.28% test_acc=19.62% best=20.90% lr=0.06243449 time=6.9s est_300=36m 27s
+[TEACHER][128/300] loss=3.5757 train_acc=20.01% test_acc=19.71% best=20.90% lr=0.06192667 time=7.9s est_300=36m 28s
+[TEACHER][129/300] loss=3.6131 train_acc=19.58% test_acc=20.42% best=20.90% lr=0.06141754 time=8.0s est_300=36m 30s
+[TEACHER][130/300] loss=3.6163 train_acc=19.60% test_acc=20.21% best=20.90% lr=0.06090716 time=7.4s est_300=36m 30s
+[TEACHER][131/300] loss=3.5927 train_acc=19.23% test_acc=19.00% best=20.90% lr=0.06039558 time=7.3s est_300=36m 30s
+[TEACHER][132/300] loss=3.5622 train_acc=19.70% test_acc=20.47% best=20.90% lr=0.05988287 time=6.8s est_300=36m 29s
+[TEACHER][133/300] loss=3.5572 train_acc=20.45% test_acc=20.59% best=20.90% lr=0.05936907 time=6.7s est_300=36m 28s
+[TEACHER][134/300] loss=3.5647 train_acc=20.89% test_acc=18.92% best=20.90% lr=0.05885424 time=6.7s est_300=36m 26s
+[TEACHER][135/300] loss=3.5273 train_acc=21.08% test_acc=22.18% best=22.18% lr=0.05833844 time=6.8s est_300=36m 25s saved_best
+[TEACHER][136/300] loss=3.4906 train_acc=21.81% test_acc=22.51% best=22.51% lr=0.05782172 time=7.5s est_300=36m 26s saved_best
+[TEACHER][137/300] loss=3.5314 train_acc=20.75% test_acc=19.43% best=22.51% lr=0.05730415 time=6.9s est_300=36m 25s
+[TEACHER][138/300] loss=3.4993 train_acc=20.70% test_acc=19.97% best=22.51% lr=0.05678578 time=6.7s est_300=36m 24s
+[TEACHER][139/300] loss=3.5169 train_acc=20.87% test_acc=21.95% best=22.51% lr=0.05626666 time=6.7s est_300=36m 23s
+[TEACHER][140/300] loss=3.5165 train_acc=21.81% test_acc=22.30% best=22.51% lr=0.05574686 time=6.8s est_300=36m 21s
+[TEACHER][141/300] loss=3.4662 train_acc=22.28% test_acc=22.73% best=22.73% lr=0.05522642 time=7.6s est_300=36m 22s saved_best
+[TEACHER][142/300] loss=3.4818 train_acc=21.72% test_acc=21.28% best=22.73% lr=0.05470542 time=6.2s est_300=36m 20s
+[TEACHER][143/300] loss=3.4843 train_acc=22.04% test_acc=20.92% best=22.73% lr=0.05418389 time=7.3s est_300=36m 20s
+[TEACHER][144/300] loss=3.3983 train_acc=22.91% test_acc=21.94% best=22.73% lr=0.05366191 time=6.4s est_300=36m 18s
+[TEACHER][145/300] loss=3.4509 train_acc=21.93% test_acc=22.47% best=22.73% lr=0.05313953 time=7.2s est_300=36m 18s
+[TEACHER][146/300] loss=3.4770 train_acc=21.88% test_acc=22.35% best=22.73% lr=0.05261680 time=8.0s est_300=36m 19s
+[TEACHER][147/300] loss=3.3875 train_acc=23.34% test_acc=23.32% best=23.32% lr=0.05209378 time=7.2s est_300=36m 19s saved_best
+[TEACHER][148/300] loss=3.4241 train_acc=22.98% test_acc=22.63% best=23.32% lr=0.05157054 time=7.7s est_300=36m 20s
+[TEACHER][149/300] loss=3.4389 train_acc=22.40% test_acc=24.28% best=24.28% lr=0.05104712 time=6.5s est_300=36m 19s saved_best
+[TEACHER][150/300] loss=3.4226 train_acc=22.01% test_acc=23.96% best=24.28% lr=0.05052359 time=6.2s est_300=36m 16s
+[TEACHER][151/300] loss=3.3868 train_acc=23.49% test_acc=21.85% best=24.28% lr=0.05000000 time=6.1s est_300=36m 14s
+[TEACHER][152/300] loss=3.3891 train_acc=22.64% test_acc=23.59% best=24.28% lr=0.04947641 time=6.2s est_300=36m 12s
+[TEACHER][153/300] loss=3.4367 train_acc=22.18% test_acc=21.66% best=24.28% lr=0.04895288 time=6.8s est_300=36m 11s
+[TEACHER][154/300] loss=3.3506 train_acc=24.71% test_acc=22.54% best=24.28% lr=0.04842946 time=6.7s est_300=36m 10s
+[TEACHER][155/300] loss=3.3617 train_acc=24.22% test_acc=23.80% best=24.28% lr=0.04790622 time=6.1s est_300=36m 08s
+[TEACHER][156/300] loss=3.3731 train_acc=23.86% test_acc=22.99% best=24.28% lr=0.04738320 time=6.8s est_300=36m 07s
+[TEACHER][157/300] loss=3.3118 train_acc=24.83% test_acc=25.32% best=25.32% lr=0.04686047 time=6.8s est_300=36m 06s saved_best
+[TEACHER][158/300] loss=3.3598 train_acc=24.42% test_acc=24.30% best=25.32% lr=0.04633809 time=7.0s est_300=36m 06s
+[TEACHER][159/300] loss=3.3027 train_acc=24.61% test_acc=22.54% best=25.32% lr=0.04581611 time=6.2s est_300=36m 04s
+[TEACHER][160/300] loss=3.3667 train_acc=23.35% test_acc=24.23% best=25.32% lr=0.04529458 time=6.2s est_300=36m 02s
+[TEACHER][161/300] loss=3.3528 train_acc=24.25% test_acc=22.47% best=25.32% lr=0.04477358 time=6.6s est_300=36m 01s
+[TEACHER][162/300] loss=3.2880 train_acc=25.03% test_acc=24.84% best=25.32% lr=0.04425314 time=7.8s est_300=36m 02s
+[TEACHER][163/300] loss=3.3355 train_acc=24.63% test_acc=27.30% best=27.30% lr=0.04373334 time=8.0s est_300=36m 04s saved_best
+[TEACHER][164/300] loss=3.2489 train_acc=25.63% test_acc=23.28% best=27.30% lr=0.04321422 time=7.8s est_300=36m 05s
+[TEACHER][165/300] loss=3.2846 train_acc=25.75% test_acc=23.84% best=27.30% lr=0.04269585 time=8.2s est_300=36m 06s
+[TEACHER][166/300] loss=3.3191 train_acc=24.68% test_acc=24.59% best=27.30% lr=0.04217828 time=6.8s est_300=36m 05s
+[TEACHER][167/300] loss=3.2433 train_acc=26.17% test_acc=24.78% best=27.30% lr=0.04166156 time=7.2s est_300=36m 05s
+[TEACHER][168/300] loss=3.2404 train_acc=25.97% test_acc=25.11% best=27.30% lr=0.04114576 time=6.6s est_300=36m 04s
+[TEACHER][169/300] loss=3.2541 train_acc=25.99% test_acc=25.92% best=27.30% lr=0.04063093 time=7.2s est_300=36m 04s
+[TEACHER][170/300] loss=3.2293 train_acc=26.31% test_acc=24.23% best=27.30% lr=0.04011713 time=7.1s est_300=36m 04s
+[TEACHER][171/300] loss=3.2317 train_acc=26.65% test_acc=24.72% best=27.30% lr=0.03960442 time=7.9s est_300=36m 05s
+[TEACHER][172/300] loss=3.2218 train_acc=25.97% test_acc=25.28% best=27.30% lr=0.03909284 time=7.8s est_300=36m 06s
+[TEACHER][173/300] loss=3.2672 train_acc=24.98% test_acc=26.08% best=27.30% lr=0.03858246 time=7.1s est_300=36m 06s
+[TEACHER][174/300] loss=3.2294 train_acc=26.63% test_acc=26.53% best=27.30% lr=0.03807333 time=6.7s est_300=36m 05s
+[TEACHER][175/300] loss=3.2130 train_acc=26.44% test_acc=24.72% best=27.30% lr=0.03756551 time=7.5s est_300=36m 06s
+[TEACHER][176/300] loss=3.2214 train_acc=26.21% test_acc=25.98% best=27.30% lr=0.03705905 time=7.6s est_300=36m 06s
+[TEACHER][177/300] loss=3.1759 train_acc=26.70% test_acc=26.48% best=27.30% lr=0.03655401 time=6.4s est_300=36m 05s
+[TEACHER][178/300] loss=3.2240 train_acc=26.14% test_acc=24.47% best=27.30% lr=0.03605044 time=6.4s est_300=36m 03s
+[TEACHER][179/300] loss=3.1857 train_acc=27.11% test_acc=24.94% best=27.30% lr=0.03554841 time=6.0s est_300=36m 01s
+[TEACHER][180/300] loss=3.1534 train_acc=27.53% test_acc=26.92% best=27.30% lr=0.03504796 time=7.5s est_300=36m 02s
+[TEACHER][181/300] loss=3.1108 train_acc=28.46% test_acc=24.53% best=27.30% lr=0.03454915 time=6.6s est_300=36m 01s
+[TEACHER][182/300] loss=3.1592 train_acc=27.09% test_acc=24.96% best=27.30% lr=0.03405203 time=6.4s est_300=35m 59s
+[TEACHER][183/300] loss=3.1517 train_acc=27.46% test_acc=26.11% best=27.30% lr=0.03355667 time=7.1s est_300=35m 59s
+[TEACHER][184/300] loss=3.1336 train_acc=27.82% test_acc=26.54% best=27.30% lr=0.03306310 time=7.6s est_300=36m 00s
+[TEACHER][185/300] loss=3.1452 train_acc=28.18% test_acc=26.39% best=27.30% lr=0.03257140 time=7.2s est_300=36m 00s
+[TEACHER][186/300] loss=3.0525 train_acc=29.70% test_acc=26.89% best=27.30% lr=0.03208160 time=8.3s est_300=36m 02s
+[TEACHER][187/300] loss=3.1106 train_acc=28.29% test_acc=27.11% best=27.30% lr=0.03159377 time=8.2s est_300=36m 04s
+[TEACHER][188/300] loss=3.0570 train_acc=29.03% test_acc=28.05% best=28.05% lr=0.03110796 time=8.0s est_300=36m 05s saved_best
+[TEACHER][189/300] loss=3.0732 train_acc=28.70% test_acc=26.73% best=28.05% lr=0.03062422 time=7.6s est_300=36m 05s
+[TEACHER][190/300] loss=3.0417 train_acc=29.19% test_acc=27.49% best=28.05% lr=0.03014261 time=7.9s est_300=36m 06s
+[TEACHER][191/300] loss=3.0778 train_acc=29.30% test_acc=27.86% best=28.05% lr=0.02966317 time=7.7s est_300=36m 07s
+[TEACHER][192/300] loss=3.0787 train_acc=28.77% test_acc=27.17% best=28.05% lr=0.02918596 time=7.6s est_300=36m 08s
+[TEACHER][193/300] loss=3.0636 train_acc=29.03% test_acc=26.91% best=28.05% lr=0.02871104 time=7.0s est_300=36m 07s
+[TEACHER][194/300] loss=3.0391 train_acc=29.53% test_acc=28.29% best=28.29% lr=0.02823845 time=7.0s est_300=36m 07s saved_best
+[TEACHER][195/300] loss=3.0552 train_acc=29.30% test_acc=27.51% best=28.29% lr=0.02776824 time=6.9s est_300=36m 07s
+[TEACHER][196/300] loss=3.0216 train_acc=30.11% test_acc=25.75% best=28.29% lr=0.02730048 time=7.5s est_300=36m 07s
+[TEACHER][197/300] loss=2.9900 train_acc=31.57% test_acc=28.15% best=28.29% lr=0.02683520 time=6.7s est_300=36m 06s
+[TEACHER][198/300] loss=3.0275 train_acc=29.65% test_acc=28.44% best=28.44% lr=0.02637246 time=6.1s est_300=36m 05s saved_best
+[TEACHER][199/300] loss=2.9752 train_acc=30.94% test_acc=27.99% best=28.44% lr=0.02591232 time=6.0s est_300=36m 03s
+[TEACHER][200/300] loss=3.0001 train_acc=30.98% test_acc=28.67% best=28.67% lr=0.02545481 time=6.1s est_300=36m 01s saved_best
+[TEACHER][201/300] loss=2.9977 train_acc=30.52% test_acc=27.91% best=28.67% lr=0.02500000 time=7.0s est_300=36m 01s
+[TEACHER][202/300] loss=2.9335 train_acc=32.78% test_acc=27.48% best=28.67% lr=0.02454793 time=6.6s est_300=36m 00s
+[TEACHER][203/300] loss=2.9639 train_acc=31.49% test_acc=26.77% best=28.67% lr=0.02409865 time=6.7s est_300=35m 59s
+[TEACHER][204/300] loss=2.9481 train_acc=30.96% test_acc=27.18% best=28.67% lr=0.02365221 time=6.7s est_300=35m 58s
+[TEACHER][205/300] loss=2.9460 train_acc=30.83% test_acc=29.94% best=29.94% lr=0.02320866 time=7.0s est_300=35m 58s saved_best
+[TEACHER][206/300] loss=2.9525 train_acc=32.44% test_acc=28.18% best=29.94% lr=0.02276805 time=6.7s est_300=35m 57s
+[TEACHER][207/300] loss=2.9294 train_acc=32.17% test_acc=30.15% best=30.15% lr=0.02233042 time=7.4s est_300=35m 58s saved_best
+[TEACHER][208/300] loss=2.9178 train_acc=32.68% test_acc=30.53% best=30.53% lr=0.02189583 time=6.8s est_300=35m 57s saved_best
+[TEACHER][209/300] loss=2.8906 train_acc=32.76% test_acc=29.69% best=30.53% lr=0.02146432 time=6.6s est_300=35m 56s
+[TEACHER][210/300] loss=2.8717 train_acc=33.24% test_acc=29.53% best=30.53% lr=0.02103594 time=6.3s est_300=35m 55s
+[TEACHER][211/300] loss=2.8550 train_acc=34.36% test_acc=29.05% best=30.53% lr=0.02061074 time=7.6s est_300=35m 55s
+[TEACHER][212/300] loss=2.8719 train_acc=32.47% test_acc=30.15% best=30.53% lr=0.02018876 time=6.0s est_300=35m 54s
+[TEACHER][213/300] loss=2.8594 train_acc=34.05% test_acc=29.44% best=30.53% lr=0.01977004 time=6.8s est_300=35m 53s
+[TEACHER][214/300] loss=2.8630 train_acc=33.03% test_acc=30.08% best=30.53% lr=0.01935465 time=6.9s est_300=35m 53s
+[TEACHER][215/300] loss=2.8451 train_acc=33.85% test_acc=29.77% best=30.53% lr=0.01894261 time=7.1s est_300=35m 53s
+[TEACHER][216/300] loss=2.8539 train_acc=34.68% test_acc=29.50% best=30.53% lr=0.01853398 time=6.0s est_300=35m 51s
+[TEACHER][217/300] loss=2.8210 train_acc=33.83% test_acc=30.50% best=30.53% lr=0.01812880 time=5.9s est_300=35m 50s
+[TEACHER][218/300] loss=2.7813 train_acc=34.38% test_acc=29.44% best=30.53% lr=0.01772712 time=6.0s est_300=35m 48s
+[TEACHER][219/300] loss=2.7932 train_acc=33.80% test_acc=30.15% best=30.53% lr=0.01732897 time=7.5s est_300=35m 48s
+[TEACHER][220/300] loss=2.8127 train_acc=34.58% test_acc=30.08% best=30.53% lr=0.01693441 time=6.0s est_300=35m 47s
+[TEACHER][221/300] loss=2.7981 train_acc=34.24% test_acc=30.72% best=30.72% lr=0.01654347 time=6.0s est_300=35m 45s saved_best
+[TEACHER][222/300] loss=2.7938 train_acc=34.22% test_acc=30.26% best=30.72% lr=0.01615620 time=5.9s est_300=35m 43s
+[TEACHER][223/300] loss=2.7735 train_acc=35.28% test_acc=31.84% best=31.84% lr=0.01577264 time=6.0s est_300=35m 42s saved_best
+[TEACHER][224/300] loss=2.7778 train_acc=35.31% test_acc=31.96% best=31.96% lr=0.01539284 time=5.9s est_300=35m 40s saved_best
+[TEACHER][225/300] loss=2.7692 train_acc=35.70% test_acc=31.22% best=31.96% lr=0.01501683 time=7.6s est_300=35m 41s
+[TEACHER][226/300] loss=2.7497 train_acc=36.07% test_acc=29.96% best=31.96% lr=0.01464466 time=6.8s est_300=35m 40s
+[TEACHER][227/300] loss=2.7404 train_acc=37.01% test_acc=32.17% best=32.17% lr=0.01427637 time=7.4s est_300=35m 41s saved_best
+[TEACHER][228/300] loss=2.7468 train_acc=36.18% test_acc=32.12% best=32.17% lr=0.01391199 time=7.7s est_300=35m 41s
+[TEACHER][229/300] loss=2.7210 train_acc=36.55% test_acc=31.72% best=32.17% lr=0.01355157 time=7.0s est_300=35m 41s
+[TEACHER][230/300] loss=2.7259 train_acc=36.02% test_acc=32.26% best=32.26% lr=0.01319515 time=7.8s est_300=35m 42s saved_best
+[TEACHER][231/300] loss=2.7320 train_acc=36.75% test_acc=31.39% best=32.26% lr=0.01284276 time=8.0s est_300=35m 43s
+[TEACHER][232/300] loss=2.7085 train_acc=36.24% test_acc=31.79% best=32.26% lr=0.01249445 time=8.0s est_300=35m 44s
+[TEACHER][233/300] loss=2.6580 train_acc=38.01% test_acc=33.50% best=33.50% lr=0.01215025 time=8.1s est_300=35m 45s saved_best
+[TEACHER][234/300] loss=2.6920 train_acc=36.96% test_acc=33.62% best=33.62% lr=0.01181020 time=7.4s est_300=35m 46s saved_best
+[TEACHER][235/300] loss=2.6491 train_acc=38.16% test_acc=32.69% best=33.62% lr=0.01147434 time=7.9s est_300=35m 47s
+[TEACHER][236/300] loss=2.6572 train_acc=37.47% test_acc=34.05% best=34.05% lr=0.01114270 time=8.1s est_300=35m 48s saved_best
+[TEACHER][237/300] loss=2.6603 train_acc=37.19% test_acc=31.71% best=34.05% lr=0.01081533 time=7.0s est_300=35m 48s
+[TEACHER][238/300] loss=2.6285 train_acc=38.11% test_acc=33.47% best=34.05% lr=0.01049225 time=7.6s est_300=35m 48s
+[TEACHER][239/300] loss=2.6081 train_acc=39.42% test_acc=33.24% best=34.05% lr=0.01017350 time=6.3s est_300=35m 47s
+[TEACHER][240/300] loss=2.6066 train_acc=39.10% test_acc=33.31% best=34.05% lr=0.00985913 time=6.7s est_300=35m 47s
+[TEACHER][241/300] loss=2.5978 train_acc=39.44% test_acc=33.55% best=34.05% lr=0.00954915 time=7.1s est_300=35m 47s
+[TEACHER][242/300] loss=2.5946 train_acc=39.01% test_acc=32.91% best=34.05% lr=0.00924361 time=7.7s est_300=35m 47s
+[TEACHER][243/300] loss=2.6037 train_acc=39.39% test_acc=33.78% best=34.05% lr=0.00894254 time=7.5s est_300=35m 48s
+[TEACHER][244/300] loss=2.5938 train_acc=39.23% test_acc=33.88% best=34.05% lr=0.00864597 time=7.1s est_300=35m 48s
+[TEACHER][245/300] loss=2.5633 train_acc=39.62% test_acc=33.79% best=34.05% lr=0.00835394 time=7.1s est_300=35m 47s
+[TEACHER][246/300] loss=2.5317 train_acc=41.19% test_acc=33.29% best=34.05% lr=0.00806647 time=7.7s est_300=35m 48s
+[TEACHER][247/300] loss=2.5515 train_acc=39.89% test_acc=33.57% best=34.05% lr=0.00778360 time=7.6s est_300=35m 49s
+[TEACHER][248/300] loss=2.5517 train_acc=40.13% test_acc=33.91% best=34.05% lr=0.00750537 time=7.1s est_300=35m 49s
+[TEACHER][249/300] loss=2.5461 train_acc=40.37% test_acc=33.71% best=34.05% lr=0.00723179 time=7.1s est_300=35m 48s
+[TEACHER][250/300] loss=2.5396 train_acc=40.66% test_acc=33.83% best=34.05% lr=0.00696290 time=7.7s est_300=35m 49s
+[TEACHER][251/300] loss=2.5355 train_acc=40.18% test_acc=34.57% best=34.57% lr=0.00669873 time=7.6s est_300=35m 50s saved_best
+[TEACHER][252/300] loss=2.5205 train_acc=41.24% test_acc=34.64% best=34.64% lr=0.00643931 time=7.6s est_300=35m 50s saved_best
+[TEACHER][253/300] loss=2.4732 train_acc=42.19% test_acc=34.78% best=34.78% lr=0.00618467 time=7.1s est_300=35m 50s saved_best
+[TEACHER][254/300] loss=2.4983 train_acc=41.36% test_acc=34.50% best=34.78% lr=0.00593483 time=6.6s est_300=35m 49s
+[TEACHER][255/300] loss=2.4892 train_acc=41.95% test_acc=35.30% best=35.30% lr=0.00568982 time=6.1s est_300=35m 48s saved_best
+[TEACHER][256/300] loss=2.5177 train_acc=41.20% test_acc=35.09% best=35.30% lr=0.00544967 time=6.7s est_300=35m 48s
+[TEACHER][257/300] loss=2.4957 train_acc=41.37% test_acc=33.95% best=35.30% lr=0.00521441 time=7.7s est_300=35m 48s
+[TEACHER][258/300] loss=2.4704 train_acc=41.49% test_acc=34.62% best=35.30% lr=0.00498406 time=7.9s est_300=35m 49s
+[TEACHER][259/300] loss=2.4812 train_acc=42.03% test_acc=34.17% best=35.30% lr=0.00475865 time=7.9s est_300=35m 50s
+[TEACHER][260/300] loss=2.4661 train_acc=41.41% test_acc=34.90% best=35.30% lr=0.00453819 time=7.7s est_300=35m 50s
+[TEACHER][261/300] loss=2.4655 train_acc=41.12% test_acc=34.90% best=35.30% lr=0.00432273 time=8.0s est_300=35m 51s
+[TEACHER][262/300] loss=2.4377 train_acc=42.32% test_acc=34.83% best=35.30% lr=0.00411227 time=8.0s est_300=35m 52s
+[TEACHER][263/300] loss=2.3991 train_acc=43.31% test_acc=35.36% best=35.36% lr=0.00390684 time=7.1s est_300=35m 52s saved_best
+[TEACHER][264/300] loss=2.4362 train_acc=42.20% test_acc=34.19% best=35.36% lr=0.00370647 time=7.0s est_300=35m 52s
+[TEACHER][265/300] loss=2.4180 train_acc=43.19% test_acc=35.12% best=35.36% lr=0.00351118 time=6.9s est_300=35m 52s
+[TEACHER][266/300] loss=2.3648 train_acc=44.41% test_acc=35.17% best=35.36% lr=0.00332098 time=8.0s est_300=35m 53s
+[TEACHER][267/300] loss=2.3527 train_acc=43.94% test_acc=35.00% best=35.36% lr=0.00313590 time=7.3s est_300=35m 53s
+[TEACHER][268/300] loss=2.3906 train_acc=43.72% test_acc=35.52% best=35.52% lr=0.00295596 time=7.0s est_300=35m 53s saved_best
+[TEACHER][269/300] loss=2.3708 train_acc=44.19% test_acc=35.48% best=35.52% lr=0.00278118 time=7.7s est_300=35m 53s
+[TEACHER][270/300] loss=2.3974 train_acc=43.61% test_acc=35.45% best=35.52% lr=0.00261158 time=7.1s est_300=35m 53s
+[TEACHER][271/300] loss=2.4032 train_acc=43.68% test_acc=35.45% best=35.52% lr=0.00244717 time=7.0s est_300=35m 53s
+[TEACHER][272/300] loss=2.3811 train_acc=43.82% test_acc=36.23% best=36.23% lr=0.00228798 time=7.8s est_300=35m 54s saved_best
+[TEACHER][273/300] loss=2.4057 train_acc=43.44% test_acc=36.07% best=36.23% lr=0.00213403 time=7.3s est_300=35m 54s
+[TEACHER][274/300] loss=2.3845 train_acc=44.51% test_acc=36.12% best=36.23% lr=0.00198532 time=8.1s est_300=35m 55s
+[TEACHER][275/300] loss=2.3539 train_acc=44.60% test_acc=36.40% best=36.40% lr=0.00184187 time=7.9s est_300=35m 56s saved_best
+[TEACHER][276/300] loss=2.3296 train_acc=44.90% test_acc=36.07% best=36.40% lr=0.00170371 time=7.1s est_300=35m 55s
+[TEACHER][277/300] loss=2.3479 train_acc=45.24% test_acc=35.71% best=36.40% lr=0.00157084 time=6.8s est_300=35m 55s
+[TEACHER][278/300] loss=2.3102 train_acc=45.14% test_acc=36.16% best=36.40% lr=0.00144329 time=7.1s est_300=35m 55s
+[TEACHER][279/300] loss=2.3936 train_acc=43.77% test_acc=36.11% best=36.40% lr=0.00132105 time=8.0s est_300=35m 56s
+[TEACHER][280/300] loss=2.3208 train_acc=44.92% test_acc=36.30% best=36.40% lr=0.00120416 time=7.6s est_300=35m 56s
+[TEACHER][281/300] loss=2.3793 train_acc=44.96% test_acc=35.81% best=36.40% lr=0.00109262 time=7.2s est_300=35m 56s
+[TEACHER][282/300] loss=2.3372 train_acc=44.45% test_acc=35.93% best=36.40% lr=0.00098644 time=6.8s est_300=35m 56s
+[TEACHER][283/300] loss=2.2797 train_acc=46.47% test_acc=35.78% best=36.40% lr=0.00088564 time=8.0s est_300=35m 57s
+[TEACHER][284/300] loss=2.3210 train_acc=44.85% test_acc=36.14% best=36.40% lr=0.00079022 time=7.5s est_300=35m 57s
+[TEACHER][285/300] loss=2.3122 train_acc=45.35% test_acc=35.66% best=36.40% lr=0.00070020 time=6.0s est_300=35m 56s
+[TEACHER][286/300] loss=2.3133 train_acc=45.11% test_acc=35.92% best=36.40% lr=0.00061558 time=6.7s est_300=35m 55s
+[TEACHER][287/300] loss=2.2736 train_acc=46.60% test_acc=35.80% best=36.40% lr=0.00053638 time=6.1s est_300=35m 54s
+[TEACHER][288/300] loss=2.3008 train_acc=45.75% test_acc=36.05% best=36.40% lr=0.00046261 time=6.1s est_300=35m 53s
+[TEACHER][289/300] loss=2.2970 train_acc=46.37% test_acc=35.95% best=36.40% lr=0.00039426 time=7.8s est_300=35m 54s
+[TEACHER][290/300] loss=2.2722 train_acc=45.62% test_acc=36.02% best=36.40% lr=0.00033136 time=7.6s est_300=35m 54s
+[TEACHER][291/300] loss=2.2995 train_acc=46.11% test_acc=36.04% best=36.40% lr=0.00027391 time=7.4s est_300=35m 54s
+[TEACHER][292/300] loss=2.2669 train_acc=46.82% test_acc=36.18% best=36.40% lr=0.00022190 time=6.4s est_300=35m 54s
+[TEACHER][293/300] loss=2.3415 train_acc=44.99% test_acc=36.30% best=36.40% lr=0.00017536 time=6.0s est_300=35m 52s
+[TEACHER][294/300] loss=2.2944 train_acc=45.75% test_acc=36.11% best=36.40% lr=0.00013428 time=6.1s est_300=35m 51s
+[TEACHER][295/300] loss=2.3050 train_acc=45.13% test_acc=36.12% best=36.40% lr=0.00009866 time=6.7s est_300=35m 51s
+[TEACHER][296/300] loss=2.2783 train_acc=46.82% test_acc=35.66% best=36.40% lr=0.00006852 time=6.3s est_300=35m 50s
+[TEACHER][297/300] loss=2.3193 train_acc=45.13% test_acc=36.24% best=36.40% lr=0.00004386 time=6.1s est_300=35m 49s
+[TEACHER][298/300] loss=2.3383 train_acc=45.11% test_acc=36.07% best=36.40% lr=0.00002467 time=7.5s est_300=35m 49s
+[TEACHER][299/300] loss=2.2770 train_acc=46.60% test_acc=36.12% best=36.40% lr=0.00001097 time=7.2s est_300=35m 49s
+[TEACHER][300/300] loss=2.3265 train_acc=45.94% test_acc=36.12% best=36.40% lr=0.00000274 time=7.6s est_300=35m 50s
+[FINAL_RESULT] teacher_best_top1=36.40% checkpoint=/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/teacher_resnet56_cub200_32_best.pt
+[FINAL_RESULT] manifest=/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/manifest.json
+[DONE] CUB-200 teacher training completed successfully.
+[TEACHER_IDENTITY_CHECK_TABLE1_CUB200] status=PASS model=ResNet56 pretrained=False input=32 sha256=06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5
+[TASK_DONE] 1/3 Teacher elapsed=37m 18s
+------------------------------------------------------------------------------------------------
+[TASK_START] 2/3 LG
+[COMMAND][LG] /usr/bin/python /app/scratch/input/bapedragon_543/methods/table1_cub200/train.py --full-run --student deit_ti --method lg --batch-size 128 --data-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200 --teacher-root /app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1 --output-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/students --run-name table1_cub200_deit_ti_lg_b128_full_300ep_seed1 --num-workers 4
+[BOOT] Python process started: /usr/bin/python
+/usr/local/lib/python3.10/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+========================================================================================
+CUB-200 TABLE-1 EXTENSION
+========================================================================================
+[TASK] student=DeiT-Ti method=LG batch=128 mode=full_300ep
+[MODE] actual_epochs=300 planned_epochs=300
+[PROTOCOL_LOCK] dataset=CUB-200-2011 split=5994/5794 teacher=ResNet56-scratch-32 student=scratch-224 epochs=300 AdamW=5e-4->5e-6 wd=0.05 warmup=20 seed=1 fp32=True
+[SOURCE] official_lg_repo=https://github.com/lkhl/tiny-transformers commit=d2165f74049c906b0afc9f957491960fb3c0cc8b
+[MODEL] params=5,563,016 feature_dims=(192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192) selected_lg=(0, 6, 11)
+[FEATURE_CHECK] student=((2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14)) teacher=((2, 16, 32, 32), (2, 32, 16, 16), (2, 64, 8, 8)) guidance_probe=11.080558
+[OPTIMIZER] contract=official_lg_no_decay_exclusions
+[LG:DeiT-Ti][001/300] loss=95.3447 ce=5.2983 guidance=36.0186 beta=2.50 train_acc=0.76% test_acc=1.04% best=1.04% lr=5e-07 time=13.4s est_300=1h 07m 01s
+[LG:DeiT-Ti][002/300] loss=86.3231 ce=5.2991 guidance=32.4096 beta=2.50 train_acc=0.48% test_acc=0.59% best=1.04% lr=2.5475e-05 time=13.3s est_300=1h 06m 41s
+[LG:DeiT-Ti][003/300] loss=70.6691 ce=5.3017 guidance=26.1470 beta=2.50 train_acc=0.25% test_acc=0.50% best=1.04% lr=5.045e-05 time=13.2s est_300=1h 06m 24s
+[LG:DeiT-Ti][004/300] loss=59.8342 ce=5.3027 guidance=21.8126 beta=2.50 train_acc=0.25% test_acc=0.54% best=1.04% lr=7.5425e-05 time=13.6s est_300=1h 06m 47s
+[LG:DeiT-Ti][005/300] loss=57.4023 ce=5.3032 guidance=20.8396 beta=2.50 train_acc=0.39% test_acc=0.78% best=1.04% lr=0.0001004 time=13.1s est_300=1h 06m 31s
+[LG:DeiT-Ti][006/300] loss=56.5204 ce=5.3000 guidance=20.4881 beta=2.50 train_acc=0.39% test_acc=0.83% best=1.04% lr=0.000125375 time=12.8s est_300=1h 06m 06s
+[LG:DeiT-Ti][007/300] loss=55.3078 ce=5.2868 guidance=20.0084 beta=2.50 train_acc=0.92% test_acc=1.24% best=1.24% lr=0.00015035 time=13.1s est_300=1h 06m 01s
+[LG:DeiT-Ti][008/300] loss=54.0327 ce=5.2620 guidance=19.5083 beta=2.50 train_acc=1.02% test_acc=1.40% best=1.40% lr=0.000175325 time=13.2s est_300=1h 05m 59s
+[LG:DeiT-Ti][009/300] loss=53.5203 ce=5.2041 guidance=19.3265 beta=2.50 train_acc=1.14% test_acc=1.67% best=1.67% lr=0.0002003 time=12.9s est_300=1h 05m 50s
+[LG:DeiT-Ti][010/300] loss=51.7067 ce=5.1317 guidance=18.6300 beta=2.50 train_acc=1.53% test_acc=2.28% best=2.28% lr=0.000225275 time=12.9s est_300=1h 05m 44s
+[LG:DeiT-Ti][011/300] loss=50.2358 ce=5.0400 guidance=18.0783 beta=2.50 train_acc=2.38% test_acc=4.16% best=4.16% lr=0.00025025 time=12.4s est_300=1h 05m 22s
+[LG:DeiT-Ti][012/300] loss=49.4415 ce=4.9442 guidance=17.7989 beta=2.50 train_acc=2.77% test_acc=4.50% best=4.50% lr=0.000275225 time=11.7s est_300=1h 04m 48s
+[LG:DeiT-Ti][013/300] loss=48.2476 ce=4.8708 guidance=17.3507 beta=2.50 train_acc=3.29% test_acc=4.64% best=4.64% lr=0.0003002 time=13.1s est_300=1h 04m 50s
+[LG:DeiT-Ti][014/300] loss=47.5757 ce=4.7578 guidance=17.1272 beta=2.50 train_acc=4.40% test_acc=5.68% best=5.68% lr=0.000325175 time=12.9s est_300=1h 04m 49s
+[LG:DeiT-Ti][015/300] loss=46.5670 ce=4.6660 guidance=16.7604 beta=2.50 train_acc=4.96% test_acc=7.42% best=7.42% lr=0.00035015 time=11.9s est_300=1h 04m 29s
+[LG:DeiT-Ti][016/300] loss=45.4118 ce=4.5503 guidance=16.3446 beta=2.50 train_acc=6.39% test_acc=9.41% best=9.41% lr=0.000375125 time=11.8s est_300=1h 04m 08s
+[LG:DeiT-Ti][017/300] loss=44.8501 ce=4.4684 guidance=16.1527 beta=2.50 train_acc=7.05% test_acc=10.29% best=10.29% lr=0.0004001 time=12.6s est_300=1h 04m 05s
+[LG:DeiT-Ti][018/300] loss=43.7064 ce=4.3971 guidance=15.7237 beta=2.50 train_acc=8.20% test_acc=11.10% best=11.10% lr=0.000425075 time=12.5s est_300=1h 03m 59s
+[LG:DeiT-Ti][019/300] loss=43.3568 ce=4.3224 guidance=15.6137 beta=2.50 train_acc=9.05% test_acc=12.70% best=12.70% lr=0.00045005 time=12.4s est_300=1h 03m 52s
+[LG:DeiT-Ti][020/300] loss=42.5285 ce=4.2599 guidance=15.3074 beta=2.50 train_acc=9.73% test_acc=13.50% best=13.50% lr=0.000475025 time=11.8s est_300=1h 03m 37s
+[LG:DeiT-Ti][021/300] loss=42.4188 ce=4.1954 guidance=15.2894 beta=2.50 train_acc=9.77% test_acc=12.84% best=13.50% lr=0.00049459153 time=11.6s est_300=1h 03m 21s
+[LG:DeiT-Ti][022/300] loss=41.4707 ce=4.1033 guidance=14.9470 beta=2.50 train_acc=11.12% test_acc=15.86% best=15.86% lr=0.0004940394 time=13.0s est_300=1h 03m 26s
+[LG:DeiT-Ti][023/300] loss=40.9745 ce=4.0493 guidance=14.7701 beta=2.50 train_acc=12.08% test_acc=16.21% best=16.21% lr=0.00049346078 time=13.0s est_300=1h 03m 30s
+[LG:DeiT-Ti][024/300] loss=40.2735 ce=3.9785 guidance=14.5180 beta=2.50 train_acc=13.15% test_acc=17.36% best=17.36% lr=0.00049285573 time=12.8s est_300=1h 03m 31s
+[LG:DeiT-Ti][025/300] loss=39.5202 ce=3.9214 guidance=14.2395 beta=2.50 train_acc=14.05% test_acc=19.00% best=19.00% lr=0.00049222433 time=13.6s est_300=1h 03m 42s
+[LG:DeiT-Ti][026/300] loss=39.4623 ce=3.8800 guidance=14.2329 beta=2.50 train_acc=14.79% test_acc=19.30% best=19.30% lr=0.00049156664 time=12.4s est_300=1h 03m 38s
+[LG:DeiT-Ti][027/300] loss=38.7778 ce=3.8312 guidance=13.9786 beta=2.50 train_acc=15.68% test_acc=21.04% best=21.04% lr=0.00049088274 time=13.4s est_300=1h 03m 46s
+[LG:DeiT-Ti][028/300] loss=38.2281 ce=3.7695 guidance=13.7834 beta=2.50 train_acc=17.12% test_acc=20.54% best=21.04% lr=0.00049017269 time=10.8s est_300=1h 03m 25s
+[LG:DeiT-Ti][029/300] loss=37.8695 ce=3.7275 guidance=13.6568 beta=2.50 train_acc=17.43% test_acc=23.35% best=23.35% lr=0.00048943658 time=11.5s est_300=1h 03m 14s
+[LG:DeiT-Ti][030/300] loss=37.4643 ce=3.6807 guidance=13.5134 beta=2.50 train_acc=18.34% test_acc=23.99% best=23.99% lr=0.00048867448 time=12.3s est_300=1h 03m 10s
+[LG:DeiT-Ti][031/300] loss=36.8996 ce=3.6248 guidance=13.3099 beta=2.50 train_acc=19.12% test_acc=25.25% best=25.25% lr=0.00048788649 time=11.8s est_300=1h 03m 02s
+[LG:DeiT-Ti][032/300] loss=36.8693 ce=3.6285 guidance=13.2963 beta=2.50 train_acc=19.00% test_acc=24.44% best=25.25% lr=0.00048707268 time=10.9s est_300=1h 02m 46s
+[LG:DeiT-Ti][033/300] loss=36.4770 ce=3.5631 guidance=13.1655 beta=2.50 train_acc=20.40% test_acc=24.77% best=25.25% lr=0.00048623315 time=11.9s est_300=1h 02m 40s
+[LG:DeiT-Ti][034/300] loss=36.1709 ce=3.5249 guidance=13.0584 beta=2.50 train_acc=20.21% test_acc=27.34% best=27.34% lr=0.00048536799 time=13.2s est_300=1h 02m 46s
+[LG:DeiT-Ti][035/300] loss=36.0145 ce=3.4760 guidance=13.0154 beta=2.50 train_acc=20.75% test_acc=26.75% best=27.34% lr=0.00048447729 time=13.5s est_300=1h 02m 54s
+[LG:DeiT-Ti][036/300] loss=35.4884 ce=3.4471 guidance=12.8165 beta=2.50 train_acc=21.88% test_acc=27.74% best=27.74% lr=0.00048356116 time=12.3s est_300=1h 02m 52s
+[LG:DeiT-Ti][037/300] loss=35.5397 ce=3.4086 guidance=12.8524 beta=2.50 train_acc=22.89% test_acc=26.15% best=27.74% lr=0.00048261968 time=11.7s est_300=1h 02m 44s
+[LG:DeiT-Ti][038/300] loss=35.1902 ce=3.3728 guidance=12.7270 beta=2.50 train_acc=23.49% test_acc=29.17% best=29.17% lr=0.00048165297 time=12.7s est_300=1h 02m 46s
+[LG:DeiT-Ti][039/300] loss=34.8832 ce=3.3403 guidance=12.6172 beta=2.50 train_acc=24.05% test_acc=28.82% best=29.17% lr=0.00048066113 time=13.2s est_300=1h 02m 50s
+[LG:DeiT-Ti][040/300] loss=34.8282 ce=3.3477 guidance=12.5922 beta=2.50 train_acc=23.64% test_acc=30.10% best=30.10% lr=0.00047964427 time=12.9s est_300=1h 02m 53s
+[LG:DeiT-Ti][041/300] loss=34.3512 ce=3.2861 guidance=12.4261 beta=2.50 train_acc=24.98% test_acc=29.48% best=30.10% lr=0.0004786025 time=13.5s est_300=1h 03m 00s
+[LG:DeiT-Ti][042/300] loss=34.0742 ce=3.2624 guidance=12.3247 beta=2.50 train_acc=25.54% test_acc=30.00% best=30.10% lr=0.00047753594 time=13.0s est_300=1h 03m 03s
+[LG:DeiT-Ti][043/300] loss=33.9853 ce=3.2334 guidance=12.3008 beta=2.50 train_acc=25.24% test_acc=31.55% best=31.55% lr=0.0004764447 time=12.2s est_300=1h 03m 00s
+[LG:DeiT-Ti][044/300] loss=33.5016 ce=3.2440 guidance=12.1030 beta=2.50 train_acc=25.83% test_acc=31.33% best=31.55% lr=0.0004753289 time=12.9s est_300=1h 03m 03s
+[LG:DeiT-Ti][045/300] loss=33.3299 ce=3.1712 guidance=12.0635 beta=2.50 train_acc=26.83% test_acc=32.00% best=32.00% lr=0.00047418866 time=13.1s est_300=1h 03m 06s
+[LG:DeiT-Ti][046/300] loss=32.7456 ce=3.1693 guidance=11.8305 beta=2.50 train_acc=27.29% test_acc=32.24% best=32.24% lr=0.00047302411 time=12.4s est_300=1h 03m 05s
+[LG:DeiT-Ti][047/300] loss=32.2339 ce=3.1113 guidance=11.6490 beta=2.50 train_acc=27.45% test_acc=32.57% best=32.57% lr=0.00047183539 time=11.3s est_300=1h 02m 57s
+[LG:DeiT-Ti][048/300] loss=31.9492 ce=3.1456 guidance=11.5214 beta=2.50 train_acc=28.09% test_acc=31.62% best=32.57% lr=0.0004706226 time=12.4s est_300=1h 02m 55s
+[LG:DeiT-Ti][049/300] loss=31.6409 ce=3.0441 guidance=11.4387 beta=2.50 train_acc=29.69% test_acc=33.67% best=33.67% lr=0.0004693859 time=11.8s est_300=1h 02m 51s
+[LG:DeiT-Ti][050/300] loss=31.5335 ce=3.0399 guidance=11.3975 beta=2.50 train_acc=29.59% test_acc=34.35% best=34.35% lr=0.00046812542 time=13.2s est_300=1h 02m 54s
+[LG:DeiT-Ti][051/300] loss=30.9604 ce=3.0277 guidance=11.1731 beta=2.50 train_acc=29.87% test_acc=34.85% best=34.85% lr=0.00046684129 time=12.9s est_300=1h 02m 56s
+[LG:DeiT-Ti][052/300] loss=31.0360 ce=3.0226 guidance=11.2054 beta=2.50 train_acc=30.03% test_acc=35.12% best=35.12% lr=0.00046553365 time=13.0s est_300=1h 02m 59s
+[LG:DeiT-Ti][053/300] loss=30.7038 ce=2.9879 guidance=11.0864 beta=2.50 train_acc=30.98% test_acc=34.90% best=35.12% lr=0.00046420265 time=13.5s est_300=1h 03m 04s
+[LG:DeiT-Ti][054/300] loss=30.5933 ce=2.9146 guidance=11.0715 beta=2.50 train_acc=32.54% test_acc=35.05% best=35.12% lr=0.00046284844 time=12.6s est_300=1h 03m 04s
+[LG:DeiT-Ti][055/300] loss=30.2828 ce=2.9253 guidance=10.9430 beta=2.50 train_acc=31.05% test_acc=35.23% best=35.23% lr=0.00046147116 time=12.7s est_300=1h 03m 04s
+[LG:DeiT-Ti][056/300] loss=30.1546 ce=2.9157 guidance=10.8956 beta=2.50 train_acc=31.93% test_acc=36.38% best=36.38% lr=0.00046007097 time=12.7s est_300=1h 03m 05s
+[LG:DeiT-Ti][057/300] loss=30.0730 ce=2.8808 guidance=10.8769 beta=2.50 train_acc=33.27% test_acc=37.38% best=37.38% lr=0.00045864801 time=11.7s est_300=1h 03m 00s
+[LG:DeiT-Ti][058/300] loss=30.1223 ce=2.8710 guidance=10.9005 beta=2.50 train_acc=32.91% test_acc=36.85% best=37.38% lr=0.00045720244 time=13.5s est_300=1h 03m 04s
+[LG:DeiT-Ti][059/300] loss=29.7716 ce=2.7846 guidance=10.7948 beta=2.50 train_acc=33.98% test_acc=36.52% best=37.38% lr=0.00045573443 time=12.8s est_300=1h 03m 05s
+[LG:DeiT-Ti][060/300] loss=29.6292 ce=2.8245 guidance=10.7219 beta=2.50 train_acc=34.63% test_acc=37.35% best=37.38% lr=0.00045424413 time=11.5s est_300=1h 03m 00s
+[LG:DeiT-Ti][061/300] loss=29.4464 ce=2.7787 guidance=10.6671 beta=2.50 train_acc=34.97% test_acc=37.14% best=37.38% lr=0.00045273171 time=12.5s est_300=1h 03m 00s
+[LG:DeiT-Ti][062/300] loss=29.2139 ce=2.7760 guidance=10.5752 beta=2.50 train_acc=35.24% test_acc=38.87% best=38.87% lr=0.00045119733 time=14.1s est_300=1h 03m 07s
+[LG:DeiT-Ti][063/300] loss=29.2554 ce=2.7635 guidance=10.5968 beta=2.50 train_acc=35.12% test_acc=37.09% best=38.87% lr=0.00044964115 time=13.9s est_300=1h 03m 13s
+[LG:DeiT-Ti][064/300] loss=29.2949 ce=2.7841 guidance=10.6043 beta=2.50 train_acc=35.19% test_acc=37.75% best=38.87% lr=0.00044806337 time=13.8s est_300=1h 03m 18s
+[LG:DeiT-Ti][065/300] loss=29.0524 ce=2.7373 guidance=10.5260 beta=2.50 train_acc=36.50% test_acc=38.56% best=38.87% lr=0.00044646413 time=13.2s est_300=1h 03m 21s
+[LG:DeiT-Ti][066/300] loss=28.8558 ce=2.6741 guidance=10.4727 beta=2.50 train_acc=37.16% test_acc=39.18% best=39.18% lr=0.00044484363 time=13.5s est_300=1h 03m 24s
+[LG:DeiT-Ti][067/300] loss=28.8467 ce=2.6213 guidance=10.4901 beta=2.50 train_acc=37.23% test_acc=38.09% best=39.18% lr=0.00044320203 time=12.0s est_300=1h 03m 22s
+[LG:DeiT-Ti][068/300] loss=28.7166 ce=2.6754 guidance=10.4165 beta=2.50 train_acc=37.72% test_acc=37.85% best=39.18% lr=0.00044153952 time=11.5s est_300=1h 03m 16s
+[LG:DeiT-Ti][069/300] loss=28.7037 ce=2.6842 guidance=10.4078 beta=2.50 train_acc=36.99% test_acc=38.23% best=39.18% lr=0.00043985628 time=10.9s est_300=1h 03m 09s
+[LG:DeiT-Ti][070/300] loss=28.4544 ce=2.6288 guidance=10.3302 beta=2.50 train_acc=37.36% test_acc=40.63% best=40.63% lr=0.00043815249 time=12.4s est_300=1h 03m 07s
+[LG:DeiT-Ti][071/300] loss=28.2800 ce=2.6389 guidance=10.2564 beta=2.50 train_acc=37.75% test_acc=38.94% best=40.63% lr=0.00043642834 time=14.3s est_300=1h 03m 15s
+[LG:DeiT-Ti][072/300] loss=28.2816 ce=2.5787 guidance=10.2811 beta=2.50 train_acc=39.18% test_acc=39.68% best=40.63% lr=0.00043468403 time=13.5s est_300=1h 03m 18s
+[LG:DeiT-Ti][073/300] loss=28.1494 ce=2.5617 guidance=10.2351 beta=2.50 train_acc=38.79% test_acc=37.88% best=40.63% lr=0.00043291974 time=13.1s est_300=1h 03m 20s
+[LG:DeiT-Ti][074/300] loss=28.2142 ce=2.5152 guidance=10.2796 beta=2.50 train_acc=40.00% test_acc=39.66% best=40.63% lr=0.00043113566 time=12.3s est_300=1h 03m 19s
+[LG:DeiT-Ti][075/300] loss=28.1851 ce=2.5374 guidance=10.2591 beta=2.50 train_acc=39.84% test_acc=40.02% best=40.63% lr=0.00042933199 time=11.7s est_300=1h 03m 15s
+[LG:DeiT-Ti][076/300] loss=27.9909 ce=2.4766 guidance=10.2057 beta=2.50 train_acc=40.32% test_acc=40.65% best=40.65% lr=0.00042750893 time=11.6s est_300=1h 03m 11s
+[LG:DeiT-Ti][077/300] loss=27.9060 ce=2.5258 guidance=10.1521 beta=2.50 train_acc=40.17% test_acc=40.16% best=40.65% lr=0.00042566668 time=11.6s est_300=1h 03m 06s
+[LG:DeiT-Ti][078/300] loss=27.8300 ce=2.5219 guidance=10.1232 beta=2.50 train_acc=39.88% test_acc=39.04% best=40.65% lr=0.00042380544 time=12.3s est_300=1h 03m 05s
+[LG:DeiT-Ti][079/300] loss=27.7194 ce=2.5544 guidance=10.0660 beta=2.50 train_acc=39.44% test_acc=39.70% best=40.65% lr=0.00042192541 time=12.4s est_300=1h 03m 05s
+[LG:DeiT-Ti][080/300] loss=27.7384 ce=2.4812 guidance=10.1029 beta=2.50 train_acc=40.85% test_acc=40.61% best=40.65% lr=0.0004200268 time=12.9s est_300=1h 03m 06s
+[LG:DeiT-Ti][081/300] loss=27.6350 ce=2.4480 guidance=10.0748 beta=2.50 train_acc=41.49% test_acc=41.15% best=41.15% lr=0.00041810983 time=12.1s est_300=1h 03m 04s
+[LG:DeiT-Ti][082/300] loss=27.6065 ce=2.4418 guidance=10.0659 beta=2.50 train_acc=42.48% test_acc=39.89% best=41.15% lr=0.00041617469 time=11.5s est_300=1h 03m 00s
+[LG:DeiT-Ti][083/300] loss=27.3427 ce=2.4331 guidance=9.9638 beta=2.50 train_acc=42.58% test_acc=40.47% best=41.15% lr=0.0004142216 time=12.0s est_300=1h 02m 57s
+[LG:DeiT-Ti][084/300] loss=27.1915 ce=2.3961 guidance=9.9182 beta=2.50 train_acc=43.29% test_acc=40.75% best=41.15% lr=0.00041225078 time=12.8s est_300=1h 02m 58s
+[LG:DeiT-Ti][085/300] loss=27.2551 ce=2.4381 guidance=9.9268 beta=2.50 train_acc=41.58% test_acc=39.82% best=41.15% lr=0.00041026244 time=13.1s est_300=1h 03m 00s
+[LG:DeiT-Ti][086/300] loss=27.2792 ce=2.3518 guidance=9.9710 beta=2.50 train_acc=44.21% test_acc=40.02% best=41.15% lr=0.0004082568 time=12.6s est_300=1h 03m 00s
+[LG:DeiT-Ti][087/300] loss=27.1521 ce=2.3584 guidance=9.9175 beta=2.50 train_acc=43.83% test_acc=40.13% best=41.15% lr=0.00040623408 time=13.4s est_300=1h 03m 03s
+[LG:DeiT-Ti][088/300] loss=27.1833 ce=2.3397 guidance=9.9374 beta=2.50 train_acc=43.90% test_acc=40.33% best=41.15% lr=0.0004041945 time=12.9s est_300=1h 03m 04s
+[LG:DeiT-Ti][089/300] loss=27.1080 ce=2.3282 guidance=9.9119 beta=2.50 train_acc=43.67% test_acc=41.77% best=41.77% lr=0.00040213828 time=12.6s est_300=1h 03m 04s
+[LG:DeiT-Ti][090/300] loss=26.9605 ce=2.3301 guidance=9.8522 beta=2.50 train_acc=44.41% test_acc=41.75% best=41.77% lr=0.00040006566 time=11.7s est_300=1h 03m 01s
+[LG:DeiT-Ti][091/300] loss=26.8656 ce=2.3266 guidance=9.8156 beta=2.50 train_acc=44.79% test_acc=39.83% best=41.77% lr=0.00039797685 time=11.6s est_300=1h 02m 57s
+[LG:DeiT-Ti][092/300] loss=26.7199 ce=2.2872 guidance=9.7731 beta=2.50 train_acc=45.38% test_acc=42.03% best=42.03% lr=0.00039587209 time=12.2s est_300=1h 02m 56s
+[LG:DeiT-Ti][093/300] loss=26.8864 ce=2.2463 guidance=9.8560 beta=2.50 train_acc=46.06% test_acc=42.72% best=42.72% lr=0.00039375161 time=11.0s est_300=1h 02m 51s
+[LG:DeiT-Ti][094/300] loss=26.6816 ce=2.2360 guidance=9.7782 beta=2.50 train_acc=46.62% test_acc=42.46% best=42.72% lr=0.00039161564 time=12.4s est_300=1h 02m 51s
+[LG:DeiT-Ti][095/300] loss=26.6074 ce=2.2634 guidance=9.7376 beta=2.50 train_acc=45.97% test_acc=42.73% best=42.73% lr=0.00038946441 time=12.7s est_300=1h 02m 51s
+[LG:DeiT-Ti][096/300] loss=26.5320 ce=2.2404 guidance=9.7166 beta=2.50 train_acc=46.67% test_acc=41.51% best=42.73% lr=0.00038729816 time=12.1s est_300=1h 02m 50s
+[LG:DeiT-Ti][097/300] loss=26.5582 ce=2.2036 guidance=9.7418 beta=2.50 train_acc=47.79% test_acc=42.04% best=42.73% lr=0.00038511713 time=13.1s est_300=1h 02m 51s
+[LG:DeiT-Ti][098/300] loss=26.6629 ce=2.2010 guidance=9.7848 beta=2.50 train_acc=46.93% test_acc=42.01% best=42.73% lr=0.00038292156 time=13.5s est_300=1h 02m 54s
+[LG:DeiT-Ti][099/300] loss=26.4537 ce=2.1827 guidance=9.7084 beta=2.50 train_acc=48.00% test_acc=43.46% best=43.46% lr=0.00038071168 time=13.1s est_300=1h 02m 55s
+[LG:DeiT-Ti][100/300] loss=26.4847 ce=2.1967 guidance=9.7152 beta=2.50 train_acc=47.66% test_acc=41.53% best=43.46% lr=0.00037848775 time=12.5s est_300=1h 02m 55s
+[LG:DeiT-Ti][101/300] loss=26.3443 ce=2.1651 guidance=9.6717 beta=2.50 train_acc=48.20% test_acc=41.42% best=43.46% lr=0.00037625 time=11.6s est_300=1h 02m 52s
+[LG:DeiT-Ti][102/300] loss=26.0587 ce=2.1690 guidance=9.5559 beta=2.50 train_acc=48.69% test_acc=42.42% best=43.46% lr=0.00037399868 time=12.1s est_300=1h 02m 51s
+[LG:DeiT-Ti][103/300] loss=26.1403 ce=2.1690 guidance=9.5885 beta=2.50 train_acc=49.18% test_acc=41.99% best=43.46% lr=0.00037173403 time=13.5s est_300=1h 02m 53s
+[LG:DeiT-Ti][104/300] loss=26.1292 ce=2.1123 guidance=9.6068 beta=2.50 train_acc=48.83% test_acc=42.99% best=43.46% lr=0.00036945631 time=11.0s est_300=1h 02m 49s
+[LG:DeiT-Ti][105/300] loss=26.1971 ce=2.1300 guidance=9.6269 beta=2.50 train_acc=49.17% test_acc=43.36% best=43.46% lr=0.00036716577 time=12.3s est_300=1h 02m 48s
+[LG:DeiT-Ti][106/300] loss=26.1415 ce=2.1592 guidance=9.5929 beta=2.50 train_acc=48.11% test_acc=42.65% best=43.46% lr=0.00036486265 time=12.0s est_300=1h 02m 46s
+[LG:DeiT-Ti][107/300] loss=25.9343 ce=2.1063 guidance=9.5312 beta=2.50 train_acc=49.63% test_acc=42.29% best=43.46% lr=0.00036254721 time=11.6s est_300=1h 02m 44s
+[LG:DeiT-Ti][108/300] loss=26.0541 ce=2.1051 guidance=9.5796 beta=2.50 train_acc=49.75% test_acc=43.20% best=43.46% lr=0.0003602197 time=11.6s est_300=1h 02m 41s
+[LG:DeiT-Ti][109/300] loss=25.8263 ce=2.1130 guidance=9.4853 beta=2.50 train_acc=49.54% test_acc=42.80% best=43.46% lr=0.00035788037 time=11.5s est_300=1h 02m 38s
+[LG:DeiT-Ti][110/300] loss=25.7949 ce=2.0776 guidance=9.4869 beta=2.50 train_acc=50.63% test_acc=43.13% best=43.46% lr=0.0003555295 time=11.6s est_300=1h 02m 36s
+[LG:DeiT-Ti][111/300] loss=25.9058 ce=2.0933 guidance=9.5250 beta=2.50 train_acc=50.37% test_acc=41.80% best=43.46% lr=0.00035316732 time=11.6s est_300=1h 02m 33s
+[LG:DeiT-Ti][112/300] loss=25.7871 ce=2.0988 guidance=9.4753 beta=2.50 train_acc=49.86% test_acc=41.04% best=43.46% lr=0.0003507941 time=12.2s est_300=1h 02m 32s
+[LG:DeiT-Ti][113/300] loss=25.5263 ce=2.0878 guidance=9.3754 beta=2.50 train_acc=49.93% test_acc=43.29% best=43.46% lr=0.00034841011 time=12.8s est_300=1h 02m 33s
+[LG:DeiT-Ti][114/300] loss=25.7153 ce=2.0659 guidance=9.4598 beta=2.50 train_acc=50.59% test_acc=43.20% best=43.46% lr=0.00034601559 time=13.6s est_300=1h 02m 36s
+[LG:DeiT-Ti][115/300] loss=25.5172 ce=2.0514 guidance=9.3863 beta=2.50 train_acc=51.48% test_acc=43.49% best=43.49% lr=0.00034361083 time=13.6s est_300=1h 02m 39s
+[LG:DeiT-Ti][116/300] loss=25.4994 ce=2.0443 guidance=9.3820 beta=2.50 train_acc=50.93% test_acc=43.42% best=43.49% lr=0.00034119607 time=13.2s est_300=1h 02m 41s
+[LG:DeiT-Ti][117/300] loss=25.4269 ce=2.0747 guidance=9.3409 beta=2.50 train_acc=49.92% test_acc=43.18% best=43.49% lr=0.00033877158 time=11.6s est_300=1h 02m 38s
+[LG:DeiT-Ti][118/300] loss=25.3474 ce=2.0251 guidance=9.3289 beta=2.50 train_acc=51.56% test_acc=42.99% best=43.49% lr=0.00033633764 time=12.1s est_300=1h 02m 37s
+[LG:DeiT-Ti][119/300] loss=25.3395 ce=1.9942 guidance=9.3381 beta=2.50 train_acc=51.97% test_acc=42.47% best=43.49% lr=0.0003338945 time=12.3s est_300=1h 02m 36s
+[LG:DeiT-Ti][120/300] loss=25.4661 ce=1.9854 guidance=9.3923 beta=2.50 train_acc=52.68% test_acc=42.66% best=43.49% lr=0.00033144243 time=10.9s est_300=1h 02m 33s
+[LG:DeiT-Ti][121/300] loss=25.2613 ce=1.9704 guidance=9.3164 beta=2.50 train_acc=52.85% test_acc=41.75% best=43.49% lr=0.00032898171 time=12.8s est_300=1h 02m 33s
+[LG:DeiT-Ti][122/300] loss=25.4364 ce=1.9906 guidance=9.3783 beta=2.50 train_acc=52.51% test_acc=42.79% best=43.49% lr=0.0003265126 time=13.4s est_300=1h 02m 36s
+[LG:DeiT-Ti][123/300] loss=25.1955 ce=1.9540 guidance=9.2966 beta=2.50 train_acc=52.92% test_acc=43.08% best=43.49% lr=0.00032403537 time=12.6s est_300=1h 02m 36s
+[LG:DeiT-Ti][124/300] loss=25.1913 ce=1.9444 guidance=9.2988 beta=2.50 train_acc=53.60% test_acc=42.29% best=43.49% lr=0.0003215503 time=11.5s est_300=1h 02m 33s
+[LG:DeiT-Ti][125/300] loss=25.0795 ce=1.9808 guidance=9.2395 beta=2.50 train_acc=53.72% test_acc=42.29% best=43.49% lr=0.00031905766 time=11.5s est_300=1h 02m 31s
+[LG:DeiT-Ti][126/300] loss=25.1055 ce=1.9384 guidance=9.2668 beta=2.50 train_acc=53.24% test_acc=42.63% best=43.49% lr=0.00031655771 time=11.0s est_300=1h 02m 27s
+[LG:DeiT-Ti][127/300] loss=25.0941 ce=1.8948 guidance=9.2797 beta=2.50 train_acc=54.62% test_acc=42.60% best=43.49% lr=0.00031405075 time=11.6s est_300=1h 02m 25s
+[LG:DeiT-Ti][128/300] loss=25.0100 ce=1.9203 guidance=9.2359 beta=2.50 train_acc=53.94% test_acc=43.10% best=43.49% lr=0.00031153703 time=11.2s est_300=1h 02m 22s
+[LG:DeiT-Ti][129/300] loss=25.0364 ce=1.8602 guidance=9.2705 beta=2.50 train_acc=55.38% test_acc=41.78% best=43.49% lr=0.00030901684 time=11.1s est_300=1h 02m 19s
+[LG:DeiT-Ti][130/300] loss=25.0004 ce=1.9385 guidance=9.2248 beta=2.50 train_acc=53.58% test_acc=43.13% best=43.49% lr=0.00030649045 time=13.0s est_300=1h 02m 20s
+[LG:DeiT-Ti][131/300] loss=25.1330 ce=1.9073 guidance=9.2903 beta=2.50 train_acc=54.23% test_acc=41.63% best=43.49% lr=0.00030395814 time=12.2s est_300=1h 02m 20s
+[LG:DeiT-Ti][132/300] loss=24.9450 ce=1.8785 guidance=9.2266 beta=2.50 train_acc=55.08% test_acc=42.79% best=43.49% lr=0.00030142019 time=13.0s est_300=1h 02m 21s
+[LG:DeiT-Ti][133/300] loss=24.7583 ce=1.8576 guidance=9.1603 beta=2.50 train_acc=56.03% test_acc=43.37% best=43.49% lr=0.00029887688 time=12.7s est_300=1h 02m 21s
+[LG:DeiT-Ti][134/300] loss=24.8237 ce=1.8592 guidance=9.1858 beta=2.50 train_acc=56.30% test_acc=43.34% best=43.49% lr=0.00029632847 time=12.7s est_300=1h 02m 22s
+[LG:DeiT-Ti][135/300] loss=24.9662 ce=1.8492 guidance=9.2468 beta=2.50 train_acc=55.93% test_acc=42.96% best=43.49% lr=0.00029377526 time=12.2s est_300=1h 02m 21s
+[LG:DeiT-Ti][136/300] loss=24.7138 ce=1.8367 guidance=9.1508 beta=2.50 train_acc=55.94% test_acc=43.13% best=43.49% lr=0.00029121753 time=11.0s est_300=1h 02m 18s
+[LG:DeiT-Ti][137/300] loss=24.6787 ce=1.8890 guidance=9.1159 beta=2.50 train_acc=55.50% test_acc=41.89% best=43.49% lr=0.00028865555 time=12.7s est_300=1h 02m 19s
+[LG:DeiT-Ti][138/300] loss=24.6198 ce=1.8415 guidance=9.1113 beta=2.50 train_acc=56.20% test_acc=42.49% best=43.49% lr=0.0002860896 time=12.2s est_300=1h 02m 18s
+[LG:DeiT-Ti][139/300] loss=24.5669 ce=1.7844 guidance=9.1130 beta=2.50 train_acc=57.29% test_acc=43.22% best=43.49% lr=0.00028351998 time=11.5s est_300=1h 02m 16s
+[LG:DeiT-Ti][140/300] loss=24.4701 ce=1.8232 guidance=9.0588 beta=2.50 train_acc=57.24% test_acc=42.23% best=43.49% lr=0.00028094694 time=12.9s est_300=1h 02m 17s
+[LG:DeiT-Ti][141/300] loss=24.5573 ce=1.7929 guidance=9.1058 beta=2.50 train_acc=56.96% test_acc=43.65% best=43.65% lr=0.00027837079 time=13.2s est_300=1h 02m 19s
+[LG:DeiT-Ti][142/300] loss=24.5511 ce=1.8048 guidance=9.0985 beta=2.50 train_acc=56.74% test_acc=43.06% best=43.65% lr=0.00027579181 time=13.3s est_300=1h 02m 20s
+[LG:DeiT-Ti][143/300] loss=24.4400 ce=1.7724 guidance=9.0670 beta=2.50 train_acc=57.51% test_acc=43.56% best=43.65% lr=0.00027321027 time=12.1s est_300=1h 02m 20s
+[LG:DeiT-Ti][144/300] loss=24.5009 ce=1.7886 guidance=9.0850 beta=2.50 train_acc=57.76% test_acc=43.01% best=43.65% lr=0.00027062645 time=13.6s est_300=1h 02m 22s
+[LG:DeiT-Ti][145/300] loss=24.5816 ce=1.8010 guidance=9.1122 beta=2.50 train_acc=57.66% test_acc=42.44% best=43.65% lr=0.00026804065 time=14.0s est_300=1h 02m 25s
+[LG:DeiT-Ti][146/300] loss=24.2351 ce=1.7749 guidance=8.9841 beta=2.50 train_acc=57.86% test_acc=42.23% best=43.65% lr=0.00026545315 time=14.7s est_300=1h 02m 30s
+[LG:DeiT-Ti][147/300] loss=24.5241 ce=1.7628 guidance=9.1045 beta=2.50 train_acc=57.86% test_acc=42.18% best=43.65% lr=0.00026286422 time=14.1s est_300=1h 02m 33s
+[LG:DeiT-Ti][148/300] loss=24.2474 ce=1.7591 guidance=8.9953 beta=2.50 train_acc=58.05% test_acc=42.79% best=43.65% lr=0.00026027416 time=14.7s est_300=1h 02m 37s
+[LG:DeiT-Ti][149/300] loss=24.2579 ce=1.7331 guidance=9.0099 beta=2.50 train_acc=58.42% test_acc=43.11% best=43.65% lr=0.00025768325 time=13.0s est_300=1h 02m 38s
+[LG:DeiT-Ti][150/300] loss=24.3149 ce=1.7231 guidance=9.0367 beta=2.50 train_acc=58.90% test_acc=42.58% best=43.65% lr=0.00025509177 time=12.8s est_300=1h 02m 39s
+[LG:DeiT-Ti][151/300] loss=24.0913 ce=1.7332 guidance=8.9433 beta=2.50 train_acc=59.07% test_acc=42.87% best=43.65% lr=0.0002525 time=12.6s est_300=1h 02m 39s
+[LG:DeiT-Ti][152/300] loss=24.2154 ce=1.6695 guidance=9.0184 beta=2.50 train_acc=60.21% test_acc=43.29% best=43.65% lr=0.00024990823 time=12.9s est_300=1h 02m 39s
+[LG:DeiT-Ti][153/300] loss=24.0404 ce=1.7437 guidance=8.9187 beta=2.50 train_acc=57.71% test_acc=42.91% best=43.65% lr=0.00024731675 time=13.3s est_300=1h 02m 41s
+[LG:DeiT-Ti][154/300] loss=24.0402 ce=1.6919 guidance=8.9393 beta=2.50 train_acc=59.68% test_acc=43.06% best=43.65% lr=0.00024472584 time=12.4s est_300=1h 02m 41s
+[LG:DeiT-Ti][155/300] loss=24.3140 ce=1.7009 guidance=9.0452 beta=2.50 train_acc=59.21% test_acc=43.91% best=43.91% lr=0.00024213578 time=14.0s est_300=1h 02m 43s
+[LG:DeiT-Ti][156/300] loss=24.0744 ce=1.7383 guidance=8.9344 beta=2.50 train_acc=59.02% test_acc=42.82% best=43.91% lr=0.00023954685 time=14.0s est_300=1h 02m 46s
+[LG:DeiT-Ti][157/300] loss=23.9452 ce=1.6623 guidance=8.9132 beta=2.50 train_acc=60.43% test_acc=42.85% best=43.91% lr=0.00023695935 time=12.9s est_300=1h 02m 47s
+[LG:DeiT-Ti][158/300] loss=24.1545 ce=1.7081 guidance=8.9786 beta=2.50 train_acc=60.04% test_acc=43.30% best=43.91% lr=0.00023437355 time=12.9s est_300=1h 02m 47s
+[LG:DeiT-Ti][159/300] loss=24.0657 ce=1.6696 guidance=8.9584 beta=2.50 train_acc=59.82% test_acc=42.98% best=43.91% lr=0.00023178973 time=12.9s est_300=1h 02m 48s
+[LG:DeiT-Ti][160/300] loss=24.0258 ce=1.6693 guidance=8.9426 beta=2.50 train_acc=60.78% test_acc=43.06% best=43.91% lr=0.00022920819 time=12.5s est_300=1h 02m 48s
+[LG:DeiT-Ti][161/300] loss=24.0063 ce=1.6542 guidance=8.9408 beta=2.50 train_acc=60.34% test_acc=43.46% best=43.91% lr=0.00022662921 time=12.8s est_300=1h 02m 49s
+[LG:DeiT-Ti][162/300] loss=23.9370 ce=1.6993 guidance=8.8951 beta=2.50 train_acc=60.09% test_acc=43.10% best=43.91% lr=0.00022405306 time=12.5s est_300=1h 02m 48s
+[LG:DeiT-Ti][163/300] loss=23.9498 ce=1.6578 guidance=8.9168 beta=2.50 train_acc=61.11% test_acc=43.91% best=43.91% lr=0.00022148002 time=12.0s est_300=1h 02m 47s
+[LG:DeiT-Ti][164/300] loss=24.0671 ce=1.6367 guidance=8.9722 beta=2.50 train_acc=62.01% test_acc=43.92% best=43.92% lr=0.0002189104 time=13.0s est_300=1h 02m 48s
+[LG:DeiT-Ti][165/300] loss=23.9096 ce=1.6204 guidance=8.9157 beta=2.50 train_acc=62.06% test_acc=42.89% best=43.92% lr=0.00021634445 time=13.2s est_300=1h 02m 49s
+[LG:DeiT-Ti][166/300] loss=23.8121 ce=1.6490 guidance=8.8653 beta=2.50 train_acc=60.87% test_acc=43.79% best=43.92% lr=0.00021378247 time=13.2s est_300=1h 02m 50s
+[LG:DeiT-Ti][167/300] loss=23.7950 ce=1.6353 guidance=8.8639 beta=2.50 train_acc=60.89% test_acc=43.72% best=43.92% lr=0.00021122474 time=13.0s est_300=1h 02m 51s
+[LG:DeiT-Ti][168/300] loss=23.6498 ce=1.6450 guidance=8.8019 beta=2.50 train_acc=61.19% test_acc=42.68% best=43.92% lr=0.00020867153 time=11.7s est_300=1h 02m 50s
+[LG:DeiT-Ti][169/300] loss=23.8926 ce=1.5942 guidance=8.9194 beta=2.50 train_acc=62.75% test_acc=43.49% best=43.92% lr=0.00020612312 time=11.1s est_300=1h 02m 47s
+[LG:DeiT-Ti][170/300] loss=23.7214 ce=1.6424 guidance=8.8316 beta=2.50 train_acc=60.56% test_acc=43.39% best=43.92% lr=0.00020357981 time=11.1s est_300=1h 02m 44s
+[LG:DeiT-Ti][171/300] loss=23.7313 ce=1.6242 guidance=8.8428 beta=2.50 train_acc=61.45% test_acc=43.17% best=43.92% lr=0.00020104186 time=11.1s est_300=1h 02m 42s
+[LG:DeiT-Ti][172/300] loss=23.5547 ce=1.5701 guidance=8.7938 beta=2.50 train_acc=63.40% test_acc=43.46% best=43.92% lr=0.00019850955 time=13.7s est_300=1h 02m 44s
+[LG:DeiT-Ti][173/300] loss=23.6255 ce=1.6098 guidance=8.8063 beta=2.50 train_acc=61.77% test_acc=43.99% best=43.99% lr=0.00019598316 time=11.5s est_300=1h 02m 42s
+[LG:DeiT-Ti][174/300] loss=23.6000 ce=1.6106 guidance=8.7958 beta=2.50 train_acc=62.31% test_acc=43.29% best=43.99% lr=0.00019346297 time=13.3s est_300=1h 02m 43s
+[LG:DeiT-Ti][175/300] loss=23.7260 ce=1.5412 guidance=8.8739 beta=2.50 train_acc=63.32% test_acc=44.11% best=44.11% lr=0.00019094925 time=14.2s est_300=1h 02m 46s
+[LG:DeiT-Ti][176/300] loss=23.5592 ce=1.5877 guidance=8.7886 beta=2.50 train_acc=62.04% test_acc=43.15% best=44.11% lr=0.00018844229 time=14.6s est_300=1h 02m 50s
+[LG:DeiT-Ti][177/300] loss=23.5392 ce=1.5913 guidance=8.7792 beta=2.50 train_acc=62.35% test_acc=43.79% best=44.11% lr=0.00018594234 time=11.7s est_300=1h 02m 48s
+[LG:DeiT-Ti][178/300] loss=23.4186 ce=1.5466 guidance=8.7488 beta=2.50 train_acc=63.88% test_acc=43.01% best=44.11% lr=0.0001834497 time=12.3s est_300=1h 02m 48s
+[LG:DeiT-Ti][179/300] loss=23.4368 ce=1.5665 guidance=8.7481 beta=2.50 train_acc=62.26% test_acc=43.55% best=44.11% lr=0.00018096463 time=13.8s est_300=1h 02m 50s
+[LG:DeiT-Ti][180/300] loss=23.4050 ce=1.5194 guidance=8.7543 beta=2.50 train_acc=63.55% test_acc=43.22% best=44.11% lr=0.0001784874 time=13.2s est_300=1h 02m 51s
+[LG:DeiT-Ti][181/300] loss=23.4569 ce=1.5790 guidance=8.7512 beta=2.50 train_acc=63.21% test_acc=43.34% best=44.11% lr=0.00017601829 time=14.0s est_300=1h 02m 53s
+[LG:DeiT-Ti][182/300] loss=23.4547 ce=1.5380 guidance=8.7667 beta=2.50 train_acc=64.06% test_acc=43.08% best=44.11% lr=0.00017355757 time=12.2s est_300=1h 02m 53s
+[LG:DeiT-Ti][183/300] loss=23.2783 ce=1.5273 guidance=8.7004 beta=2.50 train_acc=63.57% test_acc=42.54% best=44.11% lr=0.0001711055 time=12.7s est_300=1h 02m 53s
+[LG:DeiT-Ti][184/300] loss=23.4084 ce=1.5362 guidance=8.7489 beta=2.50 train_acc=63.45% test_acc=42.92% best=44.11% lr=0.00016866236 time=13.1s est_300=1h 02m 54s
+[LG:DeiT-Ti][185/300] loss=23.3843 ce=1.5338 guidance=8.7402 beta=2.50 train_acc=63.54% test_acc=43.06% best=44.11% lr=0.00016622842 time=14.0s est_300=1h 02m 56s
+[LG:DeiT-Ti][186/300] loss=23.4264 ce=1.5598 guidance=8.7467 beta=2.50 train_acc=63.42% test_acc=42.87% best=44.11% lr=0.00016380393 time=12.4s est_300=1h 02m 56s
+[LG:DeiT-Ti][187/300] loss=23.2482 ce=1.4864 guidance=8.7047 beta=2.50 train_acc=64.96% test_acc=42.32% best=44.11% lr=0.00016138917 time=12.8s est_300=1h 02m 56s
+[LG:DeiT-Ti][188/300] loss=23.3932 ce=1.5351 guidance=8.7432 beta=2.50 train_acc=63.91% test_acc=43.53% best=44.11% lr=0.00015898441 time=11.2s est_300=1h 02m 54s
+[LG:DeiT-Ti][189/300] loss=23.2520 ce=1.4875 guidance=8.7058 beta=2.50 train_acc=64.95% test_acc=43.44% best=44.11% lr=0.00015658989 time=12.5s est_300=1h 02m 54s
+[LG:DeiT-Ti][190/300] loss=23.2041 ce=1.4970 guidance=8.6829 beta=2.50 train_acc=64.39% test_acc=43.56% best=44.11% lr=0.0001542059 time=12.8s est_300=1h 02m 54s
+[LG:DeiT-Ti][191/300] loss=23.0478 ce=1.4987 guidance=8.6196 beta=2.50 train_acc=64.93% test_acc=42.73% best=44.11% lr=0.00015183268 time=13.0s est_300=1h 02m 55s
+[LG:DeiT-Ti][192/300] loss=23.2314 ce=1.4683 guidance=8.7052 beta=2.50 train_acc=65.05% test_acc=43.98% best=44.11% lr=0.0001494705 time=12.8s est_300=1h 02m 55s
+[LG:DeiT-Ti][193/300] loss=23.1517 ce=1.4980 guidance=8.6615 beta=2.50 train_acc=64.47% test_acc=42.65% best=44.11% lr=0.00014711963 time=11.8s est_300=1h 02m 54s
+[LG:DeiT-Ti][194/300] loss=23.0821 ce=1.4822 guidance=8.6400 beta=2.50 train_acc=64.32% test_acc=43.63% best=44.11% lr=0.0001447803 time=12.9s est_300=1h 02m 54s
+[LG:DeiT-Ti][195/300] loss=23.1227 ce=1.4915 guidance=8.6525 beta=2.50 train_acc=65.23% test_acc=43.08% best=44.11% lr=0.00014245279 time=13.5s est_300=1h 02m 56s
+[LG:DeiT-Ti][196/300] loss=23.3083 ce=1.4460 guidance=8.7449 beta=2.50 train_acc=65.73% test_acc=44.44% best=44.44% lr=0.00014013735 time=12.4s est_300=1h 02m 56s
+[LG:DeiT-Ti][197/300] loss=23.0518 ce=1.4600 guidance=8.6367 beta=2.50 train_acc=65.73% test_acc=42.79% best=44.44% lr=0.00013783423 time=12.3s est_300=1h 02m 55s
+[LG:DeiT-Ti][198/300] loss=23.1909 ce=1.4607 guidance=8.6921 beta=2.50 train_acc=65.62% test_acc=43.84% best=44.44% lr=0.00013554369 time=12.7s est_300=1h 02m 55s
+[LG:DeiT-Ti][199/300] loss=23.2425 ce=1.4706 guidance=8.7088 beta=2.50 train_acc=65.40% test_acc=43.48% best=44.44% lr=0.00013326597 time=11.3s est_300=1h 02m 53s
+[LG:DeiT-Ti][200/300] loss=23.0092 ce=1.4500 guidance=8.6237 beta=2.50 train_acc=66.20% test_acc=43.92% best=44.44% lr=0.00013100132 time=14.2s est_300=1h 02m 56s
+[LG:DeiT-Ti][201/300] loss=23.0297 ce=1.4630 guidance=8.6267 beta=2.50 train_acc=65.25% test_acc=44.01% best=44.44% lr=0.00012875 time=12.8s est_300=1h 02m 56s
+[LG:DeiT-Ti][202/300] loss=22.8522 ce=1.4483 guidance=8.5615 beta=2.50 train_acc=65.46% test_acc=43.84% best=44.44% lr=0.00012651225 time=13.3s est_300=1h 02m 57s
+[LG:DeiT-Ti][203/300] loss=23.0616 ce=1.4535 guidance=8.6432 beta=2.50 train_acc=65.22% test_acc=43.84% best=44.44% lr=0.00012428832 time=11.0s est_300=1h 02m 55s
+[LG:DeiT-Ti][204/300] loss=22.8835 ce=1.4435 guidance=8.5760 beta=2.50 train_acc=65.61% test_acc=43.27% best=44.44% lr=0.00012207844 time=11.8s est_300=1h 02m 54s
+[LG:DeiT-Ti][205/300] loss=22.9939 ce=1.4249 guidance=8.6276 beta=2.50 train_acc=66.69% test_acc=43.65% best=44.44% lr=0.00011988287 time=12.4s est_300=1h 02m 54s
+[LG:DeiT-Ti][206/300] loss=22.9489 ce=1.4492 guidance=8.5999 beta=2.50 train_acc=65.86% test_acc=42.99% best=44.44% lr=0.00011770184 time=11.7s est_300=1h 02m 52s
+[LG:DeiT-Ti][207/300] loss=22.8865 ce=1.4056 guidance=8.5924 beta=2.50 train_acc=66.86% test_acc=43.91% best=44.44% lr=0.00011553559 time=11.4s est_300=1h 02m 50s
+[LG:DeiT-Ti][208/300] loss=22.8329 ce=1.4490 guidance=8.5535 beta=2.50 train_acc=65.88% test_acc=42.68% best=44.44% lr=0.00011338436 time=11.3s est_300=1h 02m 49s
+[LG:DeiT-Ti][209/300] loss=23.0254 ce=1.4847 guidance=8.6163 beta=2.50 train_acc=65.35% test_acc=43.58% best=44.44% lr=0.00011124839 time=11.7s est_300=1h 02m 47s
+[LG:DeiT-Ti][210/300] loss=22.9167 ce=1.3886 guidance=8.6113 beta=2.50 train_acc=67.36% test_acc=43.91% best=44.44% lr=0.00010912791 time=12.7s est_300=1h 02m 48s
+[LG:DeiT-Ti][211/300] loss=22.7955 ce=1.4168 guidance=8.5515 beta=2.50 train_acc=66.08% test_acc=43.23% best=44.44% lr=0.00010702315 time=11.5s est_300=1h 02m 46s
+[LG:DeiT-Ti][212/300] loss=22.8914 ce=1.3534 guidance=8.6152 beta=2.50 train_acc=67.41% test_acc=43.42% best=44.44% lr=0.00010493434 time=11.6s est_300=1h 02m 45s
+[LG:DeiT-Ti][213/300] loss=22.9412 ce=1.4352 guidance=8.6024 beta=2.50 train_acc=65.68% test_acc=44.32% best=44.44% lr=0.00010286172 time=12.1s est_300=1h 02m 44s
+[LG:DeiT-Ti][214/300] loss=22.7808 ce=1.4213 guidance=8.5438 beta=2.50 train_acc=65.96% test_acc=44.08% best=44.44% lr=0.0001008055 time=13.4s est_300=1h 02m 45s
+[LG:DeiT-Ti][215/300] loss=22.8073 ce=1.4388 guidance=8.5474 beta=2.50 train_acc=65.74% test_acc=43.60% best=44.44% lr=9.8765924e-05 time=12.3s est_300=1h 02m 45s
+[LG:DeiT-Ti][216/300] loss=22.6706 ce=1.4005 guidance=8.5080 beta=2.50 train_acc=66.98% test_acc=43.98% best=44.44% lr=9.6743203e-05 time=11.3s est_300=1h 02m 43s
+[LG:DeiT-Ti][217/300] loss=22.8038 ce=1.4074 guidance=8.5586 beta=2.50 train_acc=67.31% test_acc=43.55% best=44.44% lr=9.4737563e-05 time=12.2s est_300=1h 02m 43s
+[LG:DeiT-Ti][218/300] loss=22.8074 ce=1.3998 guidance=8.5630 beta=2.50 train_acc=67.12% test_acc=43.75% best=44.44% lr=9.2749222e-05 time=11.5s est_300=1h 02m 41s
+[LG:DeiT-Ti][219/300] loss=22.6687 ce=1.3958 guidance=8.5091 beta=2.50 train_acc=66.92% test_acc=43.01% best=44.44% lr=9.0778401e-05 time=12.5s est_300=1h 02m 41s
+[LG:DeiT-Ti][220/300] loss=22.6129 ce=1.3891 guidance=8.4896 beta=2.50 train_acc=67.19% test_acc=43.08% best=44.44% lr=8.8825313e-05 time=12.7s est_300=1h 02m 42s
+[LG:DeiT-Ti][221/300] loss=22.7243 ce=1.3511 guidance=8.5493 beta=2.50 train_acc=68.27% test_acc=43.77% best=44.44% lr=8.6890175e-05 time=15.0s est_300=1h 02m 45s
+[LG:DeiT-Ti][222/300] loss=22.7198 ce=1.3567 guidance=8.5452 beta=2.50 train_acc=68.27% test_acc=43.96% best=44.44% lr=8.4973198e-05 time=14.8s est_300=1h 02m 48s
+[LG:DeiT-Ti][223/300] loss=22.6270 ce=1.3516 guidance=8.5101 beta=2.50 train_acc=68.46% test_acc=43.48% best=44.44% lr=8.3074591e-05 time=14.9s est_300=1h 02m 51s
+[LG:DeiT-Ti][224/300] loss=22.5787 ce=1.3426 guidance=8.4944 beta=2.50 train_acc=68.29% test_acc=43.86% best=44.44% lr=8.1194564e-05 time=15.1s est_300=1h 02m 54s
+[LG:DeiT-Ti][225/300] loss=22.6738 ce=1.3708 guidance=8.5212 beta=2.50 train_acc=67.17% test_acc=42.99% best=44.44% lr=7.9333323e-05 time=11.7s est_300=1h 02m 53s
+[LG:DeiT-Ti][226/300] loss=22.5906 ce=1.3724 guidance=8.4873 beta=2.50 train_acc=67.54% test_acc=42.85% best=44.44% lr=7.7491072e-05 time=11.4s est_300=1h 02m 52s
+[LG:DeiT-Ti][227/300] loss=22.6374 ce=1.3332 guidance=8.5217 beta=2.50 train_acc=68.02% test_acc=42.94% best=44.44% lr=7.5668012e-05 time=11.8s est_300=1h 02m 51s
+[LG:DeiT-Ti][228/300] loss=22.5218 ce=1.3628 guidance=8.4636 beta=2.50 train_acc=67.27% test_acc=43.56% best=44.44% lr=7.3864344e-05 time=12.9s est_300=1h 02m 51s
+[LG:DeiT-Ti][229/300] loss=22.6490 ce=1.3919 guidance=8.5029 beta=2.50 train_acc=67.26% test_acc=42.54% best=44.44% lr=7.2080265e-05 time=12.7s est_300=1h 02m 51s
+[LG:DeiT-Ti][230/300] loss=22.4767 ce=1.3694 guidance=8.4429 beta=2.50 train_acc=67.97% test_acc=42.85% best=44.44% lr=7.0315971e-05 time=13.4s est_300=1h 02m 52s
+[LG:DeiT-Ti][231/300] loss=22.4608 ce=1.3694 guidance=8.4365 beta=2.50 train_acc=67.44% test_acc=43.17% best=44.44% lr=6.8571656e-05 time=14.2s est_300=1h 02m 54s
+[LG:DeiT-Ti][232/300] loss=22.5721 ce=1.3760 guidance=8.4784 beta=2.50 train_acc=67.44% test_acc=43.39% best=44.44% lr=6.684751e-05 time=12.3s est_300=1h 02m 54s
+[LG:DeiT-Ti][233/300] loss=22.4406 ce=1.3607 guidance=8.4320 beta=2.50 train_acc=67.49% test_acc=43.73% best=44.44% lr=6.5143724e-05 time=12.8s est_300=1h 02m 54s
+[LG:DeiT-Ti][234/300] loss=22.5187 ce=1.3633 guidance=8.4622 beta=2.50 train_acc=67.49% test_acc=43.39% best=44.44% lr=6.3460483e-05 time=14.2s est_300=1h 02m 56s
+[LG:DeiT-Ti][235/300] loss=22.4639 ce=1.3568 guidance=8.4428 beta=2.50 train_acc=68.21% test_acc=44.17% best=44.44% lr=6.1797972e-05 time=14.3s est_300=1h 02m 59s
+[LG:DeiT-Ti][236/300] loss=22.4389 ce=1.3264 guidance=8.4450 beta=2.50 train_acc=68.22% test_acc=44.20% best=44.44% lr=6.0156375e-05 time=13.0s est_300=1h 02m 59s
+[LG:DeiT-Ti][237/300] loss=22.3425 ce=1.2998 guidance=8.4171 beta=2.50 train_acc=69.65% test_acc=43.56% best=44.44% lr=5.8535869e-05 time=12.5s est_300=1h 02m 59s
+[LG:DeiT-Ti][238/300] loss=22.4705 ce=1.3451 guidance=8.4502 beta=2.50 train_acc=68.34% test_acc=43.37% best=44.44% lr=5.6936634e-05 time=11.0s est_300=1h 02m 57s
+[LG:DeiT-Ti][239/300] loss=22.4354 ce=1.3784 guidance=8.4228 beta=2.50 train_acc=67.61% test_acc=43.39% best=44.44% lr=5.5358845e-05 time=12.6s est_300=1h 02m 57s
+[LG:DeiT-Ti][240/300] loss=22.4246 ce=1.3189 guidance=8.4423 beta=2.50 train_acc=68.75% test_acc=43.94% best=44.44% lr=5.3802675e-05 time=12.7s est_300=1h 02m 57s
+[LG:DeiT-Ti][241/300] loss=22.3804 ce=1.3370 guidance=8.4174 beta=2.50 train_acc=67.88% test_acc=44.51% best=44.51% lr=5.2268294e-05 time=11.8s est_300=1h 02m 56s
+[LG:DeiT-Ti][242/300] loss=22.4017 ce=1.3219 guidance=8.4319 beta=2.50 train_acc=68.75% test_acc=43.56% best=44.51% lr=5.0755871e-05 time=12.1s est_300=1h 02m 56s
+[LG:DeiT-Ti][243/300] loss=22.3890 ce=1.3064 guidance=8.4330 beta=2.50 train_acc=69.02% test_acc=43.08% best=44.51% lr=4.9265571e-05 time=13.5s est_300=1h 02m 57s
+[LG:DeiT-Ti][244/300] loss=22.3852 ce=1.2986 guidance=8.4347 beta=2.50 train_acc=69.57% test_acc=43.65% best=44.51% lr=4.7797558e-05 time=14.4s est_300=1h 02m 59s
+[LG:DeiT-Ti][245/300] loss=22.4531 ce=1.3217 guidance=8.4526 beta=2.50 train_acc=69.28% test_acc=44.03% best=44.51% lr=4.6351993e-05 time=13.3s est_300=1h 03m 00s
+[LG:DeiT-Ti][246/300] loss=22.1949 ce=1.2869 guidance=8.3632 beta=2.50 train_acc=69.65% test_acc=44.17% best=44.51% lr=4.4929034e-05 time=11.5s est_300=1h 02m 58s
+[LG:DeiT-Ti][247/300] loss=22.3230 ce=1.2742 guidance=8.4195 beta=2.50 train_acc=69.87% test_acc=43.73% best=44.51% lr=4.3528838e-05 time=10.9s est_300=1h 02m 56s
+[LG:DeiT-Ti][248/300] loss=22.2278 ce=1.2862 guidance=8.3767 beta=2.50 train_acc=69.97% test_acc=43.51% best=44.51% lr=4.2151558e-05 time=11.5s est_300=1h 02m 55s
+[LG:DeiT-Ti][249/300] loss=22.2596 ce=1.2736 guidance=8.3944 beta=2.50 train_acc=69.72% test_acc=43.73% best=44.51% lr=4.0797346e-05 time=11.7s est_300=1h 02m 54s
+[LG:DeiT-Ti][250/300] loss=22.2485 ce=1.2992 guidance=8.3797 beta=2.50 train_acc=69.11% test_acc=43.92% best=44.51% lr=3.9466348e-05 time=11.7s est_300=1h 02m 53s
+[LG:DeiT-Ti][251/300] loss=22.2206 ce=1.2986 guidance=8.3688 beta=2.50 train_acc=69.21% test_acc=43.65% best=44.51% lr=3.8158713e-05 time=12.7s est_300=1h 02m 53s
+[LG:DeiT-Ti][252/300] loss=22.2868 ce=1.2894 guidance=8.3990 beta=2.50 train_acc=69.53% test_acc=43.17% best=44.51% lr=3.6874582e-05 time=12.5s est_300=1h 02m 53s
+[LG:DeiT-Ti][253/300] loss=22.0804 ce=1.2781 guidance=8.3209 beta=2.50 train_acc=69.89% test_acc=43.70% best=44.51% lr=3.5614097e-05 time=11.3s est_300=1h 02m 52s
+[LG:DeiT-Ti][254/300] loss=22.4379 ce=1.3276 guidance=8.4441 beta=2.50 train_acc=68.16% test_acc=43.29% best=44.51% lr=3.4377396e-05 time=11.5s est_300=1h 02m 50s
+[LG:DeiT-Ti][255/300] loss=22.2744 ce=1.2860 guidance=8.3954 beta=2.50 train_acc=70.04% test_acc=43.56% best=44.51% lr=3.3164614e-05 time=11.8s est_300=1h 02m 49s
+[LG:DeiT-Ti][256/300] loss=22.1811 ce=1.2496 guidance=8.3726 beta=2.50 train_acc=70.24% test_acc=43.86% best=44.51% lr=3.1975885e-05 time=13.5s est_300=1h 02m 51s
+[LG:DeiT-Ti][257/300] loss=22.2985 ce=1.3018 guidance=8.3987 beta=2.50 train_acc=69.23% test_acc=43.67% best=44.51% lr=3.0811339e-05 time=12.3s est_300=1h 02m 50s
+[LG:DeiT-Ti][258/300] loss=22.1646 ce=1.2933 guidance=8.3485 beta=2.50 train_acc=68.97% test_acc=43.44% best=44.51% lr=2.9671104e-05 time=13.6s est_300=1h 02m 51s
+[LG:DeiT-Ti][259/300] loss=22.2293 ce=1.2419 guidance=8.3950 beta=2.50 train_acc=70.65% test_acc=43.23% best=44.51% lr=2.8555305e-05 time=12.3s est_300=1h 02m 51s
+[LG:DeiT-Ti][260/300] loss=22.2264 ce=1.2876 guidance=8.3755 beta=2.50 train_acc=69.57% test_acc=43.13% best=44.51% lr=2.7464063e-05 time=11.9s est_300=1h 02m 50s
+[LG:DeiT-Ti][261/300] loss=22.1662 ce=1.2718 guidance=8.3578 beta=2.50 train_acc=69.97% test_acc=43.13% best=44.51% lr=2.6397499e-05 time=12.5s est_300=1h 02m 50s
+[LG:DeiT-Ti][262/300] loss=22.2175 ce=1.2570 guidance=8.3842 beta=2.50 train_acc=70.40% test_acc=44.08% best=44.51% lr=2.535573e-05 time=11.5s est_300=1h 02m 49s
+[LG:DeiT-Ti][263/300] loss=22.2736 ce=1.2881 guidance=8.3942 beta=2.50 train_acc=69.29% test_acc=43.53% best=44.51% lr=2.433887e-05 time=11.9s est_300=1h 02m 48s
+[LG:DeiT-Ti][264/300] loss=22.2042 ce=1.2856 guidance=8.3675 beta=2.50 train_acc=69.75% test_acc=43.67% best=44.51% lr=2.334703e-05 time=11.1s est_300=1h 02m 47s
+[LG:DeiT-Ti][265/300] loss=22.2954 ce=1.2471 guidance=8.4193 beta=2.50 train_acc=70.04% test_acc=43.94% best=44.51% lr=2.238032e-05 time=11.1s est_300=1h 02m 45s
+[LG:DeiT-Ti][266/300] loss=22.1526 ce=1.2946 guidance=8.3432 beta=2.50 train_acc=69.85% test_acc=43.65% best=44.51% lr=2.1438844e-05 time=14.0s est_300=1h 02m 47s
+[LG:DeiT-Ti][267/300] loss=22.0580 ce=1.2677 guidance=8.3161 beta=2.50 train_acc=69.67% test_acc=43.89% best=44.51% lr=2.0522708e-05 time=14.4s est_300=1h 02m 49s
+[LG:DeiT-Ti][268/300] loss=22.0099 ce=1.2373 guidance=8.3091 beta=2.50 train_acc=70.58% test_acc=44.05% best=44.51% lr=1.963201e-05 time=11.1s est_300=1h 02m 47s
+[LG:DeiT-Ti][269/300] loss=22.1208 ce=1.2765 guidance=8.3377 beta=2.50 train_acc=69.87% test_acc=43.49% best=44.51% lr=1.8766848e-05 time=11.2s est_300=1h 02m 46s
+[LG:DeiT-Ti][270/300] loss=22.1513 ce=1.2784 guidance=8.3492 beta=2.50 train_acc=69.96% test_acc=43.65% best=44.51% lr=1.7927319e-05 time=12.5s est_300=1h 02m 45s
+[LG:DeiT-Ti][271/300] loss=22.1595 ce=1.2652 guidance=8.3577 beta=2.50 train_acc=69.72% test_acc=43.86% best=44.51% lr=1.7113512e-05 time=12.0s est_300=1h 02m 45s
+[LG:DeiT-Ti][272/300] loss=22.0885 ce=1.2867 guidance=8.3207 beta=2.50 train_acc=69.57% test_acc=43.67% best=44.51% lr=1.6325519e-05 time=12.8s est_300=1h 02m 45s
+[LG:DeiT-Ti][273/300] loss=22.1686 ce=1.3010 guidance=8.3470 beta=2.50 train_acc=69.79% test_acc=43.30% best=44.51% lr=1.5563424e-05 time=13.3s est_300=1h 02m 46s
+[LG:DeiT-Ti][274/300] loss=22.2100 ce=1.2564 guidance=8.3814 beta=2.50 train_acc=70.87% test_acc=43.56% best=44.51% lr=1.4827313e-05 time=12.6s est_300=1h 02m 46s
+[LG:DeiT-Ti][275/300] loss=22.0267 ce=1.2877 guidance=8.2956 beta=2.50 train_acc=70.13% test_acc=43.23% best=44.51% lr=1.4117265e-05 time=12.7s est_300=1h 02m 46s
+[LG:DeiT-Ti][276/300] loss=22.0076 ce=1.2799 guidance=8.2911 beta=2.50 train_acc=70.35% test_acc=43.20% best=44.51% lr=1.3433358e-05 time=13.0s est_300=1h 02m 47s
+[LG:DeiT-Ti][277/300] loss=22.0234 ce=1.2342 guidance=8.3157 beta=2.50 train_acc=70.26% test_acc=43.51% best=44.51% lr=1.2775668e-05 time=12.9s est_300=1h 02m 47s
+[LG:DeiT-Ti][278/300] loss=22.2346 ce=1.2630 guidance=8.3886 beta=2.50 train_acc=70.94% test_acc=43.75% best=44.51% lr=1.2144266e-05 time=12.7s est_300=1h 02m 47s
+[LG:DeiT-Ti][279/300] loss=22.1976 ce=1.2730 guidance=8.3699 beta=2.50 train_acc=69.58% test_acc=43.61% best=44.51% lr=1.1539222e-05 time=12.5s est_300=1h 02m 47s
+[LG:DeiT-Ti][280/300] loss=22.0612 ce=1.2849 guidance=8.3105 beta=2.50 train_acc=69.84% test_acc=43.08% best=44.51% lr=1.0960601e-05 time=12.0s est_300=1h 02m 46s
+[LG:DeiT-Ti][281/300] loss=22.1775 ce=1.2342 guidance=8.3773 beta=2.50 train_acc=71.33% test_acc=43.29% best=44.51% lr=1.0408469e-05 time=10.9s est_300=1h 02m 45s
+[LG:DeiT-Ti][282/300] loss=22.0127 ce=1.2973 guidance=8.2861 beta=2.50 train_acc=70.11% test_acc=43.48% best=44.51% lr=9.8828843e-06 time=11.4s est_300=1h 02m 44s
+[LG:DeiT-Ti][283/300] loss=22.1758 ce=1.2966 guidance=8.3517 beta=2.50 train_acc=69.38% test_acc=43.11% best=44.51% lr=9.3839054e-06 time=13.0s est_300=1h 02m 44s
+[LG:DeiT-Ti][284/300] loss=22.0829 ce=1.3074 guidance=8.3102 beta=2.50 train_acc=68.78% test_acc=43.44% best=44.51% lr=8.911587e-06 time=12.1s est_300=1h 02m 44s
+[LG:DeiT-Ti][285/300] loss=22.0962 ce=1.2573 guidance=8.3356 beta=2.50 train_acc=70.33% test_acc=43.79% best=44.51% lr=8.4659808e-06 time=13.3s est_300=1h 02m 44s
+[LG:DeiT-Ti][286/300] loss=22.0926 ce=1.2763 guidance=8.3265 beta=2.50 train_acc=70.09% test_acc=43.65% best=44.51% lr=8.0471357e-06 time=13.1s est_300=1h 02m 45s
+[LG:DeiT-Ti][287/300] loss=22.0505 ce=1.2572 guidance=8.3173 beta=2.50 train_acc=70.52% test_acc=43.55% best=44.51% lr=7.6550976e-06 time=13.0s est_300=1h 02m 45s
+[LG:DeiT-Ti][288/300] loss=22.0683 ce=1.2497 guidance=8.3274 beta=2.50 train_acc=70.91% test_acc=43.46% best=44.51% lr=7.2899095e-06 time=12.6s est_300=1h 02m 45s
+[LG:DeiT-Ti][289/300] loss=22.1393 ce=1.2582 guidance=8.3525 beta=2.50 train_acc=70.30% test_acc=43.25% best=44.51% lr=6.9516114e-06 time=12.8s est_300=1h 02m 46s
+[LG:DeiT-Ti][290/300] loss=22.0461 ce=1.2655 guidance=8.3123 beta=2.50 train_acc=70.65% test_acc=43.48% best=44.51% lr=6.6402405e-06 time=13.1s est_300=1h 02m 46s
+[LG:DeiT-Ti][291/300] loss=22.0412 ce=1.2763 guidance=8.3060 beta=2.50 train_acc=70.02% test_acc=43.58% best=44.51% lr=6.3558309e-06 time=12.4s est_300=1h 02m 46s
+[LG:DeiT-Ti][292/300] loss=21.9423 ce=1.2246 guidance=8.2871 beta=2.50 train_acc=70.75% test_acc=43.60% best=44.51% lr=6.0984138e-06 time=13.3s est_300=1h 02m 47s
+[LG:DeiT-Ti][293/300] loss=22.0986 ce=1.2527 guidance=8.3383 beta=2.50 train_acc=69.92% test_acc=43.51% best=44.51% lr=5.8680173e-06 time=12.5s est_300=1h 02m 47s
+[LG:DeiT-Ti][294/300] loss=22.0400 ce=1.2599 guidance=8.3121 beta=2.50 train_acc=70.06% test_acc=43.46% best=44.51% lr=5.6646669e-06 time=11.8s est_300=1h 02m 46s
+[LG:DeiT-Ti][295/300] loss=21.9386 ce=1.2491 guidance=8.2758 beta=2.50 train_acc=70.58% test_acc=43.61% best=44.51% lr=5.4883847e-06 time=11.7s est_300=1h 02m 45s
+[LG:DeiT-Ti][296/300] loss=22.1342 ce=1.2633 guidance=8.3484 beta=2.50 train_acc=70.11% test_acc=43.72% best=44.51% lr=5.3391901e-06 time=11.8s est_300=1h 02m 44s
+[LG:DeiT-Ti][297/300] loss=21.9494 ce=1.2576 guidance=8.2767 beta=2.50 train_acc=69.94% test_acc=43.72% best=44.51% lr=5.2170996e-06 time=12.8s est_300=1h 02m 45s
+[LG:DeiT-Ti][298/300] loss=22.1649 ce=1.2960 guidance=8.3475 beta=2.50 train_acc=69.36% test_acc=43.73% best=44.51% lr=5.1221263e-06 time=13.3s est_300=1h 02m 45s
+[LG:DeiT-Ti][299/300] loss=22.1739 ce=1.2635 guidance=8.3642 beta=2.50 train_acc=70.55% test_acc=43.72% best=44.51% lr=5.0542808e-06 time=12.6s est_300=1h 02m 46s
+[LG:DeiT-Ti][300/300] loss=22.1415 ce=1.2397 guidance=8.3607 beta=2.50 train_acc=69.87% test_acc=43.61% best=44.51% lr=5.0135706e-06 time=11.9s est_300=1h 02m 45s
+[TIMING_RESULT] student=DeiT-Ti method=LG batch=128 avg_epoch=12.55s estimated_300=1h 02m 45s
+[FINAL_RESULT] summary=/app/output/table1_cub200_deit_lg_alg_full_seed1/students/table1_cub200_deit_ti_lg_b128_full_300ep_seed1/summary.json
+[DONE] Table-1 CUB student task completed successfully.
+[STUDENT_IDENTITY_CHECK_TABLE1_CUB200][LG] status=PASS student=DeiT-Ti pretrained=False input=224 batch=128 teacher_input=32
+[TASK_DONE] 2/3 LG elapsed=1h 03m 07s
+------------------------------------------------------------------------------------------------
+[TASK_START] 3/3 ALG
+[COMMAND][ALG] /usr/bin/python /app/scratch/input/bapedragon_543/methods/table1_cub200/train.py --full-run --student deit_ti --method alg --batch-size 128 --data-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200 --teacher-root /app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1 --output-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/students --run-name table1_cub200_deit_ti_alg_b128_full_300ep_seed1 --num-workers 4
+[BOOT] Python process started: /usr/bin/python
+/usr/local/lib/python3.10/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+========================================================================================
+CUB-200 TABLE-1 EXTENSION
+========================================================================================
+[TASK] student=DeiT-Ti method=ALG batch=128 mode=full_300ep
+[MODE] actual_epochs=300 planned_epochs=300
+[PROTOCOL_LOCK] dataset=CUB-200-2011 split=5994/5794 teacher=ResNet56-scratch-32 student=scratch-224 epochs=300 AdamW=5e-4->5e-6 wd=0.05 warmup=20 seed=1 fp32=True
+[SOURCE] official_lg_repo=https://github.com/lkhl/tiny-transformers commit=d2165f74049c906b0afc9f957491960fb3c0cc8b
+[MODEL] params=5,563,016 feature_dims=(192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192) selected_lg=(0, 6, 11)
+[FEATURE_CHECK] student=((2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14), (2, 192, 14, 14)) teacher=((2, 16, 32, 32), (2, 32, 16, 16), (2, 64, 8, 8)) guidance_probe=11.080558
+[OPTIMIZER] contract=official_lg_no_decay_exclusions
+[ALG:DeiT-Ti][001/300] loss=95.3447 ce=5.2983 guidance=36.0186 beta=2.50 train_acc=0.76% test_acc=1.04% best=1.04% lr=5e-07 time=14.1s est_300=1h 10m 43s
+[ALG:DeiT-Ti][002/300] loss=86.3231 ce=5.2991 guidance=32.4096 beta=2.50 train_acc=0.48% test_acc=0.59% best=1.04% lr=2.5475e-05 time=12.9s est_300=1h 07m 39s
+[ALG:DeiT-Ti][003/300] loss=70.6691 ce=5.3017 guidance=26.1470 beta=2.50 train_acc=0.25% test_acc=0.50% best=1.04% lr=5.045e-05 time=13.0s est_300=1h 06m 48s
+[ALG:DeiT-Ti][004/300] loss=59.8342 ce=5.3027 guidance=21.8126 beta=2.50 train_acc=0.25% test_acc=0.54% best=1.04% lr=7.5425e-05 time=12.9s est_300=1h 06m 16s
+[ALG:DeiT-Ti][005/300] loss=57.4023 ce=5.3032 guidance=20.8396 beta=2.50 train_acc=0.39% test_acc=0.78% best=1.04% lr=0.0001004 time=12.8s est_300=1h 05m 49s
+[ALG:DeiT-Ti][006/300] loss=56.5204 ce=5.3000 guidance=20.4881 beta=2.50 train_acc=0.39% test_acc=0.83% best=1.04% lr=0.000125375 time=11.6s est_300=1h 04m 31s
+[ALG:DeiT-Ti][007/300] loss=55.3078 ce=5.2868 guidance=20.0084 beta=2.50 train_acc=0.92% test_acc=1.24% best=1.24% lr=0.00015035 time=11.3s est_300=1h 03m 24s
+[ALG:DeiT-Ti][008/300] loss=54.0327 ce=5.2620 guidance=19.5083 beta=2.50 train_acc=1.02% test_acc=1.40% best=1.40% lr=0.000175325 time=10.6s est_300=1h 02m 08s
+[ALG:DeiT-Ti][009/300] loss=53.5203 ce=5.2041 guidance=19.3265 beta=2.50 train_acc=1.14% test_acc=1.67% best=1.67% lr=0.0002003 time=12.8s est_300=1h 02m 21s
+[ALG:DeiT-Ti][010/300] loss=51.7067 ce=5.1317 guidance=18.6300 beta=2.50 train_acc=1.53% test_acc=2.28% best=2.28% lr=0.000225275 time=11.5s est_300=1h 01m 53s
+[ALG:DeiT-Ti][011/300] loss=50.2358 ce=5.0400 guidance=18.0783 beta=2.50 train_acc=2.38% test_acc=4.16% best=4.16% lr=0.00025025 time=12.3s est_300=1h 01m 52s
+[ALG:DeiT-Ti][012/300] loss=49.4414 ce=4.9442 guidance=17.7989 beta=2.50 train_acc=2.77% test_acc=4.50% best=4.50% lr=0.000275225 time=13.6s est_300=1h 02m 23s
+[ALG:DeiT-Ti][013/300] loss=48.2451 ce=4.8707 guidance=17.3498 beta=2.50 train_acc=3.29% test_acc=4.66% best=4.66% lr=0.0003002 time=13.4s est_300=1h 02m 44s
+[ALG:DeiT-Ti][014/300] loss=47.5785 ce=4.7579 guidance=17.1282 beta=2.50 train_acc=4.42% test_acc=5.63% best=5.63% lr=0.000325175 time=12.8s est_300=1h 02m 49s
+[ALG:DeiT-Ti][015/300] loss=46.5675 ce=4.6662 guidance=16.7605 beta=2.50 train_acc=4.86% test_acc=7.39% best=7.39% lr=0.00035015 time=12.5s est_300=1h 02m 48s
+[ALG:DeiT-Ti][016/300] loss=45.4082 ce=4.5501 guidance=16.3432 beta=2.50 train_acc=6.50% test_acc=9.48% best=9.48% lr=0.000375125 time=13.6s est_300=1h 03m 07s
+[ALG:DeiT-Ti][017/300] loss=44.8510 ce=4.4674 guidance=16.1534 beta=2.50 train_acc=7.00% test_acc=10.08% best=10.08% lr=0.0004001 time=13.8s est_300=1h 03m 28s
+[ALG:DeiT-Ti][018/300] loss=43.7097 ce=4.3949 guidance=15.7259 beta=2.50 train_acc=8.10% test_acc=11.24% best=11.24% lr=0.000425075 time=13.1s est_300=1h 03m 34s
+[ALG:DeiT-Ti][019/300] loss=43.3328 ce=4.3215 guidance=15.6045 beta=2.50 train_acc=8.64% test_acc=13.01% best=13.01% lr=0.00045005 time=13.4s est_300=1h 03m 45s
+[ALG:DeiT-Ti][020/300] loss=42.5251 ce=4.2606 guidance=15.3058 beta=2.50 train_acc=9.46% test_acc=13.38% best=13.38% lr=0.000475025 time=12.8s est_300=1h 03m 46s
+[ALG:DeiT-Ti][021/300] loss=42.3703 ce=4.1901 guidance=15.2721 beta=2.50 train_acc=10.02% test_acc=13.19% best=13.38% lr=0.00049459153 time=13.3s est_300=1h 03m 54s
+[ALG:DeiT-Ti][022/300] loss=41.4302 ce=4.0989 guidance=14.9325 beta=2.50 train_acc=11.29% test_acc=16.36% best=16.36% lr=0.0004940394 time=12.8s est_300=1h 03m 54s
+[ALG:DeiT-Ti][023/300] loss=40.9492 ce=4.0488 guidance=14.7602 beta=2.50 train_acc=12.02% test_acc=15.96% best=16.36% lr=0.00049346078 time=10.6s est_300=1h 03m 26s
+[ALG:DeiT-Ti][024/300] loss=40.3361 ce=3.9901 guidance=14.5384 beta=2.50 train_acc=12.96% test_acc=16.86% best=16.86% lr=0.00049285573 time=11.1s est_300=1h 03m 06s
+[ALG:DeiT-Ti][025/300] loss=39.5134 ce=3.9165 guidance=14.2387 beta=2.50 train_acc=14.42% test_acc=18.80% best=18.80% lr=0.00049222433 time=10.7s est_300=1h 02m 42s
+[ALG:DeiT-Ti][026/300] loss=39.4451 ce=3.8790 guidance=14.2264 beta=2.50 train_acc=14.78% test_acc=19.74% best=19.74% lr=0.00049156664 time=11.5s est_300=1h 02m 30s
+[ALG:DeiT-Ti][027/300] loss=38.7732 ce=3.8306 guidance=13.9771 beta=2.50 train_acc=15.85% test_acc=21.04% best=21.04% lr=0.00049088274 time=13.0s est_300=1h 02m 36s
+[ALG:DeiT-Ti][028/300] loss=38.2525 ce=3.7659 guidance=13.7946 beta=2.50 train_acc=17.12% test_acc=20.97% best=21.04% lr=0.00049017269 time=13.5s est_300=1h 02m 47s
+[ALG:DeiT-Ti][029/300] loss=37.8674 ce=3.7262 guidance=13.6565 beta=2.50 train_acc=17.65% test_acc=23.04% best=23.04% lr=0.00048943658 time=13.0s est_300=1h 02m 51s
+[ALG:DeiT-Ti][030/300] loss=37.4566 ce=3.6819 guidance=13.5099 beta=2.50 train_acc=18.21% test_acc=24.04% best=24.04% lr=0.00048867448 time=13.1s est_300=1h 02m 56s
+[ALG:DeiT-Ti][031/300] loss=36.9849 ce=3.6376 guidance=13.3389 beta=2.50 train_acc=18.77% test_acc=24.89% best=24.89% lr=0.00048788649 time=12.9s est_300=1h 02m 58s
+[ALG:DeiT-Ti][032/300] loss=36.8391 ce=3.6220 guidance=13.2868 beta=2.50 train_acc=19.07% test_acc=23.82% best=24.89% lr=0.00048707268 time=12.0s est_300=1h 02m 53s
+[ALG:DeiT-Ti][033/300] loss=36.3969 ce=3.5576 guidance=13.1357 beta=2.50 train_acc=20.43% test_acc=26.10% best=26.10% lr=0.00048623315 time=13.0s est_300=1h 02m 57s
+[ALG:DeiT-Ti][034/300] loss=36.1593 ce=3.5239 guidance=13.0542 beta=2.50 train_acc=19.90% test_acc=26.96% best=26.96% lr=0.00048536799 time=13.2s est_300=1h 03m 02s
+[ALG:DeiT-Ti][035/300] loss=36.1069 ce=3.4777 guidance=13.0517 beta=2.50 train_acc=21.11% test_acc=27.42% best=27.42% lr=0.00048447729 time=12.8s est_300=1h 03m 04s
+[ALG:DeiT-Ti][036/300] loss=35.4908 ce=3.4444 guidance=12.8186 beta=2.50 train_acc=21.47% test_acc=27.60% best=27.60% lr=0.00048356116 time=12.8s est_300=1h 03m 06s
+[ALG:DeiT-Ti][037/300] loss=35.4569 ce=3.4034 guidance=12.8214 beta=2.50 train_acc=22.81% test_acc=26.25% best=27.60% lr=0.00048261968 time=12.9s est_300=1h 03m 08s
+[ALG:DeiT-Ti][038/300] loss=35.1206 ce=3.3648 guidance=12.7023 beta=2.50 train_acc=23.39% test_acc=29.17% best=29.17% lr=0.00048165297 time=13.1s est_300=1h 03m 12s
+[ALG:DeiT-Ti][039/300] loss=34.8303 ce=3.3328 guidance=12.5990 beta=2.50 train_acc=24.42% test_acc=28.96% best=29.17% lr=0.00048066113 time=13.1s est_300=1h 03m 15s
+[ALG:DeiT-Ti][040/300] loss=34.7813 ce=3.3486 guidance=12.5731 beta=2.50 train_acc=23.47% test_acc=30.31% best=30.31% lr=0.00047964427 time=13.2s est_300=1h 03m 19s
+[ALG:DeiT-Ti][041/300] loss=34.3975 ce=3.2914 guidance=12.4425 beta=2.50 train_acc=24.61% test_acc=30.03% best=30.31% lr=0.0004786025 time=12.1s est_300=1h 03m 15s
+[ALG:DeiT-Ti][042/300] loss=34.1332 ce=3.2615 guidance=12.3487 beta=2.50 train_acc=25.48% test_acc=29.53% best=30.31% lr=0.00047753594 time=13.0s est_300=1h 03m 18s
+[ALG:DeiT-Ti][043/300] loss=33.9411 ce=3.2223 guidance=12.2875 beta=2.50 train_acc=25.59% test_acc=32.19% best=32.19% lr=0.0004764447 time=13.0s est_300=1h 03m 20s
+[ALG:DeiT-Ti][044/300] loss=33.5313 ce=3.2427 guidance=12.1154 beta=2.50 train_acc=25.53% test_acc=30.82% best=32.19% lr=0.0004753289 time=12.9s est_300=1h 03m 22s
+[ALG:DeiT-Ti][045/300] loss=33.3364 ce=3.1687 guidance=12.0671 beta=2.50 train_acc=27.04% test_acc=31.48% best=32.19% lr=0.00047418866 time=12.7s est_300=1h 03m 22s
+[ALG:DeiT-Ti][046/300] loss=32.7346 ce=3.1668 guidance=11.8271 beta=2.50 train_acc=27.16% test_acc=31.64% best=32.19% lr=0.00047302411 time=12.1s est_300=1h 03m 19s
+[ALG:DeiT-Ti][047/300] loss=32.4046 ce=3.1202 guidance=11.7137 beta=2.50 train_acc=27.51% test_acc=32.21% best=32.21% lr=0.00047183539 time=13.3s est_300=1h 03m 23s
+[ALG:DeiT-Ti][048/300] loss=31.9543 ce=3.1541 guidance=11.5201 beta=2.50 train_acc=27.29% test_acc=31.36% best=32.21% lr=0.0004706226 time=12.4s est_300=1h 03m 21s
+[ALG:DeiT-Ti][049/300] loss=31.6680 ce=3.0485 guidance=11.4478 beta=2.50 train_acc=29.47% test_acc=33.15% best=33.15% lr=0.0004693859 time=13.5s est_300=1h 03m 26s
+[ALG:DeiT-Ti][050/300] loss=31.4770 ce=3.0448 guidance=11.3729 beta=2.50 train_acc=29.59% test_acc=33.85% best=33.85% lr=0.00046812542 time=12.9s est_300=1h 03m 27s
+[ALG:DeiT-Ti][051/300] loss=31.0703 ce=3.0333 guidance=11.2148 beta=2.50 train_acc=29.70% test_acc=34.67% best=34.67% lr=0.00046684129 time=13.6s est_300=1h 03m 33s
+[ALG:DeiT-Ti][052/300] loss=30.9956 ce=3.0210 guidance=11.1898 beta=2.50 train_acc=29.72% test_acc=35.57% best=35.57% lr=0.00046553365 time=13.0s est_300=1h 03m 34s
+[ALG:DeiT-Ti][053/300] loss=30.6885 ce=2.9873 guidance=11.0805 beta=2.50 train_acc=30.89% test_acc=35.02% best=35.57% lr=0.00046420265 time=11.5s est_300=1h 03m 28s
+[ALG:DeiT-Ti][054/300] loss=30.5538 ce=2.9073 guidance=11.0586 beta=2.50 train_acc=32.78% test_acc=34.98% best=35.57% lr=0.00046284844 time=12.6s est_300=1h 03m 27s
+[ALG:DeiT-Ti][055/300] loss=30.2975 ce=2.9325 guidance=10.9460 beta=2.50 train_acc=30.98% test_acc=35.19% best=35.57% lr=0.00046147116 time=12.2s est_300=1h 03m 25s
+[ALG:DeiT-Ti][056/300] loss=30.1647 ce=2.9229 guidance=10.8967 beta=2.50 train_acc=31.93% test_acc=36.16% best=36.16% lr=0.00046007097 time=13.1s est_300=1h 03m 27s
+[ALG:DeiT-Ti][057/300] loss=30.1208 ce=2.8830 guidance=10.8952 beta=2.50 train_acc=32.78% test_acc=36.97% best=36.97% lr=0.00045864801 time=12.6s est_300=1h 03m 26s
+[ALG:DeiT-Ti][058/300] loss=30.0851 ce=2.8654 guidance=10.8879 beta=2.50 train_acc=33.27% test_acc=36.66% best=36.97% lr=0.00045720244 time=12.2s est_300=1h 03m 24s
+[ALG:DeiT-Ti][059/300] loss=29.8370 ce=2.7910 guidance=10.8184 beta=2.50 train_acc=33.58% test_acc=36.30% best=36.97% lr=0.00045573443 time=10.7s est_300=1h 03m 14s
+[ALG:DeiT-Ti][060/300] loss=29.6186 ce=2.8284 guidance=10.7161 beta=2.50 train_acc=34.60% test_acc=37.07% best=37.07% lr=0.00045424413 time=11.5s est_300=1h 03m 08s
+[ALG:DeiT-Ti][061/300] loss=29.5370 ce=2.7889 guidance=10.6992 beta=2.50 train_acc=34.58% test_acc=37.47% best=37.47% lr=0.00045273171 time=12.0s est_300=1h 03m 05s
+[ALG:DeiT-Ti][062/300] loss=29.2478 ce=2.7783 guidance=10.5878 beta=2.50 train_acc=35.14% test_acc=38.85% best=38.85% lr=0.00045119733 time=12.6s est_300=1h 03m 05s
+[ALG:DeiT-Ti][063/300] loss=29.2325 ce=2.7618 guidance=10.5883 beta=2.50 train_acc=35.31% test_acc=36.99% best=38.85% lr=0.00044964115 time=11.6s est_300=1h 03m 00s
+[ALG:DeiT-Ti][064/300] loss=29.3269 ce=2.7877 guidance=10.6157 beta=2.50 train_acc=35.24% test_acc=37.31% best=38.85% lr=0.00044806337 time=13.0s est_300=1h 03m 02s
+[ALG:DeiT-Ti][065/300] loss=29.0508 ce=2.7354 guidance=10.5261 beta=2.50 train_acc=36.06% test_acc=38.38% best=38.85% lr=0.00044646413 time=12.1s est_300=1h 03m 00s
+[ALG:DeiT-Ti][066/300] loss=28.8774 ce=2.6739 guidance=10.4814 beta=2.50 train_acc=37.21% test_acc=39.01% best=39.01% lr=0.00044484363 time=13.1s est_300=1h 03m 02s
+[ALG:DeiT-Ti][067/300] loss=28.8331 ce=2.6173 guidance=10.4863 beta=2.50 train_acc=38.03% test_acc=38.14% best=39.01% lr=0.00044320203 time=12.9s est_300=1h 03m 03s
+[ALG:DeiT-Ti][068/300] loss=28.7038 ce=2.6753 guidance=10.4114 beta=2.50 train_acc=37.35% test_acc=38.51% best=39.01% lr=0.00044153952 time=13.2s est_300=1h 03m 06s
+[ALG:DeiT-Ti][069/300] loss=28.7264 ce=2.6858 guidance=10.4162 beta=2.50 train_acc=37.08% test_acc=38.13% best=39.01% lr=0.00043985628 time=13.2s est_300=1h 03m 08s
+[ALG:DeiT-Ti][070/300] loss=28.5083 ce=2.6385 guidance=10.3479 beta=2.50 train_acc=37.99% test_acc=39.89% best=39.89% lr=0.00043815249 time=13.8s est_300=1h 03m 13s
+[ALG:DeiT-Ti][071/300] loss=28.2587 ce=2.6374 guidance=10.2485 beta=2.50 train_acc=37.43% test_acc=39.56% best=39.89% lr=0.00043642834 time=13.1s est_300=1h 03m 15s
+[ALG:DeiT-Ti][072/300] loss=28.2531 ce=2.5805 guidance=10.2690 beta=2.50 train_acc=39.27% test_acc=39.58% best=39.89% lr=0.00043468403 time=11.7s est_300=1h 03m 11s
+[ALG:DeiT-Ti][073/300] loss=28.1359 ce=2.5651 guidance=10.2283 beta=2.50 train_acc=38.57% test_acc=37.97% best=39.89% lr=0.00043291974 time=10.7s est_300=1h 03m 03s
+[ALG:DeiT-Ti][074/300] loss=28.1684 ce=2.5217 guidance=10.2587 beta=2.50 train_acc=39.89% test_acc=38.83% best=39.89% lr=0.00043113566 time=12.9s est_300=1h 03m 04s
+[ALG:DeiT-Ti][075/300] loss=28.1757 ce=2.5398 guidance=10.2543 beta=2.50 train_acc=39.33% test_acc=39.66% best=39.89% lr=0.00042933199 time=12.3s est_300=1h 03m 03s
+[ALG:DeiT-Ti][076/300] loss=27.9742 ce=2.4718 guidance=10.2010 beta=2.50 train_acc=40.76% test_acc=40.46% best=40.46% lr=0.00042750893 time=12.9s est_300=1h 03m 04s
+[ALG:DeiT-Ti][077/300] loss=27.9000 ce=2.5264 guidance=10.1494 beta=2.50 train_acc=40.25% test_acc=40.37% best=40.46% lr=0.00042566668 time=12.4s est_300=1h 03m 03s
+[ALG:DeiT-Ti][078/300] loss=27.8240 ce=2.5231 guidance=10.1204 beta=2.50 train_acc=40.44% test_acc=39.64% best=40.46% lr=0.00042380544 time=11.6s est_300=1h 02m 59s
+[ALG:DeiT-Ti][079/300] loss=27.7257 ce=2.5558 guidance=10.0680 beta=2.50 train_acc=40.03% test_acc=39.44% best=40.46% lr=0.00042192541 time=11.9s est_300=1h 02m 56s
+[ALG:DeiT-Ti][080/300] loss=27.6876 ce=2.4773 guidance=10.0841 beta=2.50 train_acc=40.76% test_acc=40.73% best=40.73% lr=0.0004200268 time=11.5s est_300=1h 02m 52s
+[ALG:DeiT-Ti][081/300] loss=27.5994 ce=2.4415 guidance=10.0631 beta=2.50 train_acc=41.51% test_acc=41.15% best=41.15% lr=0.00041810983 time=12.1s est_300=1h 02m 51s
+[ALG:DeiT-Ti][082/300] loss=27.6044 ce=2.4362 guidance=10.0673 beta=2.50 train_acc=42.48% test_acc=40.56% best=41.15% lr=0.00041617469 time=13.2s est_300=1h 02m 53s
+[ALG:DeiT-Ti][083/300] loss=27.3392 ce=2.4379 guidance=9.9605 beta=2.50 train_acc=42.15% test_acc=40.47% best=41.15% lr=0.0004142216 time=13.0s est_300=1h 02m 55s
+[ALG:DeiT-Ti][084/300] loss=27.1839 ce=2.3973 guidance=9.9146 beta=2.50 train_acc=43.56% test_acc=40.77% best=41.15% lr=0.00041225078 time=11.7s est_300=1h 02m 51s
+[ALG:DeiT-Ti][085/300] loss=27.2323 ce=2.4383 guidance=9.9176 beta=2.50 train_acc=41.78% test_acc=40.20% best=41.15% lr=0.00041026244 time=11.8s est_300=1h 02m 49s
+[ALG:DeiT-Ti][086/300] loss=27.2634 ce=2.3572 guidance=9.9625 beta=2.50 train_acc=43.61% test_acc=40.63% best=41.15% lr=0.0004082568 time=13.1s est_300=1h 02m 51s
+[ALG:DeiT-Ti][087/300] loss=27.1332 ce=2.3552 guidance=9.9112 beta=2.50 train_acc=43.36% test_acc=40.42% best=41.15% lr=0.00040623408 time=13.2s est_300=1h 02m 53s
+[ALG:DeiT-Ti][088/300] loss=27.1508 ce=2.3355 guidance=9.9261 beta=2.50 train_acc=44.07% test_acc=40.20% best=41.15% lr=0.0004041945 time=13.0s est_300=1h 02m 54s
+[ALG:DeiT-Ti][089/300] loss=27.1060 ce=2.3320 guidance=9.9096 beta=2.50 train_acc=43.82% test_acc=41.85% best=41.85% lr=0.00040213828 time=13.7s est_300=1h 02m 58s
+[ALG:DeiT-Ti][090/300] loss=26.9602 ce=2.3323 guidance=9.8511 beta=2.50 train_acc=44.28% test_acc=41.96% best=41.96% lr=0.00040006566 time=14.3s est_300=1h 03m 04s
+[ALG:DeiT-Ti][091/300] loss=26.9022 ce=2.3304 guidance=9.8287 beta=2.50 train_acc=44.94% test_acc=39.78% best=41.96% lr=0.00039797685 time=13.8s est_300=1h 03m 07s
+[ALG:DeiT-Ti][092/300] loss=26.7022 ce=2.2871 guidance=9.7660 beta=2.50 train_acc=45.01% test_acc=41.39% best=41.96% lr=0.00039587209 time=13.8s est_300=1h 03m 11s
+[ALG:DeiT-Ti][093/300] loss=26.8720 ce=2.2428 guidance=9.8517 beta=2.50 train_acc=46.21% test_acc=42.60% best=42.60% lr=0.00039375161 time=13.6s est_300=1h 03m 14s
+[ALG:DeiT-Ti][094/300] loss=26.6613 ce=2.2351 guidance=9.7705 beta=2.50 train_acc=46.62% test_acc=42.13% best=42.60% lr=0.00039161564 time=14.1s est_300=1h 03m 19s
+[ALG:DeiT-Ti][095/300] loss=26.5961 ce=2.2624 guidance=9.7335 beta=2.50 train_acc=45.41% test_acc=42.85% best=42.85% lr=0.00038946441 time=13.4s est_300=1h 03m 21s
+[ALG:DeiT-Ti][096/300] loss=26.5677 ce=2.2498 guidance=9.7272 beta=2.50 train_acc=46.09% test_acc=41.30% best=42.85% lr=0.00038729816 time=14.0s est_300=1h 03m 26s
+[ALG:DeiT-Ti][097/300] loss=26.5433 ce=2.2051 guidance=9.7353 beta=2.50 train_acc=47.47% test_acc=42.54% best=42.85% lr=0.00038511713 time=13.6s est_300=1h 03m 28s
+[ALG:DeiT-Ti][098/300] loss=26.6190 ce=2.1949 guidance=9.7696 beta=2.50 train_acc=47.50% test_acc=42.32% best=42.85% lr=0.00038292156 time=12.8s est_300=1h 03m 29s
+[ALG:DeiT-Ti][099/300] loss=26.4645 ce=2.1896 guidance=9.7100 beta=2.50 train_acc=47.61% test_acc=43.01% best=43.01% lr=0.00038071168 time=13.3s est_300=1h 03m 30s
+[ALG:DeiT-Ti][100/300] loss=26.4880 ce=2.1977 guidance=9.7161 beta=2.50 train_acc=47.88% test_acc=41.49% best=43.01% lr=0.00037848775 time=13.5s est_300=1h 03m 33s
+[ALG:DeiT-Ti][101/300] loss=26.3586 ce=2.1678 guidance=9.6763 beta=2.50 train_acc=48.37% test_acc=41.61% best=43.01% lr=0.00037625 time=12.2s est_300=1h 03m 31s
+[ALG:DeiT-Ti][102/300] loss=26.0826 ce=2.1701 guidance=9.5650 beta=2.50 train_acc=48.96% test_acc=41.99% best=43.01% lr=0.00037399868 time=11.6s est_300=1h 03m 28s
+[ALG:DeiT-Ti][103/300] loss=26.1232 ce=2.1707 guidance=9.5810 beta=2.50 train_acc=48.68% test_acc=41.39% best=43.01% lr=0.00037173403 time=11.4s est_300=1h 03m 24s
+[ALG:DeiT-Ti][104/300] loss=26.1396 ce=2.1172 guidance=9.6090 beta=2.50 train_acc=49.07% test_acc=43.10% best=43.10% lr=0.00036945631 time=12.0s est_300=1h 03m 22s
+[ALG:DeiT-Ti][105/300] loss=26.2008 ce=2.1282 guidance=9.6290 beta=2.50 train_acc=49.34% test_acc=43.32% best=43.32% lr=0.00036716577 time=11.6s est_300=1h 03m 19s
+[ALG:DeiT-Ti][106/300] loss=26.1162 ce=2.1537 guidance=9.5850 beta=2.50 train_acc=48.49% test_acc=42.79% best=43.32% lr=0.00036486265 time=11.6s est_300=1h 03m 16s
+[ALG:DeiT-Ti][107/300] loss=25.9541 ce=2.1095 guidance=9.5378 beta=2.50 train_acc=49.07% test_acc=42.68% best=43.32% lr=0.00036254721 time=11.6s est_300=1h 03m 13s
+[ALG:DeiT-Ti][108/300] loss=26.0842 ce=2.1140 guidance=9.5881 beta=2.50 train_acc=49.17% test_acc=43.53% best=43.53% lr=0.0003602197 time=12.8s est_300=1h 03m 14s
+[ALG:DeiT-Ti][109/300] loss=25.8345 ce=2.1130 guidance=9.4886 beta=2.50 train_acc=49.42% test_acc=42.56% best=43.53% lr=0.00035788037 time=13.5s est_300=1h 03m 16s
+[ALG:DeiT-Ti][110/300] loss=25.8260 ce=2.0828 guidance=9.4973 beta=2.50 train_acc=50.12% test_acc=42.66% best=43.53% lr=0.0003555295 time=13.1s est_300=1h 03m 17s
+[ALG:DeiT-Ti][111/300] loss=25.9150 ce=2.0975 guidance=9.5270 beta=2.50 train_acc=49.95% test_acc=42.65% best=43.53% lr=0.00035316732 time=13.8s est_300=1h 03m 20s
+[ALG:DeiT-Ti][112/300] loss=25.7714 ce=2.0942 guidance=9.4709 beta=2.50 train_acc=50.20% test_acc=41.15% best=43.53% lr=0.0003507941 time=14.1s est_300=1h 03m 24s
+[ALG:DeiT-Ti][113/300] loss=25.5294 ce=2.0851 guidance=9.3777 beta=2.50 train_acc=50.05% test_acc=43.20% best=43.53% lr=0.00034841011 time=13.9s est_300=1h 03m 27s
+[ALG:DeiT-Ti][114/300] loss=25.7198 ce=2.0695 guidance=9.4601 beta=2.50 train_acc=50.42% test_acc=42.94% best=43.53% lr=0.00034601559 time=12.8s est_300=1h 03m 28s
+[ALG:DeiT-Ti][115/300] loss=25.5050 ce=2.0490 guidance=9.3824 beta=2.50 train_acc=51.29% test_acc=43.73% best=43.73% lr=0.00034361083 time=12.4s est_300=1h 03m 27s
+[ALG:DeiT-Ti][116/300] loss=25.5030 ce=2.0467 guidance=9.3825 beta=2.50 train_acc=51.04% test_acc=43.92% best=43.92% lr=0.00034119607 time=12.3s est_300=1h 03m 26s
+[ALG:DeiT-Ti][117/300] loss=25.4253 ce=2.0726 guidance=9.3411 beta=2.50 train_acc=50.03% test_acc=43.17% best=43.92% lr=0.00033877158 time=12.5s est_300=1h 03m 25s
+[ALG:DeiT-Ti][118/300] loss=25.3869 ce=2.0298 guidance=9.3429 beta=2.50 train_acc=51.56% test_acc=43.46% best=43.92% lr=0.00033633764 time=12.6s est_300=1h 03m 25s
+[ALG:DeiT-Ti][119/300] loss=25.3537 ce=1.9998 guidance=9.3415 beta=2.50 train_acc=52.11% test_acc=42.79% best=43.92% lr=0.0003338945 time=10.6s est_300=1h 03m 20s
+[ALG:DeiT-Ti][120/300] loss=25.4572 ce=1.9848 guidance=9.3889 beta=2.50 train_acc=52.43% test_acc=42.68% best=43.92% lr=0.00033144243 time=12.6s est_300=1h 03m 20s
+[ALG:DeiT-Ti][121/300] loss=25.2321 ce=1.9644 guidance=9.3071 beta=2.50 train_acc=52.62% test_acc=41.85% best=43.92% lr=0.00032898171 time=11.2s est_300=1h 03m 16s
+[ALG:DeiT-Ti][122/300] loss=25.4230 ce=1.9898 guidance=9.3733 beta=2.50 train_acc=52.19% test_acc=42.80% best=43.92% lr=0.0003265126 time=13.0s est_300=1h 03m 17s
+[ALG:DeiT-Ti][123/300] loss=25.2148 ce=1.9581 guidance=9.3027 beta=2.50 train_acc=52.85% test_acc=42.60% best=43.92% lr=0.00032403537 time=12.4s est_300=1h 03m 16s
+[ALG:DeiT-Ti][124/300] loss=25.1978 ce=1.9490 guidance=9.2995 beta=2.50 train_acc=53.77% test_acc=42.54% best=43.92% lr=0.0003215503 time=12.9s est_300=1h 03m 17s
+[ALG:DeiT-Ti][125/300] loss=25.0831 ce=1.9860 guidance=9.2389 beta=2.50 train_acc=52.97% test_acc=42.80% best=43.92% lr=0.00031905766 time=13.1s est_300=1h 03m 18s
+[ALG:DeiT-Ti][126/300] loss=25.1139 ce=1.9432 guidance=9.2683 beta=2.50 train_acc=53.23% test_acc=42.34% best=43.92% lr=0.00031655771 time=12.0s est_300=1h 03m 17s
+[ALG:DeiT-Ti][127/300] loss=25.1061 ce=1.9049 guidance=9.2805 beta=2.50 train_acc=54.03% test_acc=42.80% best=43.92% lr=0.00031405075 time=12.3s est_300=1h 03m 16s
+[ALG:DeiT-Ti][128/300] loss=25.0204 ce=1.9192 guidance=9.2405 beta=2.50 train_acc=53.57% test_acc=43.68% best=43.92% lr=0.00031153703 time=14.0s est_300=1h 03m 19s
+[ALG:DeiT-Ti][129/300] loss=25.0575 ce=1.8653 guidance=9.2769 beta=2.50 train_acc=55.59% test_acc=41.85% best=43.92% lr=0.00030901684 time=12.1s est_300=1h 03m 17s
+[ALG:DeiT-Ti][130/300] loss=25.0014 ce=1.9402 guidance=9.2245 beta=2.50 train_acc=53.36% test_acc=43.20% best=43.92% lr=0.00030649045 time=11.6s est_300=1h 03m 15s
+[ALG:DeiT-Ti][131/300] loss=25.1379 ce=1.9106 guidance=9.2909 beta=2.50 train_acc=53.96% test_acc=41.91% best=43.92% lr=0.00030395814 time=12.0s est_300=1h 03m 13s
+[ALG:DeiT-Ti][132/300] loss=24.9356 ce=1.8846 guidance=9.2204 beta=2.50 train_acc=54.62% test_acc=42.68% best=43.92% lr=0.00030142019 time=12.9s est_300=1h 03m 14s
+[ALG:DeiT-Ti][133/300] loss=24.7644 ce=1.8623 guidance=9.1609 beta=2.50 train_acc=55.88% test_acc=43.70% best=43.92% lr=0.00029887688 time=11.3s est_300=1h 03m 11s
+[ALG:DeiT-Ti][134/300] loss=24.8160 ce=1.8651 guidance=9.1804 beta=2.50 train_acc=55.66% test_acc=43.39% best=43.92% lr=0.00029632847 time=11.5s est_300=1h 03m 09s
+[ALG:DeiT-Ti][135/300] loss=24.9727 ce=1.8509 guidance=9.2487 beta=2.50 train_acc=56.00% test_acc=43.42% best=43.92% lr=0.00029377526 time=11.8s est_300=1h 03m 07s
+[ALG:DeiT-Ti][136/300] loss=24.7199 ce=1.8392 guidance=9.1523 beta=2.50 train_acc=56.30% test_acc=43.49% best=43.92% lr=0.00029121753 time=11.0s est_300=1h 03m 03s
+[ALG:DeiT-Ti][137/300] loss=24.6897 ce=1.8943 guidance=9.1182 beta=2.50 train_acc=54.89% test_acc=41.84% best=43.92% lr=0.00028865555 time=13.0s est_300=1h 03m 04s
+[ALG:DeiT-Ti][138/300] loss=24.6235 ce=1.8430 guidance=9.1122 beta=2.50 train_acc=56.15% test_acc=42.44% best=43.92% lr=0.0002860896 time=14.0s est_300=1h 03m 07s
+[ALG:DeiT-Ti][139/300] loss=24.5835 ce=1.7884 guidance=9.1180 beta=2.50 train_acc=56.67% test_acc=42.94% best=43.92% lr=0.00028351998 time=11.8s est_300=1h 03m 05s
+[ALG:DeiT-Ti][140/300] loss=24.4897 ce=1.8363 guidance=9.0613 beta=2.50 train_acc=56.06% test_acc=42.39% best=43.92% lr=0.00028094694 time=12.1s est_300=1h 03m 04s
+[ALG:DeiT-Ti][141/300] loss=24.5725 ce=1.7953 guidance=9.1109 beta=2.50 train_acc=57.08% test_acc=43.63% best=43.92% lr=0.00027837079 time=12.2s est_300=1h 03m 03s
+[ALG:DeiT-Ti][142/300] loss=24.5446 ce=1.8004 guidance=9.0977 beta=2.50 train_acc=57.22% test_acc=43.23% best=43.92% lr=0.00027579181 time=12.1s est_300=1h 03m 02s
+[ALG:DeiT-Ti][143/300] loss=24.4450 ce=1.7763 guidance=9.0675 beta=2.50 train_acc=57.42% test_acc=43.42% best=43.92% lr=0.00027321027 time=11.5s est_300=1h 03m 00s
+[ALG:DeiT-Ti][144/300] loss=24.5090 ce=1.7850 guidance=9.0896 beta=2.50 train_acc=57.49% test_acc=42.82% best=43.92% lr=0.00027062645 time=11.5s est_300=1h 02m 58s
+[ALG:DeiT-Ti][145/300] loss=24.5967 ce=1.8043 guidance=9.1169 beta=2.50 train_acc=57.85% test_acc=42.65% best=43.92% lr=0.00026804065 time=11.3s est_300=1h 02m 55s
+[ALG:DeiT-Ti][146/300] loss=24.2499 ce=1.7796 guidance=8.9881 beta=2.50 train_acc=57.85% test_acc=42.85% best=43.92% lr=0.00026545315 time=11.5s est_300=1h 02m 53s
+[ALG:DeiT-Ti][147/300] loss=24.5443 ce=1.7638 guidance=9.1122 beta=2.50 train_acc=58.15% test_acc=42.32% best=43.92% lr=0.00026286422 time=13.1s est_300=1h 02m 54s
+[ALG:DeiT-Ti][148/300] loss=24.2507 ce=1.7639 guidance=8.9947 beta=2.50 train_acc=57.46% test_acc=42.32% best=43.92% lr=0.00026027416 time=11.4s est_300=1h 02m 52s
+[ALG:DeiT-Ti][149/300] loss=24.2609 ce=1.7338 guidance=9.0109 beta=2.50 train_acc=58.83% test_acc=42.96% best=43.92% lr=0.00025768325 time=11.5s est_300=1h 02m 49s
+[ALG:DeiT-Ti][150/300] loss=1.7904 ce=1.7904 guidance=0.0000 beta=0.00 train_acc=56.98% test_acc=42.66% best=43.92% lr=0.00025509177 time=12.3s est_300=1h 02m 49s
+[ALG:DeiT-Ti][151/300] loss=1.7540 ce=1.7540 guidance=0.0000 beta=0.00 train_acc=58.78% test_acc=43.13% best=43.92% lr=0.0002525 time=10.6s est_300=1h 02m 45s
+[ALG:DeiT-Ti][152/300] loss=1.6817 ce=1.6817 guidance=0.0000 beta=0.00 train_acc=59.43% test_acc=43.49% best=43.92% lr=0.00024990823 time=11.5s est_300=1h 02m 43s
+[ALG:DeiT-Ti][153/300] loss=1.7435 ce=1.7435 guidance=0.0000 beta=0.00 train_acc=57.83% test_acc=43.51% best=43.92% lr=0.00024731675 time=12.0s est_300=1h 02m 42s
+[ALG:DeiT-Ti][154/300] loss=1.6779 ce=1.6779 guidance=0.0000 beta=0.00 train_acc=59.88% test_acc=44.17% best=44.17% lr=0.00024472584 time=12.1s est_300=1h 02m 41s
+[ALG:DeiT-Ti][155/300] loss=1.6921 ce=1.6921 guidance=0.0000 beta=0.00 train_acc=59.87% test_acc=45.03% best=45.03% lr=0.00024213578 time=13.0s est_300=1h 02m 42s
+[ALG:DeiT-Ti][156/300] loss=1.7128 ce=1.7128 guidance=0.0000 beta=0.00 train_acc=58.68% test_acc=43.34% best=45.03% lr=0.00023954685 time=13.2s est_300=1h 02m 43s
+[ALG:DeiT-Ti][157/300] loss=1.6179 ce=1.6179 guidance=0.0000 beta=0.00 train_acc=61.45% test_acc=44.10% best=45.03% lr=0.00023695935 time=10.6s est_300=1h 02m 40s
+[ALG:DeiT-Ti][158/300] loss=1.6502 ce=1.6502 guidance=0.0000 beta=0.00 train_acc=60.11% test_acc=43.72% best=45.03% lr=0.00023437355 time=12.6s est_300=1h 02m 40s
+[ALG:DeiT-Ti][159/300] loss=1.6225 ce=1.6225 guidance=0.0000 beta=0.00 train_acc=60.61% test_acc=42.84% best=45.03% lr=0.00023178973 time=13.4s est_300=1h 02m 41s
+[ALG:DeiT-Ti][160/300] loss=1.6332 ce=1.6332 guidance=0.0000 beta=0.00 train_acc=61.31% test_acc=43.39% best=45.03% lr=0.00022920819 time=13.3s est_300=1h 02m 43s
+[ALG:DeiT-Ti][161/300] loss=1.5814 ce=1.5814 guidance=0.0000 beta=0.00 train_acc=62.18% test_acc=44.11% best=45.03% lr=0.00022662921 time=13.1s est_300=1h 02m 44s
+[ALG:DeiT-Ti][162/300] loss=1.6297 ce=1.6297 guidance=0.0000 beta=0.00 train_acc=60.36% test_acc=43.23% best=45.03% lr=0.00022405306 time=13.3s est_300=1h 02m 45s
+[ALG:DeiT-Ti][163/300] loss=1.5997 ce=1.5997 guidance=0.0000 beta=0.00 train_acc=61.92% test_acc=43.86% best=45.03% lr=0.00022148002 time=13.2s est_300=1h 02m 46s
+[ALG:DeiT-Ti][164/300] loss=1.5449 ce=1.5449 guidance=0.0000 beta=0.00 train_acc=62.98% test_acc=44.77% best=45.03% lr=0.0002189104 time=12.8s est_300=1h 02m 47s
+[ALG:DeiT-Ti][165/300] loss=1.5505 ce=1.5505 guidance=0.0000 beta=0.00 train_acc=63.74% test_acc=43.68% best=45.03% lr=0.00021634445 time=13.4s est_300=1h 02m 48s
+[ALG:DeiT-Ti][166/300] loss=1.5571 ce=1.5571 guidance=0.0000 beta=0.00 train_acc=62.70% test_acc=44.32% best=45.03% lr=0.00021378247 time=13.8s est_300=1h 02m 51s
+[ALG:DeiT-Ti][167/300] loss=1.5614 ce=1.5614 guidance=0.0000 beta=0.00 train_acc=61.94% test_acc=43.87% best=45.03% lr=0.00021122474 time=12.4s est_300=1h 02m 50s
+[ALG:DeiT-Ti][168/300] loss=1.5618 ce=1.5618 guidance=0.0000 beta=0.00 train_acc=62.84% test_acc=44.70% best=45.03% lr=0.00020867153 time=12.2s est_300=1h 02m 50s
+[ALG:DeiT-Ti][169/300] loss=1.4925 ce=1.4925 guidance=0.0000 beta=0.00 train_acc=63.88% test_acc=45.18% best=45.18% lr=0.00020612312 time=12.3s est_300=1h 02m 49s
+[ALG:DeiT-Ti][170/300] loss=1.5231 ce=1.5231 guidance=0.0000 beta=0.00 train_acc=63.74% test_acc=45.15% best=45.18% lr=0.00020357981 time=12.0s est_300=1h 02m 48s
+[ALG:DeiT-Ti][171/300] loss=1.5136 ce=1.5136 guidance=0.0000 beta=0.00 train_acc=63.47% test_acc=42.46% best=45.18% lr=0.00020104186 time=12.8s est_300=1h 02m 49s
+[ALG:DeiT-Ti][172/300] loss=1.4804 ce=1.4804 guidance=0.0000 beta=0.00 train_acc=64.96% test_acc=44.25% best=45.18% lr=0.00019850955 time=13.6s est_300=1h 02m 50s
+[ALG:DeiT-Ti][173/300] loss=1.5015 ce=1.5015 guidance=0.0000 beta=0.00 train_acc=64.35% test_acc=44.44% best=45.18% lr=0.00019598316 time=13.4s est_300=1h 02m 52s
+[ALG:DeiT-Ti][174/300] loss=1.5119 ce=1.5119 guidance=0.0000 beta=0.00 train_acc=63.72% test_acc=43.79% best=45.18% lr=0.00019346297 time=12.6s est_300=1h 02m 52s
+[ALG:DeiT-Ti][175/300] loss=1.4301 ce=1.4301 guidance=0.0000 beta=0.00 train_acc=66.07% test_acc=45.18% best=45.18% lr=0.00019094925 time=13.2s est_300=1h 02m 53s
+[ALG:DeiT-Ti][176/300] loss=1.4736 ce=1.4736 guidance=0.0000 beta=0.00 train_acc=65.42% test_acc=44.63% best=45.18% lr=0.00018844229 time=13.9s est_300=1h 02m 55s
+[ALG:DeiT-Ti][177/300] loss=1.4610 ce=1.4610 guidance=0.0000 beta=0.00 train_acc=65.10% test_acc=43.70% best=45.18% lr=0.00018594234 time=13.9s est_300=1h 02m 57s
+[ALG:DeiT-Ti][178/300] loss=1.4182 ce=1.4182 guidance=0.0000 beta=0.00 train_acc=66.12% test_acc=43.20% best=45.18% lr=0.0001834497 time=13.5s est_300=1h 02m 59s
+[ALG:DeiT-Ti][179/300] loss=1.4313 ce=1.4313 guidance=0.0000 beta=0.00 train_acc=65.46% test_acc=44.58% best=45.18% lr=0.00018096463 time=13.1s est_300=1h 03m 00s
+[ALG:DeiT-Ti][180/300] loss=1.4007 ce=1.4007 guidance=0.0000 beta=0.00 train_acc=66.49% test_acc=44.01% best=45.18% lr=0.0001784874 time=11.9s est_300=1h 02m 58s
+[ALG:DeiT-Ti][181/300] loss=1.4725 ce=1.4725 guidance=0.0000 beta=0.00 train_acc=65.17% test_acc=44.70% best=45.18% lr=0.00017601829 time=12.3s est_300=1h 02m 58s
+[ALG:DeiT-Ti][182/300] loss=1.3917 ce=1.3917 guidance=0.0000 beta=0.00 train_acc=66.78% test_acc=43.04% best=45.18% lr=0.00017355757 time=11.6s est_300=1h 02m 56s
+[ALG:DeiT-Ti][183/300] loss=1.3977 ce=1.3977 guidance=0.0000 beta=0.00 train_acc=67.26% test_acc=43.75% best=45.18% lr=0.0001711055 time=11.6s est_300=1h 02m 55s
+[ALG:DeiT-Ti][184/300] loss=1.3915 ce=1.3915 guidance=0.0000 beta=0.00 train_acc=67.12% test_acc=43.70% best=45.18% lr=0.00016866236 time=12.4s est_300=1h 02m 54s
+[ALG:DeiT-Ti][185/300] loss=1.3919 ce=1.3919 guidance=0.0000 beta=0.00 train_acc=67.20% test_acc=43.27% best=45.18% lr=0.00016622842 time=11.2s est_300=1h 02m 52s
+[ALG:DeiT-Ti][186/300] loss=1.4048 ce=1.4048 guidance=0.0000 beta=0.00 train_acc=66.58% test_acc=44.75% best=45.18% lr=0.00016380393 time=11.5s est_300=1h 02m 50s
+[ALG:DeiT-Ti][187/300] loss=1.3383 ce=1.3383 guidance=0.0000 beta=0.00 train_acc=67.58% test_acc=43.68% best=45.18% lr=0.00016138917 time=12.6s est_300=1h 02m 51s
+[ALG:DeiT-Ti][188/300] loss=1.3958 ce=1.3958 guidance=0.0000 beta=0.00 train_acc=66.51% test_acc=44.91% best=45.18% lr=0.00015898441 time=12.0s est_300=1h 02m 50s
+[ALG:DeiT-Ti][189/300] loss=1.3622 ce=1.3622 guidance=0.0000 beta=0.00 train_acc=67.76% test_acc=44.86% best=45.18% lr=0.00015658989 time=11.5s est_300=1h 02m 48s
+[ALG:DeiT-Ti][190/300] loss=1.3786 ce=1.3786 guidance=0.0000 beta=0.00 train_acc=67.03% test_acc=44.91% best=45.18% lr=0.0001542059 time=12.9s est_300=1h 02m 48s
+[ALG:DeiT-Ti][191/300] loss=1.3467 ce=1.3467 guidance=0.0000 beta=0.00 train_acc=68.44% test_acc=44.43% best=45.18% lr=0.00015183268 time=11.7s est_300=1h 02m 47s
+[ALG:DeiT-Ti][192/300] loss=1.3215 ce=1.3215 guidance=0.0000 beta=0.00 train_acc=68.16% test_acc=44.84% best=45.18% lr=0.0001494705 time=11.3s est_300=1h 02m 45s
+[ALG:DeiT-Ti][193/300] loss=1.3307 ce=1.3307 guidance=0.0000 beta=0.00 train_acc=68.38% test_acc=44.34% best=45.18% lr=0.00014711963 time=10.8s est_300=1h 02m 42s
+[ALG:DeiT-Ti][194/300] loss=1.3171 ce=1.3171 guidance=0.0000 beta=0.00 train_acc=68.78% test_acc=44.25% best=45.18% lr=0.0001447803 time=13.2s est_300=1h 02m 43s
+[ALG:DeiT-Ti][195/300] loss=1.3449 ce=1.3449 guidance=0.0000 beta=0.00 train_acc=67.87% test_acc=44.22% best=45.18% lr=0.00014245279 time=13.4s est_300=1h 02m 45s
+[ALG:DeiT-Ti][196/300] loss=1.2952 ce=1.2952 guidance=0.0000 beta=0.00 train_acc=69.11% test_acc=45.32% best=45.32% lr=0.00014013735 time=12.0s est_300=1h 02m 44s
+[ALG:DeiT-Ti][197/300] loss=1.2981 ce=1.2981 guidance=0.0000 beta=0.00 train_acc=68.58% test_acc=42.96% best=45.32% lr=0.00013783423 time=13.0s est_300=1h 02m 44s
+[ALG:DeiT-Ti][198/300] loss=1.3007 ce=1.3007 guidance=0.0000 beta=0.00 train_acc=68.78% test_acc=44.60% best=45.32% lr=0.00013554369 time=12.4s est_300=1h 02m 44s
+[ALG:DeiT-Ti][199/300] loss=1.2926 ce=1.2926 guidance=0.0000 beta=0.00 train_acc=69.50% test_acc=44.70% best=45.32% lr=0.00013326597 time=12.3s est_300=1h 02m 44s
+[ALG:DeiT-Ti][200/300] loss=1.2742 ce=1.2742 guidance=0.0000 beta=0.00 train_acc=69.85% test_acc=44.46% best=45.32% lr=0.00013100132 time=10.6s est_300=1h 02m 41s
+[ALG:DeiT-Ti][201/300] loss=1.2659 ce=1.2659 guidance=0.0000 beta=0.00 train_acc=70.14% test_acc=46.06% best=46.06% lr=0.00012875 time=11.3s est_300=1h 02m 39s
+[ALG:DeiT-Ti][202/300] loss=1.2498 ce=1.2498 guidance=0.0000 beta=0.00 train_acc=70.02% test_acc=45.48% best=46.06% lr=0.00012651225 time=12.5s est_300=1h 02m 39s
+[ALG:DeiT-Ti][203/300] loss=1.2775 ce=1.2775 guidance=0.0000 beta=0.00 train_acc=69.29% test_acc=45.20% best=46.06% lr=0.00012428832 time=12.4s est_300=1h 02m 39s
+[ALG:DeiT-Ti][204/300] loss=1.2526 ce=1.2526 guidance=0.0000 beta=0.00 train_acc=69.96% test_acc=45.55% best=46.06% lr=0.00012207844 time=11.5s est_300=1h 02m 37s
+[ALG:DeiT-Ti][205/300] loss=1.2277 ce=1.2277 guidance=0.0000 beta=0.00 train_acc=70.23% test_acc=46.17% best=46.17% lr=0.00011988287 time=10.6s est_300=1h 02m 35s
+[ALG:DeiT-Ti][206/300] loss=1.2646 ce=1.2646 guidance=0.0000 beta=0.00 train_acc=69.85% test_acc=45.03% best=46.17% lr=0.00011770184 time=10.7s est_300=1h 02m 32s
+[ALG:DeiT-Ti][207/300] loss=1.2221 ce=1.2221 guidance=0.0000 beta=0.00 train_acc=71.06% test_acc=46.19% best=46.19% lr=0.00011553559 time=13.0s est_300=1h 02m 33s
+[ALG:DeiT-Ti][208/300] loss=1.2466 ce=1.2466 guidance=0.0000 beta=0.00 train_acc=70.62% test_acc=45.08% best=46.19% lr=0.00011338436 time=12.0s est_300=1h 02m 32s
+[ALG:DeiT-Ti][209/300] loss=1.2763 ce=1.2763 guidance=0.0000 beta=0.00 train_acc=70.01% test_acc=44.86% best=46.19% lr=0.00011124839 time=12.8s est_300=1h 02m 32s
+[ALG:DeiT-Ti][210/300] loss=1.1945 ce=1.1945 guidance=0.0000 beta=0.00 train_acc=71.45% test_acc=45.70% best=46.19% lr=0.00010912791 time=11.8s est_300=1h 02m 31s
+[ALG:DeiT-Ti][211/300] loss=1.2126 ce=1.2126 guidance=0.0000 beta=0.00 train_acc=71.04% test_acc=44.36% best=46.19% lr=0.00010702315 time=12.2s est_300=1h 02m 31s
+[ALG:DeiT-Ti][212/300] loss=1.1544 ce=1.1544 guidance=0.0000 beta=0.00 train_acc=72.20% test_acc=43.49% best=46.19% lr=0.00010493434 time=13.0s est_300=1h 02m 32s
+[ALG:DeiT-Ti][213/300] loss=1.2329 ce=1.2329 guidance=0.0000 beta=0.00 train_acc=70.62% test_acc=45.74% best=46.19% lr=0.00010286172 time=11.6s est_300=1h 02m 30s
+[ALG:DeiT-Ti][214/300] loss=1.2133 ce=1.2133 guidance=0.0000 beta=0.00 train_acc=71.16% test_acc=45.86% best=46.19% lr=0.0001008055 time=10.6s est_300=1h 02m 28s
+[ALG:DeiT-Ti][215/300] loss=1.1940 ce=1.1940 guidance=0.0000 beta=0.00 train_acc=71.59% test_acc=45.37% best=46.19% lr=9.8765924e-05 time=12.0s est_300=1h 02m 27s
+[ALG:DeiT-Ti][216/300] loss=1.1553 ce=1.1553 guidance=0.0000 beta=0.00 train_acc=72.55% test_acc=46.15% best=46.19% lr=9.6743203e-05 time=12.2s est_300=1h 02m 27s
+[ALG:DeiT-Ti][217/300] loss=1.1830 ce=1.1830 guidance=0.0000 beta=0.00 train_acc=72.20% test_acc=45.12% best=46.19% lr=9.4737563e-05 time=13.1s est_300=1h 02m 27s
+[ALG:DeiT-Ti][218/300] loss=1.1673 ce=1.1673 guidance=0.0000 beta=0.00 train_acc=71.62% test_acc=46.74% best=46.74% lr=9.2749222e-05 time=12.2s est_300=1h 02m 27s
+[ALG:DeiT-Ti][219/300] loss=1.1455 ce=1.1455 guidance=0.0000 beta=0.00 train_acc=72.52% test_acc=44.29% best=46.74% lr=9.0778401e-05 time=12.5s est_300=1h 02m 27s
+[ALG:DeiT-Ti][220/300] loss=1.1597 ce=1.1597 guidance=0.0000 beta=0.00 train_acc=72.44% test_acc=44.77% best=46.74% lr=8.8825313e-05 time=13.2s est_300=1h 02m 28s
+[ALG:DeiT-Ti][221/300] loss=1.1334 ce=1.1334 guidance=0.0000 beta=0.00 train_acc=73.10% test_acc=45.18% best=46.74% lr=8.6890175e-05 time=12.6s est_300=1h 02m 28s
+[ALG:DeiT-Ti][222/300] loss=1.1131 ce=1.1131 guidance=0.0000 beta=0.00 train_acc=73.68% test_acc=46.72% best=46.74% lr=8.4973198e-05 time=10.6s est_300=1h 02m 26s
+[ALG:DeiT-Ti][223/300] loss=1.1220 ce=1.1220 guidance=0.0000 beta=0.00 train_acc=73.73% test_acc=46.00% best=46.74% lr=8.3074591e-05 time=11.3s est_300=1h 02m 24s
+[ALG:DeiT-Ti][224/300] loss=1.1214 ce=1.1214 guidance=0.0000 beta=0.00 train_acc=73.47% test_acc=46.32% best=46.74% lr=8.1194564e-05 time=11.0s est_300=1h 02m 22s
+[ALG:DeiT-Ti][225/300] loss=1.1186 ce=1.1186 guidance=0.0000 beta=0.00 train_acc=73.03% test_acc=45.36% best=46.74% lr=7.9333323e-05 time=12.4s est_300=1h 02m 22s
+[ALG:DeiT-Ti][226/300] loss=1.1196 ce=1.1196 guidance=0.0000 beta=0.00 train_acc=73.28% test_acc=46.12% best=46.74% lr=7.7491072e-05 time=12.6s est_300=1h 02m 22s
+[ALG:DeiT-Ti][227/300] loss=1.0961 ce=1.0961 guidance=0.0000 beta=0.00 train_acc=73.34% test_acc=45.56% best=46.74% lr=7.5668012e-05 time=12.8s est_300=1h 02m 23s
+[ALG:DeiT-Ti][228/300] loss=1.0834 ce=1.0834 guidance=0.0000 beta=0.00 train_acc=74.20% test_acc=46.05% best=46.74% lr=7.3864344e-05 time=12.6s est_300=1h 02m 23s
+[ALG:DeiT-Ti][229/300] loss=1.1292 ce=1.1292 guidance=0.0000 beta=0.00 train_acc=72.86% test_acc=46.19% best=46.74% lr=7.2080265e-05 time=12.7s est_300=1h 02m 23s
+[ALG:DeiT-Ti][230/300] loss=1.1136 ce=1.1136 guidance=0.0000 beta=0.00 train_acc=73.74% test_acc=45.82% best=46.74% lr=7.0315971e-05 time=12.5s est_300=1h 02m 23s
+[ALG:DeiT-Ti][231/300] loss=1.1173 ce=1.1173 guidance=0.0000 beta=0.00 train_acc=73.35% test_acc=44.98% best=46.74% lr=6.8571656e-05 time=12.1s est_300=1h 02m 23s
+[ALG:DeiT-Ti][232/300] loss=1.1186 ce=1.1186 guidance=0.0000 beta=0.00 train_acc=73.64% test_acc=46.24% best=46.74% lr=6.684751e-05 time=13.3s est_300=1h 02m 24s
+[ALG:DeiT-Ti][233/300] loss=1.0968 ce=1.0968 guidance=0.0000 beta=0.00 train_acc=73.93% test_acc=45.72% best=46.74% lr=6.5143724e-05 time=12.7s est_300=1h 02m 24s
+[ALG:DeiT-Ti][234/300] loss=1.0897 ce=1.0897 guidance=0.0000 beta=0.00 train_acc=73.69% test_acc=45.29% best=46.74% lr=6.3460483e-05 time=11.6s est_300=1h 02m 23s
+[ALG:DeiT-Ti][235/300] loss=1.0883 ce=1.0883 guidance=0.0000 beta=0.00 train_acc=74.29% test_acc=45.77% best=46.74% lr=6.1797972e-05 time=11.8s est_300=1h 02m 22s
+[ALG:DeiT-Ti][236/300] loss=1.0552 ce=1.0552 guidance=0.0000 beta=0.00 train_acc=74.97% test_acc=46.57% best=46.74% lr=6.0156375e-05 time=11.5s est_300=1h 02m 21s
+[ALG:DeiT-Ti][237/300] loss=1.0275 ce=1.0275 guidance=0.0000 beta=0.00 train_acc=75.76% test_acc=46.13% best=46.74% lr=5.8535869e-05 time=12.4s est_300=1h 02m 21s
+[ALG:DeiT-Ti][238/300] loss=1.0598 ce=1.0598 guidance=0.0000 beta=0.00 train_acc=75.34% test_acc=45.93% best=46.74% lr=5.6936634e-05 time=13.1s est_300=1h 02m 21s
+[ALG:DeiT-Ti][239/300] loss=1.0965 ce=1.0965 guidance=0.0000 beta=0.00 train_acc=73.98% test_acc=46.57% best=46.74% lr=5.5358845e-05 time=11.0s est_300=1h 02m 20s
+[ALG:DeiT-Ti][240/300] loss=1.0350 ce=1.0350 guidance=0.0000 beta=0.00 train_acc=75.82% test_acc=46.70% best=46.74% lr=5.3802675e-05 time=12.3s est_300=1h 02m 19s
+[ALG:DeiT-Ti][241/300] loss=1.0601 ce=1.0601 guidance=0.0000 beta=0.00 train_acc=74.51% test_acc=46.41% best=46.74% lr=5.2268294e-05 time=13.1s est_300=1h 02m 20s
+[ALG:DeiT-Ti][242/300] loss=1.0273 ce=1.0273 guidance=0.0000 beta=0.00 train_acc=75.17% test_acc=45.46% best=46.74% lr=5.0755871e-05 time=13.7s est_300=1h 02m 22s
+[ALG:DeiT-Ti][243/300] loss=1.0385 ce=1.0385 guidance=0.0000 beta=0.00 train_acc=75.54% test_acc=45.93% best=46.74% lr=4.9265571e-05 time=11.9s est_300=1h 02m 21s
+[ALG:DeiT-Ti][244/300] loss=1.0169 ce=1.0169 guidance=0.0000 beta=0.00 train_acc=75.88% test_acc=46.46% best=46.74% lr=4.7797558e-05 time=12.3s est_300=1h 02m 21s
+[ALG:DeiT-Ti][245/300] loss=1.0279 ce=1.0279 guidance=0.0000 beta=0.00 train_acc=75.56% test_acc=46.31% best=46.74% lr=4.6351993e-05 time=12.4s est_300=1h 02m 21s
+[ALG:DeiT-Ti][246/300] loss=1.0034 ce=1.0034 guidance=0.0000 beta=0.00 train_acc=76.36% test_acc=46.76% best=46.76% lr=4.4929034e-05 time=11.9s est_300=1h 02m 20s
+[ALG:DeiT-Ti][247/300] loss=0.9796 ce=0.9796 guidance=0.0000 beta=0.00 train_acc=76.99% test_acc=45.62% best=46.76% lr=4.3528838e-05 time=13.3s est_300=1h 02m 21s
+[ALG:DeiT-Ti][248/300] loss=0.9946 ce=0.9946 guidance=0.0000 beta=0.00 train_acc=76.41% test_acc=47.05% best=47.05% lr=4.2151558e-05 time=12.5s est_300=1h 02m 21s
+[ALG:DeiT-Ti][249/300] loss=0.9881 ce=0.9881 guidance=0.0000 beta=0.00 train_acc=76.17% test_acc=46.41% best=47.05% lr=4.0797346e-05 time=11.6s est_300=1h 02m 20s
+[ALG:DeiT-Ti][250/300] loss=0.9892 ce=0.9892 guidance=0.0000 beta=0.00 train_acc=76.48% test_acc=46.44% best=47.05% lr=3.9466348e-05 time=12.9s est_300=1h 02m 20s
+[ALG:DeiT-Ti][251/300] loss=0.9865 ce=0.9865 guidance=0.0000 beta=0.00 train_acc=76.77% test_acc=47.32% best=47.32% lr=3.8158713e-05 time=12.1s est_300=1h 02m 20s
+[ALG:DeiT-Ti][252/300] loss=0.9893 ce=0.9893 guidance=0.0000 beta=0.00 train_acc=76.65% test_acc=46.29% best=47.32% lr=3.6874582e-05 time=10.6s est_300=1h 02m 18s
+[ALG:DeiT-Ti][253/300] loss=0.9716 ce=0.9716 guidance=0.0000 beta=0.00 train_acc=77.36% test_acc=46.57% best=47.32% lr=3.5614097e-05 time=11.5s est_300=1h 02m 16s
+[ALG:DeiT-Ti][254/300] loss=0.9946 ce=0.9946 guidance=0.0000 beta=0.00 train_acc=76.04% test_acc=46.51% best=47.32% lr=3.4377396e-05 time=12.7s est_300=1h 02m 17s
+[ALG:DeiT-Ti][255/300] loss=0.9934 ce=0.9934 guidance=0.0000 beta=0.00 train_acc=76.07% test_acc=46.98% best=47.32% lr=3.3164614e-05 time=13.5s est_300=1h 02m 18s
+[ALG:DeiT-Ti][256/300] loss=0.9496 ce=0.9496 guidance=0.0000 beta=0.00 train_acc=77.34% test_acc=46.10% best=47.32% lr=3.1975885e-05 time=14.2s est_300=1h 02m 20s
+[ALG:DeiT-Ti][257/300] loss=0.9728 ce=0.9728 guidance=0.0000 beta=0.00 train_acc=76.73% test_acc=47.19% best=47.32% lr=3.0811339e-05 time=12.9s est_300=1h 02m 21s
+[ALG:DeiT-Ti][258/300] loss=0.9809 ce=0.9809 guidance=0.0000 beta=0.00 train_acc=76.04% test_acc=46.70% best=47.32% lr=2.9671104e-05 time=11.7s est_300=1h 02m 20s
+[ALG:DeiT-Ti][259/300] loss=0.9357 ce=0.9357 guidance=0.0000 beta=0.00 train_acc=77.97% test_acc=46.38% best=47.32% lr=2.8555305e-05 time=10.8s est_300=1h 02m 18s
+[ALG:DeiT-Ti][260/300] loss=0.9885 ce=0.9885 guidance=0.0000 beta=0.00 train_acc=76.43% test_acc=46.65% best=47.32% lr=2.7464063e-05 time=13.5s est_300=1h 02m 19s
+[ALG:DeiT-Ti][261/300] loss=0.9367 ce=0.9367 guidance=0.0000 beta=0.00 train_acc=78.07% test_acc=46.12% best=47.32% lr=2.6397499e-05 time=13.8s est_300=1h 02m 20s
+[ALG:DeiT-Ti][262/300] loss=0.9481 ce=0.9481 guidance=0.0000 beta=0.00 train_acc=77.33% test_acc=46.43% best=47.32% lr=2.535573e-05 time=14.0s est_300=1h 02m 22s
+[ALG:DeiT-Ti][263/300] loss=0.9563 ce=0.9563 guidance=0.0000 beta=0.00 train_acc=76.77% test_acc=46.62% best=47.32% lr=2.433887e-05 time=13.0s est_300=1h 02m 23s
+[ALG:DeiT-Ti][264/300] loss=0.9638 ce=0.9638 guidance=0.0000 beta=0.00 train_acc=77.56% test_acc=46.93% best=47.32% lr=2.334703e-05 time=12.2s est_300=1h 02m 22s
+[ALG:DeiT-Ti][265/300] loss=0.9354 ce=0.9354 guidance=0.0000 beta=0.00 train_acc=77.34% test_acc=46.67% best=47.32% lr=2.238032e-05 time=11.8s est_300=1h 02m 22s
+[ALG:DeiT-Ti][266/300] loss=0.9675 ce=0.9675 guidance=0.0000 beta=0.00 train_acc=77.16% test_acc=46.93% best=47.32% lr=2.1438844e-05 time=11.5s est_300=1h 02m 21s
+[ALG:DeiT-Ti][267/300] loss=0.9392 ce=0.9392 guidance=0.0000 beta=0.00 train_acc=77.73% test_acc=47.12% best=47.32% lr=2.0522708e-05 time=12.5s est_300=1h 02m 21s
+[ALG:DeiT-Ti][268/300] loss=0.9297 ce=0.9297 guidance=0.0000 beta=0.00 train_acc=78.36% test_acc=46.62% best=47.32% lr=1.963201e-05 time=11.5s est_300=1h 02m 20s
+[ALG:DeiT-Ti][269/300] loss=0.9601 ce=0.9601 guidance=0.0000 beta=0.00 train_acc=77.41% test_acc=46.58% best=47.32% lr=1.8766848e-05 time=12.1s est_300=1h 02m 19s
+[ALG:DeiT-Ti][270/300] loss=0.9536 ce=0.9536 guidance=0.0000 beta=0.00 train_acc=77.11% test_acc=46.91% best=47.32% lr=1.7927319e-05 time=13.1s est_300=1h 02m 20s
+[ALG:DeiT-Ti][271/300] loss=0.9225 ce=0.9225 guidance=0.0000 beta=0.00 train_acc=78.06% test_acc=47.31% best=47.32% lr=1.7113512e-05 time=11.8s est_300=1h 02m 19s
+[ALG:DeiT-Ti][272/300] loss=0.9503 ce=0.9503 guidance=0.0000 beta=0.00 train_acc=77.89% test_acc=46.67% best=47.32% lr=1.6325519e-05 time=11.1s est_300=1h 02m 18s
+[ALG:DeiT-Ti][273/300] loss=0.9690 ce=0.9690 guidance=0.0000 beta=0.00 train_acc=77.07% test_acc=46.81% best=47.32% lr=1.5563424e-05 time=11.1s est_300=1h 02m 16s
+[ALG:DeiT-Ti][274/300] loss=0.9340 ce=0.9340 guidance=0.0000 beta=0.00 train_acc=78.45% test_acc=47.03% best=47.32% lr=1.4827313e-05 time=10.8s est_300=1h 02m 15s
+[ALG:DeiT-Ti][275/300] loss=0.9684 ce=0.9684 guidance=0.0000 beta=0.00 train_acc=77.51% test_acc=46.77% best=47.32% lr=1.4117265e-05 time=10.7s est_300=1h 02m 13s
+[ALG:DeiT-Ti][276/300] loss=0.9517 ce=0.9517 guidance=0.0000 beta=0.00 train_acc=76.95% test_acc=46.84% best=47.32% lr=1.3433358e-05 time=12.1s est_300=1h 02m 12s
+[ALG:DeiT-Ti][277/300] loss=0.9065 ce=0.9065 guidance=0.0000 beta=0.00 train_acc=78.65% test_acc=47.00% best=47.32% lr=1.2775668e-05 time=12.4s est_300=1h 02m 12s
+[ALG:DeiT-Ti][278/300] loss=0.9356 ce=0.9356 guidance=0.0000 beta=0.00 train_acc=78.23% test_acc=47.13% best=47.32% lr=1.2144266e-05 time=12.6s est_300=1h 02m 12s
+[ALG:DeiT-Ti][279/300] loss=0.9472 ce=0.9472 guidance=0.0000 beta=0.00 train_acc=77.14% test_acc=47.12% best=47.32% lr=1.1539222e-05 time=13.1s est_300=1h 02m 13s
+[ALG:DeiT-Ti][280/300] loss=0.9389 ce=0.9389 guidance=0.0000 beta=0.00 train_acc=77.92% test_acc=47.13% best=47.32% lr=1.0960601e-05 time=13.5s est_300=1h 02m 14s
+[ALG:DeiT-Ti][281/300] loss=0.9003 ce=0.9003 guidance=0.0000 beta=0.00 train_acc=79.60% test_acc=47.29% best=47.32% lr=1.0408469e-05 time=12.9s est_300=1h 02m 15s
+[ALG:DeiT-Ti][282/300] loss=0.9808 ce=0.9808 guidance=0.0000 beta=0.00 train_acc=77.26% test_acc=47.19% best=47.32% lr=9.8828843e-06 time=12.4s est_300=1h 02m 15s
+[ALG:DeiT-Ti][283/300] loss=0.9650 ce=0.9650 guidance=0.0000 beta=0.00 train_acc=77.19% test_acc=46.98% best=47.32% lr=9.3839054e-06 time=12.8s est_300=1h 02m 15s
+[ALG:DeiT-Ti][284/300] loss=0.9404 ce=0.9404 guidance=0.0000 beta=0.00 train_acc=77.50% test_acc=47.34% best=47.34% lr=8.911587e-06 time=12.7s est_300=1h 02m 15s
+[ALG:DeiT-Ti][285/300] loss=0.9112 ce=0.9112 guidance=0.0000 beta=0.00 train_acc=78.33% test_acc=47.53% best=47.53% lr=8.4659808e-06 time=13.2s est_300=1h 02m 16s
+[ALG:DeiT-Ti][286/300] loss=0.9306 ce=0.9306 guidance=0.0000 beta=0.00 train_acc=77.38% test_acc=47.70% best=47.70% lr=8.0471357e-06 time=13.5s est_300=1h 02m 17s
+[ALG:DeiT-Ti][287/300] loss=0.9214 ce=0.9214 guidance=0.0000 beta=0.00 train_acc=78.29% test_acc=47.64% best=47.70% lr=7.6550976e-06 time=12.5s est_300=1h 02m 17s
+[ALG:DeiT-Ti][288/300] loss=0.9268 ce=0.9268 guidance=0.0000 beta=0.00 train_acc=78.14% test_acc=47.34% best=47.70% lr=7.2899095e-06 time=12.4s est_300=1h 02m 17s
+[ALG:DeiT-Ti][289/300] loss=0.9323 ce=0.9323 guidance=0.0000 beta=0.00 train_acc=77.77% test_acc=47.51% best=47.70% lr=6.9516114e-06 time=13.4s est_300=1h 02m 18s
+[ALG:DeiT-Ti][290/300] loss=0.9350 ce=0.9350 guidance=0.0000 beta=0.00 train_acc=77.92% test_acc=47.34% best=47.70% lr=6.6402405e-06 time=11.9s est_300=1h 02m 18s
+[ALG:DeiT-Ti][291/300] loss=0.9174 ce=0.9174 guidance=0.0000 beta=0.00 train_acc=78.12% test_acc=47.03% best=47.70% lr=6.3558309e-06 time=13.2s est_300=1h 02m 18s
+[ALG:DeiT-Ti][292/300] loss=0.8765 ce=0.8765 guidance=0.0000 beta=0.00 train_acc=79.31% test_acc=47.58% best=47.70% lr=6.0984138e-06 time=12.4s est_300=1h 02m 18s
+[ALG:DeiT-Ti][293/300] loss=0.9005 ce=0.9005 guidance=0.0000 beta=0.00 train_acc=78.38% test_acc=47.60% best=47.70% lr=5.8680173e-06 time=12.8s est_300=1h 02m 18s
+[ALG:DeiT-Ti][294/300] loss=0.9168 ce=0.9168 guidance=0.0000 beta=0.00 train_acc=78.23% test_acc=47.34% best=47.70% lr=5.6646669e-06 time=13.0s est_300=1h 02m 19s
+[ALG:DeiT-Ti][295/300] loss=0.9142 ce=0.9142 guidance=0.0000 beta=0.00 train_acc=78.06% test_acc=47.43% best=47.70% lr=5.4883847e-06 time=13.5s est_300=1h 02m 20s
+[ALG:DeiT-Ti][296/300] loss=0.9163 ce=0.9163 guidance=0.0000 beta=0.00 train_acc=78.02% test_acc=47.32% best=47.70% lr=5.3391901e-06 time=13.1s est_300=1h 02m 21s
+[ALG:DeiT-Ti][297/300] loss=0.9155 ce=0.9155 guidance=0.0000 beta=0.00 train_acc=78.38% test_acc=47.62% best=47.70% lr=5.2170996e-06 time=12.9s est_300=1h 02m 21s
+[ALG:DeiT-Ti][298/300] loss=0.9384 ce=0.9384 guidance=0.0000 beta=0.00 train_acc=77.79% test_acc=47.31% best=47.70% lr=5.1221263e-06 time=12.1s est_300=1h 02m 21s
+[ALG:DeiT-Ti][299/300] loss=0.9236 ce=0.9236 guidance=0.0000 beta=0.00 train_acc=78.12% test_acc=47.45% best=47.70% lr=5.0542808e-06 time=11.7s est_300=1h 02m 20s
+[ALG:DeiT-Ti][300/300] loss=0.8952 ce=0.8952 guidance=0.0000 beta=0.00 train_acc=78.69% test_acc=47.53% best=47.70% lr=5.0135706e-06 time=10.6s est_300=1h 02m 18s
+[TIMING_RESULT] student=DeiT-Ti method=ALG batch=128 avg_epoch=12.46s estimated_300=1h 02m 18s
+[FINAL_RESULT] summary=/app/output/table1_cub200_deit_lg_alg_full_seed1/students/table1_cub200_deit_ti_alg_b128_full_300ep_seed1/summary.json
+[DONE] Table-1 CUB student task completed successfully.
+[STUDENT_IDENTITY_CHECK_TABLE1_CUB200][ALG] status=PASS student=DeiT-Ti pretrained=False input=224 batch=128 teacher_input=32
+[TASK_DONE] 3/3 ALG elapsed=1h 02m 42s
+================================================================================================
+[FINAL_TOP1_SUMMARY_TABLE1_CUB200_DEIT_LG_ALG] Teacher=36.40% LG=44.51% ALG=47.70%
+[SEQUENCE_DONE_TABLE1_CUB200_DEIT_LG_ALG] completed_tasks=3/3
+[FINAL_RESULT] summary=/app/output/table1_cub200_deit_lg_alg_full_seed1/final_summary.json

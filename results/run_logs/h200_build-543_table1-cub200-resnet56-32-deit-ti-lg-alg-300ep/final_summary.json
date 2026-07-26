@@ -1,0 +1,19 @@
+{
+  "best_top1": {
+    "ALG": 47.704521919226785,
+    "LG": 44.511563686572316,
+    "Teacher": 36.39972385226096
+  },
+  "completed_tasks": 3,
+  "protocol": "table1_cub200_resnet56_32_deit_ti_lg_alg",
+  "status": "complete",
+  "summaries": {
+    "ALG": "/app/output/table1_cub200_deit_lg_alg_full_seed1/students/table1_cub200_deit_ti_alg_b128_full_300ep_seed1/summary.json",
+    "LG": "/app/output/table1_cub200_deit_lg_alg_full_seed1/students/table1_cub200_deit_ti_lg_b128_full_300ep_seed1/summary.json",
+    "Teacher": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/summary.json"
+  },
+  "teacher_root": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1",
+  "timing_estimate_human": "2h 53m 58s",
+  "timing_estimate_seconds": 10438,
+  "total_tasks": 3
+}

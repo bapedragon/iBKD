@@ -1,0 +1,29 @@
+{
+  "completed_tasks": 3,
+  "final_summary": "/app/output/table1_cub200_deit_lg_alg_full_seed1/final_summary.json",
+  "finished_at_unix": 1785074868.8876288,
+  "protocol": "table1_cub200_resnet56_32_deit_ti_lg_alg",
+  "started_at_unix": 1785065081.6057692,
+  "status": "complete",
+  "tasks": [
+    {
+      "elapsed_seconds": 2238.273252725601,
+      "name": "Teacher",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_deit_lg_alg_full_seed1/teacher/table1_cub200_teacher_resnet56_32_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 3787.1772701740265,
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_deit_lg_alg_full_seed1/students/table1_cub200_deit_ti_lg_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 3761.828104019165,
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_deit_lg_alg_full_seed1/students/table1_cub200_deit_ti_alg_b128_full_300ep_seed1/summary.json"
+    }
+  ],
+  "total_tasks": 3
+}

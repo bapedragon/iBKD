@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "teachers": {
+    "cub200": {
+      "selected_kind": "best",
+      "checkpoint": "teacher_resnet56_cub200_32_best.pt",
+      "sha256": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5",
+      "epoch": 275,
+      "top1": 36.39972385226096,
+      "num_classes": 200,
+      "input_resolution": 32,
+      "recipe_name": "cub200_official_split_resnet56_32_scratch_300ep_seed1",
+      "pretrained": false
+    }
+  }
+}

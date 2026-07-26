@@ -1,0 +1,29 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "dataset": "cub200",
+  "dataset_root": "/app/scratch/input/bapedragon_519/data/cub200/CUB_200_2011",
+  "protocol_family": "cub200_resnet50_224_scratch",
+  "model_name": "resnet50_cub200_scratch_224",
+  "recipe_name": "cub200_resnet50_224_scratch_200ep_seed1",
+  "input_resolution": 224,
+  "pretrained": false,
+  "pretrained_source": null,
+  "completed_epoch": 200,
+  "planned_epochs": 200,
+  "latest_top1": 47.704521919226785,
+  "best_top1": 48.30859509837763,
+  "avg_epoch_seconds": 12.67251929283142,
+  "estimated_planned_seconds": 2534.503858566284,
+  "estimated_planned_human": "42m 15s",
+  "elapsed_seconds": 2622.3278982639313,
+  "paths": {
+    "best": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/teacher_resnet50_224_scratch/teacher_cub200_resnet50_224_scratch_200ep_seed1/teacher_resnet50_cub200_224_scratch_best.pt",
+    "latest": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/teacher_resnet50_224_scratch/teacher_cub200_resnet50_224_scratch_200ep_seed1/teacher_resnet50_cub200_224_scratch_latest.pt",
+    "manifest": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/teacher_resnet50_224_scratch/teacher_cub200_resnet50_224_scratch_200ep_seed1/manifest.json",
+    "metrics": "/app/output/cub200_resnet50_224_scratch_all_full_seed1/teacher_resnet50_224_scratch/teacher_cub200_resnet50_224_scratch_200ep_seed1/metrics.csv"
+  },
+  "sha256": {
+    "best": "6307a8289f8ddec5c79e8284af8f07d883d037aeaf936062a6833720e4f74ba7"
+  }
+}
