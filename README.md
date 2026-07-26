@@ -77,6 +77,14 @@ It is isolated from the historical 300-epoch scratch family under
 The dedicated runner, output names, validation locks, compact final summary,
 and copyable timing/full H200 Issues all carry `both_scratch_100ep`.
 
+The matching student-horizon ablation keeps that completed scratch teacher
+recipe at 200 epochs and changes only all five student horizons from 100 to
+300 epochs. It retains Vanilla-b128, LG, ALG, Ours-b64, and Ours-b128 in the
+same order. It is isolated under
+[`methods/cub200_both_scratch_300ep/`](methods/cub200_both_scratch_300ep/)
+and must not be confused with the older scratch 300-epoch sequence that used
+Vanilla-b64 instead of Ours-b128.
+
 The Flowers implementation uses the official `train+val` split (2,040 images)
 for training and the official test split (6,149 images) for evaluation.
 

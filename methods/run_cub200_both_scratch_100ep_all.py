@@ -17,6 +17,8 @@ POD_LIMIT_SECONDS = 600 * 60
 PROTOCOL_FAMILY = "cub200_resnet50_deit_ti_224_both_scratch_100ep"
 TEACHER_EPOCHS = 200
 STUDENT_EPOCHS = 100
+SUPPORTED_STUDENT_EPOCHS = (100, 300)
+LOCKED_STUDENT_EPOCHS = STUDENT_EPOCHS
 TEACHER_RUN_NAME = "teacher_cub200_resnet50_224_scratch_200ep_seed1"
 RUN_NAMES = {
     "VanillaB128": "vanilla_cub200_deit_ti_scratch_b128_100ep_seed1",
@@ -48,6 +50,34 @@ FINAL_RESULT_ORDER = (
 )
 
 
+def protocol_family_for(student_epochs: int) -> str:
+    return (
+        "cub200_resnet50_deit_ti_224_both_scratch_"
+        f"{student_epochs}ep"
+    )
+
+
+def run_names_for(student_epochs: int) -> dict[str, str]:
+    return {
+        "VanillaB128": (
+            "vanilla_cub200_deit_ti_scratch_b128_"
+            f"{student_epochs}ep_seed1"
+        ),
+        "LG": f"lg_cub200_both_scratch_b128_{student_epochs}ep_seed1",
+        "ALG": f"alg_cub200_both_scratch_b128_{student_epochs}ep_seed1",
+        "OursB64": (
+            f"ours_cub200_both_scratch_b64_{student_epochs}ep_seed1"
+        ),
+        "OursB128": (
+            f"ours_cub200_both_scratch_b128_{student_epochs}ep_seed1"
+        ),
+    }
+
+
+def log_tag(student_epochs: int) -> str:
+    return f"224_BOTH_SCRATCH_{student_epochs}EP"
+
+
 def log(message: str = "") -> None:
     print(message, flush=True)
 
@@ -61,7 +91,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("/app/output/cub200_both_scratch_100ep_all_seed1"),
+        default=None,
     )
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--no-download", action="store_true")
@@ -90,9 +120,12 @@ def collect_best_top1(
     return results
 
 
-def format_final_top1_summary(best_top1: dict[str, float]) -> str:
+def format_final_top1_summary(
+    best_top1: dict[str, float],
+    student_epochs: int = STUDENT_EPOCHS,
+) -> str:
     return (
-        "[FINAL_TOP1_SUMMARY_224_BOTH_SCRATCH_100EP] "
+        f"[FINAL_TOP1_SUMMARY_{log_tag(student_epochs)}] "
         f"Teacher={best_top1['teacher']:.2f}% "
         f"VanillaB128={best_top1['VanillaB128']:.2f}% "
         f"LG={best_top1['LG']:.2f}% "
@@ -126,13 +159,14 @@ def validate_teacher_summary(summary: dict[str, Any]) -> None:
 def validate_student_summary(
     name: str,
     summary: dict[str, Any],
+    student_epochs: int = STUDENT_EPOCHS,
 ) -> None:
     expected = {
         "student_pretrained": False,
         "student_pretrained_source": None,
         "input_resolution": 224,
         "batch_size": EXPECTED_BATCH_SIZE[name],
-        "planned_epochs": STUDENT_EPOCHS,
+        "planned_epochs": student_epochs,
     }
     mismatches = {
         key: {"expected": value, "actual": summary.get(key)}
@@ -200,10 +234,23 @@ def main() -> None:
     args = parse_args()
     if args.num_workers < 0:
         raise ValueError("--num-workers must be non-negative")
+    student_epochs = int(
+        getattr(args, "student_epochs", LOCKED_STUDENT_EPOCHS)
+    )
+    if student_epochs not in SUPPORTED_STUDENT_EPOCHS:
+        raise ValueError(
+            f"--student-epochs must be one of {SUPPORTED_STUDENT_EPOCHS}"
+        )
+    protocol_family = protocol_family_for(student_epochs)
+    run_names = run_names_for(student_epochs)
+    tag = log_tag(student_epochs)
     timing = bool(args.timing_run)
     mode = "timing" if timing else "full"
     suffix = "_timing_2ep" if timing else ""
-    output_root = args.output_dir.resolve()
+    output_dir = args.output_dir or Path(
+        f"/app/output/cub200_both_scratch_{student_epochs}ep_all_seed1"
+    )
+    output_root = output_dir.resolve()
     output_root.mkdir(parents=True, exist_ok=True)
     status_path = output_root / "sequence_status.json"
     teacher_name = TEACHER_RUN_NAME + suffix
@@ -212,19 +259,32 @@ def main() -> None:
     status: dict[str, Any] = {
         "status": "running",
         "mode": mode,
-        "protocol_family": PROTOCOL_FAMILY,
+        "protocol_family": protocol_family,
         "controlled_pair": {
             "reference": (
                 "cub200_resnet50_deit_ti_224_both_imagenet_pretrained"
+                if student_epochs == 100
+                else (
+                    "cub200_resnet50_deit_ti_224_both_scratch_100ep"
+                )
             ),
-            "only_changed_factor": "teacher_and_student_initialization",
+            "only_changed_factor": (
+                "teacher_and_student_initialization"
+                if student_epochs == 100
+                else "all_student_epochs_100_to_300"
+            ),
         },
         "separate_from": [
             "cub200_resnet56_32_scratch",
             "cub200_common_transfer_resnet50_224",
             "cub200_resnet50_224_scratch_300ep",
             "cub200_resnet50_deit_ti_224_both_imagenet_pretrained",
-        ],
+        ]
+        + (
+            ["cub200_resnet50_deit_ti_224_both_scratch_100ep"]
+            if student_epochs == 300
+            else []
+        ),
         "completed_tasks": 0,
         "total_tasks": 6,
         "tasks": [],
@@ -259,15 +319,24 @@ def main() -> None:
     log("=" * 104)
     log(f"[MODE] {mode}")
     log(
-        f"[PROTOCOL_FAMILY] {PROTOCOL_FAMILY} "
+        f"[PROTOCOL_FAMILY] {protocol_family} "
         "separate_from=both_imagenet_pretrained,resnet50_224_scratch_300ep,"
         "teacher_only_transfer,resnet56_32_scratch"
     )
-    log(
-        "[CONTROLLED_PAIR] "
-        "reference=cub200_resnet50_deit_ti_224_both_imagenet_pretrained "
-        "only_changed_factor=teacher_and_student_initialization"
-    )
+    if student_epochs == 100:
+        log(
+            "[CONTROLLED_PAIR] "
+            "reference="
+            "cub200_resnet50_deit_ti_224_both_imagenet_pretrained "
+            "only_changed_factor=teacher_and_student_initialization"
+        )
+    else:
+        log(
+            "[CONTROLLED_HORIZON] "
+            "reference=cub200_resnet50_deit_ti_224_both_scratch_100ep "
+            "only_changed_factor=all_student_epochs_100_to_300 "
+            "teacher_planned_epochs_unchanged=200"
+        )
     log(
         "[RESOLUTION_LOCK] teacher_input=224 all_student_inputs=224 "
         "no_32px_teacher=True"
@@ -279,7 +348,7 @@ def main() -> None:
     )
     log(
         f"[EPOCH_LOCK] teacher_planned_epochs={TEACHER_EPOCHS} "
-        f"all_students_planned_epochs={STUDENT_EPOCHS}"
+        f"all_students_planned_epochs={student_epochs}"
     )
     log(
         "[SEQUENCE] Teacher -> VanillaB128 -> LG -> ALG -> OursB64 -> "
@@ -332,9 +401,13 @@ def main() -> None:
 
     task_names = ("VanillaB128", "LG", "ALG", "OursB64", "OursB128")
     for name in task_names:
-        run_name = RUN_NAMES[name] + suffix
+        run_name = run_names[name] + suffix
         if name == "VanillaB128":
-            task_output = output_root / "Vanilla" / "scratch_b128"
+            task_output = (
+                output_root
+                / "Vanilla"
+                / f"scratch_b128_{student_epochs}ep"
+            )
             command = [
                 sys.executable,
                 "methods/Vanilla/cub200_224/train.py",
@@ -342,7 +415,7 @@ def main() -> None:
                 "lg_official_b128",
                 "--no-student-pretrained",
                 "--student-epochs",
-                str(STUDENT_EPOCHS),
+                str(student_epochs),
                 "--timing-run" if timing else "--full-run",
                 "--data-dir",
                 str(args.data_dir),
@@ -354,7 +427,9 @@ def main() -> None:
                 str(args.num_workers),
             ]
         else:
-            task_output = output_root / name / "both_scratch_100ep"
+            task_output = (
+                output_root / name / f"both_scratch_{student_epochs}ep"
+            )
             command = [
                 sys.executable,
                 METHOD_SCRIPTS[name],
@@ -370,7 +445,7 @@ def main() -> None:
                 str(args.num_workers),
                 "--no-student-pretrained",
                 "--student-epochs",
-                str(STUDENT_EPOCHS),
+                str(student_epochs),
             ]
             if name in {"OursB64", "OursB128"}:
                 command.extend(
@@ -387,7 +462,11 @@ def main() -> None:
             status=status,
             status_path=status_path,
         )
-        validate_student_summary(name, summaries[name])
+        validate_student_summary(
+            name,
+            summaries[name],
+            student_epochs=student_epochs,
+        )
         log(
             f"[STUDENT_IDENTITY_CHECK][{name}] status=PASS "
             "pretrained=False input=224 "
@@ -413,9 +492,9 @@ def main() -> None:
     )
     atomic_json_save(status, status_path)
     log("=" * 104)
-    log("[SEQUENCE_DONE_224_BOTH_SCRATCH_100EP] completed_tasks=6/6")
+    log(f"[SEQUENCE_DONE_{tag}] completed_tasks=6/6")
     log(
-        f"[POD_LIMIT_CHECK_224_BOTH_SCRATCH_100EP] status={limit_status} "
+        f"[POD_LIMIT_CHECK_{tag}] status={limit_status} "
         f"estimated_minutes={estimated_seconds / 60:.1f} "
         f"limit_minutes={POD_LIMIT_SECONDS / 60:.0f} "
         f"{'margin' if margin >= 0 else 'over_by'}_minutes="
@@ -423,11 +502,11 @@ def main() -> None:
     )
     if timing and limit_status == "FAIL":
         log(
-            "[NEXT_ACTION_224_BOTH_SCRATCH_100EP] Split full tasks across "
+            f"[NEXT_ACTION_{tag}] Split full tasks across "
             "Issues and reuse only a completed full teacher."
         )
-    log(f"[FINAL_RESULT_224_BOTH_SCRATCH_100EP] sequence_status={status_path}")
-    log(format_final_top1_summary(best_top1))
+    log(f"[FINAL_RESULT_{tag}] sequence_status={status_path}")
+    log(format_final_top1_summary(best_top1, student_epochs))
 
 
 if __name__ == "__main__":
@@ -435,7 +514,7 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         log(
-            f"[FATAL_224_BOTH_SCRATCH_100EP] "
+            "[FATAL_224_BOTH_SCRATCH] "
             f"{type(error).__name__}: {error}"
         )
         raise
