@@ -172,3 +172,20 @@ python methods/table1_cub200/train.py --full-run --student deit_ti --method vani
 The `v2` output root distinguishes this valid retry from the earlier job that
 stopped before epoch 1 because `iopath` had not been installed. Copyable Issue
 fields are in `H200_DEIT_VANILLA_FULL_ISSUE.md`.
+
+## Remaining-backbone five-setting runner
+
+`run_backbone_all.py` trains one student backbone in the locked order
+Vanilla-b128, LG-b128, ALG-b128, Ours-b64, and Ours-b128. Vanilla remains
+teacher-free; all four guided runs load and hash-check the fixed build-543
+ResNet56-32 teacher. The runner validates every summary and best checkpoint
+and prints the complete six-value Teacher/Vanilla/LG/ALG/Ours64/Ours128 line.
+
+The first use is ConViT-Ti:
+
+```bash
+python methods/table1_cub200/run_backbone_all.py --full-run --student convit_ti --data-dir /app/output/table1_cub200_convit_all_full_seed1/data/cub200 --output-dir /app/output/table1_cub200_convit_all_full_seed1 --num-workers 4
+```
+
+Its measured five-task estimate is 6h 07m 30s, below the 600-minute pod limit.
+Copyable Issue fields are in `H200_CONVIT_ALL_FULL_ISSUE.md`.
