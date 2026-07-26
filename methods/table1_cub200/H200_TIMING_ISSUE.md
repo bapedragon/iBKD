@@ -35,7 +35,7 @@ https://github.com/bapedragon/IBAM_KD_H200_V2.git
 ## 코드 실행 명령어
 
 ```text
-python methods/table1_cub200/run_timing.py --timing-run --data-dir /app/data/cub200 --output-dir /app/output/table1_cub200_7backbone_36task_timing_seed1 --num-workers 4
+python methods/table1_cub200/run_timing.py --timing-run --data-dir /app/output/table1_cub200_7backbone_36task_timing_seed1_v2/data/cub200 --output-dir /app/output/table1_cub200_7backbone_36task_timing_seed1_v2 --num-workers 4
 ```
 
 ## 사용할 이미지
@@ -74,7 +74,7 @@ CUB-200-2011 공식 train/test split에서 Table 1 확장 timing run을 수행�
 ## 결과로 첨부할 파일
 
 ```text
-/app/output/table1_cub200_7backbone_36task_timing_seed1/timing_summary.json
-/app/output/table1_cub200_7backbone_36task_timing_seed1/timing_summary.csv
-/app/output/table1_cub200_7backbone_36task_timing_seed1/sequence_status.json
+/app/output/table1_cub200_7backbone_36task_timing_seed1_v2/timing_summary.json
+/app/output/table1_cub200_7backbone_36task_timing_seed1_v2/timing_summary.csv
+/app/output/table1_cub200_7backbone_36task_timing_seed1_v2/sequence_status.json
 ```

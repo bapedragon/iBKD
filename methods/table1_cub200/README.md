@@ -70,7 +70,7 @@ batch 64 and batch 128; the method, optimizer, and loss are otherwise identical.
 ## Complete timing run
 
 ```bash
-python methods/table1_cub200/run_timing.py --timing-run --data-dir /app/data/cub200 --output-dir /app/output/table1_cub200_7backbone_36task_timing_seed1 --num-workers 4
+python methods/table1_cub200/run_timing.py --timing-run --data-dir /app/output/table1_cub200_7backbone_36task_timing_seed1_v2/data/cub200 --output-dir /app/output/table1_cub200_7backbone_36task_timing_seed1_v2 --num-workers 4
 ```
 
 The runner installs pinned requirements when needed, downloads and validates
@@ -95,3 +95,17 @@ and preserves all earlier summaries. The batch or experiment grouping must
 then be revised based on the recorded failure rather than silently omitting the
 model.
 
+## First full-training group: Teacher + DeiT-Ti LG/ALG
+
+The first bounded full run deliberately retrains the scratch ResNet56-32
+teacher and then supplies that exact run's best checkpoint and manifest to
+DeiT-Ti LG and ALG:
+
+```bash
+python methods/table1_cub200/run_deit_lg_alg.py --full-run --data-dir /app/output/table1_cub200_deit_lg_alg_full_seed1/data/cub200 --output-dir /app/output/table1_cub200_deit_lg_alg_full_seed1 --num-workers 4
+```
+
+All three tasks run for 300 epochs. The measured timing estimate is 2h 53m
+58s, below the 600-minute pod limit. The final log repeats the Teacher, LG,
+and ALG best Top-1 values. Copyable Issue fields are in
+`H200_DEIT_LG_ALG_FULL_ISSUE.md`.
