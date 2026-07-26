@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import importlib
+import importlib.metadata
 import json
 import math
 import os
 import platform
 import random
+import subprocess
 import sys
 import time
 import traceback
@@ -63,10 +66,62 @@ TEACHER_IMAGE_SIZE = 32
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 METHODS = ("vanilla", "lg", "alg", "ours")
+REQUIRED_RUNTIME_IMPORTS = ("timm", "einops", "fvcore", "iopath", "yacs")
 
 
 def log(message: str = "") -> None:
     print(message, flush=True)
+
+
+def bootstrap_dependencies() -> None:
+    missing_or_mismatched: list[str] = []
+    for module_name in REQUIRED_RUNTIME_IMPORTS:
+        try:
+            module = importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            missing_or_mismatched.append(module_name)
+            continue
+        if module_name == "timm" and module.__version__ != "1.0.27":
+            missing_or_mismatched.append(f"timm=={module.__version__}")
+
+    if not missing_or_mismatched:
+        log("[BOOT] complete Table-1 runtime dependencies already available")
+        return
+
+    requirements = REPOSITORY_ROOT / "requirements.txt"
+    log(
+        "[BOOT] installing complete pinned Table-1 requirements; "
+        f"missing_or_mismatched={missing_or_mismatched}"
+    )
+    subprocess.check_call(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--quiet",
+            "-r",
+            str(requirements),
+        ],
+        cwd=REPOSITORY_ROOT,
+    )
+    importlib.invalidate_caches()
+    unresolved: list[str] = []
+    for module_name in REQUIRED_RUNTIME_IMPORTS:
+        try:
+            importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            unresolved.append(module_name)
+    if unresolved:
+        raise RuntimeError(
+            f"Table-1 dependency bootstrap incomplete: {unresolved}"
+        )
+    installed_timm = importlib.metadata.version("timm")
+    if installed_timm != "1.0.27":
+        raise RuntimeError(
+            f"Expected timm=1.0.27 after bootstrap, found {installed_timm}"
+        )
+    log("[BOOT] complete pinned Table-1 requirements installed successfully")
 
 
 def format_duration(seconds: float) -> str:
@@ -675,7 +730,9 @@ def train(args: argparse.Namespace) -> None:
 
 def main() -> None:
     try:
-        train(parse_args())
+        args = parse_args()
+        bootstrap_dependencies()
+        train(args)
     except Exception as error:
         log(f"[FATAL] {type(error).__name__}: {error}")
         traceback.print_exc()

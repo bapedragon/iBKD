@@ -157,3 +157,18 @@ runner verifies the fixed Teacher manifest and actual SHA-256; after each
 student, it verifies that the saved summary records that same Teacher. The
 final log repeats the completed Teacher/LG/ALG values together with both Ours
 best Top-1 values. Copyable Issue fields are in `H200_DEIT_OURS_FULL_ISSUE.md`.
+
+## DeiT-Ti Vanilla baseline
+
+Vanilla is the teacher-free scratch DeiT-Ti baseline at 224x224, batch 128,
+and 300 epochs. The direct training entry point now checks and installs the
+complete pinned Table-1 runtime (`timm`, `einops`, `fvcore`, `iopath`, and
+`yacs`) before model construction:
+
+```bash
+python methods/table1_cub200/train.py --full-run --student deit_ti --method vanilla --batch-size 128 --data-dir /app/output/table1_cub200_deit_vanilla_full_seed1_v2/data/cub200 --output-dir /app/output/table1_cub200_deit_vanilla_full_seed1_v2 --run-name table1_cub200_deit_ti_vanilla_b128_full_300ep_seed1 --num-workers 4
+```
+
+The `v2` output root distinguishes this valid retry from the earlier job that
+stopped before epoch 1 because `iopath` had not been installed. Copyable Issue
+fields are in `H200_DEIT_VANILLA_FULL_ISSUE.md`.
