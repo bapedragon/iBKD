@@ -57,6 +57,12 @@ dataset. The canonical IDs currently used are:
 | `cub200_deit_ti_alg_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 ALG with the random-init ResNet50-224 teacher |
 | `cub200_deit_ti_ce_ours_current_b64_300ep_seed1` | CUB-200 teacher-free Vanilla control for the Ours batch-64 profile |
 | `cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 Ours with the random-init ResNet50-224 teacher |
+| `researcher_sync_v1_batch128_ablation_300ep_seed1` | CIFAR-100 Ours v1 with only train batch changed to 128 |
+| `cub200_deit_ti_ce_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained DeiT-Ti Vanilla control |
+| `cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti LG |
+| `cub200_deit_ti_alg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti ALG |
+| `cub200_deit_ti_ours_resnet50_224_both_imagenet_pretrained_b64_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti Ours, batch 64 |
+| `cub200_deit_ti_ours_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti Ours batch-128 ablation |
 
 Account names and H200 build numbers are kept only under `run_logs`; they do
 not determine checkpoint placement. `PENDING_IMPORTS.md` records jobs that
@@ -65,14 +71,14 @@ have started but whose output archives have not yet been verified and added.
 Only the selected best checkpoint is committed. The original downloaded
 outputs retain `student_latest.pt`; its exact final-epoch accuracy is also
 preserved in `run_summary.json`. This avoids doubling repository size and H200
-clone time without discarding the reported result. For the two ResNet50-224
-Ours runs, the exact student and auxiliary-module states are committed as
-`student_best.pt` and `ours_module_best.pt`, respectively, because the
-combined source checkpoint exceeds GitHub's per-file limit. The adjacent
+clone time without discarding the reported result. For the four ResNet50-224
+Ours runs whose combined source checkpoints exceed GitHub's limit, the exact
+student and auxiliary-module states are committed as
+`student_best.pt` and `ours_module_best.pt`, respectively. The adjacent
 `artifact_manifest.json` records source and committed hashes and the
 lossless reassembly rule.
 
-All 60 currently committed student checkpoints were loaded with PyTorch and verified against
+All 66 currently committed student checkpoints were loaded with PyTorch and verified against
 their summaries for dataset, method, best accuracy, and checkpoint epoch.
 The Top-1 value is read from the adjacent summary; file names are deliberately
 stable (`student_best.pt`) inside the provenance-rich protocol directory.
@@ -119,6 +125,7 @@ Ours run uses seed 1.
 | KD | 191 | **69.10%** | 68.59% | +4.02 pp | Verified |
 | CRD | 79 | **68.59%** | 66.74% | +3.51 pp | Verified |
 | Ours (researcher sync) | 288 | **82.90%** | 82.62% | +17.82 pp | Verified; current synchronized run |
+| Ours (batch-128 ablation) | 292 | **82.60%** | 82.46% | +17.52 pp | Verified; only train batch changed from 64 to 128 |
 | Ours (pre-sync) | 296 | **79.52%** | 79.49% | +14.44 pp | Historical source-grid run |
 | ReviewKD | 233 | **75.65%** | 75.50% | +10.57 pp | Verified |
 | MGD | 215 | **75.68%** | 75.31% | +10.60 pp | Verified |
@@ -128,6 +135,9 @@ The researcher-sync Ours result is `82.90%`. The working-paper value recorded
 by the repository is `82.42%`, a difference of `+0.48 pp` (the separately
 communicated `82.43%` value gives `+0.47 pp`). The older `79.52%` checkpoint
 remains in a distinct historical protocol directory and was not overwritten.
+The batch-128 ablation is `0.30 pp` below the batch-64 researcher-sync
+reference. It keeps the same Ours v1 method, fixed teacher, 300-epoch horizon,
+seed, optimizer, controller, and loss, and changes only train batch size.
 
 ### Table 4 attribution control
 
@@ -225,6 +235,30 @@ optimizer state and is 191.7 MB, so the committed checkpoint omits only that
 retraining state and remains below GitHub's 100 MB single-file limit. The
 original full teacher `best` and `latest` files remain in the local
 `IBAM_weight` archive. The committed manifest records both hashes.
+
+## CUB-200-2011 — full ImageNet transfer
+
+Build 523 initializes both the ResNet50-224 teacher and all DeiT-Ti students
+from ImageNet weights. The teacher trains for 200 epochs and all students for
+100 epochs. This is separate from build 511, where only the teacher is
+pretrained and the students start from scratch and train for 300 epochs.
+
+| Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Status |
+|---|---:|---:|---:|---:|---|
+| Teacher, pretrained ResNet50-224 | 64 | 161 | **84.10%** | 83.79% | Verified; exact model tensors match build 511 |
+| Vanilla, pretrained DeiT-Ti | 128 | 100 | **73.06%** | 73.06% | Verified |
+| LG, pretrained DeiT-Ti | 128 | 80 | **75.61%** | 75.60% | Verified |
+| ALG, pretrained DeiT-Ti | 128 | 100 | **74.16%** | 74.16% | Verified |
+| Ours, pretrained DeiT-Ti | 64 | 94 | **73.71%** | 73.37% | Verified |
+| Ours, pretrained DeiT-Ti | 128 | 100 | **74.85%** | 74.85% | Verified batch ablation |
+
+The build-523 teacher source SHA-256 is
+`80f46b08ea2b2c5398c951268b937f3be0abe47f08bf7617e6dcd4e49a4db82b`.
+It differs at the full archive level from build 511, but all 320 model-state
+tensors are exactly equal under `torch.equal`. The repository therefore
+reuses the verified compact teacher checkpoint and records both source
+hashes, manifests, metrics, and summaries instead of committing a duplicate
+96 MB model.
 
 ## CUB-200-2011 — random-init ResNet50-224 teacher ablation
 
@@ -423,6 +457,11 @@ in separate protocol directories; no old checkpoint was overwritten.
 - `run_logs/h200_build-519_cub200-resnet50-224-scratch-teacher-vanilla-lg-alg-ours-300ep/`:
   random-init ResNet50-224 teacher, two profile-matched Vanilla controls, LG,
   ALG, and Ours; all six tasks are log-complete.
+- `run_logs/h200_build-522_cifar100-ours-v1-batch128-ablation-300ep.log`:
+  Ours v1 CIFAR-100 researcher-sync batch-128 ablation (`82.60%`).
+- `run_logs/h200_build-523_cub200-full-transfer-pretrained-teacher-students-100ep/`:
+  pretrained ResNet50 teacher followed by pretrained Vanilla, LG, ALG, and
+  Ours batches 64/128; all six tasks completed.
 - `run_logs/h200_build-482_table4-grid-permutation-cifar100-300ep.log`:
   Table 4 grid-permutation control (`81.79%`).
 - `run_logs/h200_build-484_table7-lambda0-cifar100-300ep.log`:

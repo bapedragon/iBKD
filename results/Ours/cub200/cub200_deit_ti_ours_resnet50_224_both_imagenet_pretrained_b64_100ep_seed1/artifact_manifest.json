@@ -1,0 +1,18 @@
+{
+  "format_version": 1,
+  "source_checkpoint": "/Users/bagcheolhyeon/IBAM_weight/bapedragon_523/cub200_full_transfer_all_100ep_full_seed1/OursB64/full_transfer/ours_cub200_both_imagenet_pretrained_b64_100ep_seed1/student_best.pt",
+  "source_checkpoint_sha256": "4203d439abbb79cde8475fd92b104e16adb4d50b0d09af95207a2591d7602e7b",
+  "committed_files": {
+    "student_best.pt": {
+      "sha256": "46f7651973fce256c2f4bdf0f30b89784b999a91f0790091124f8210769da217",
+      "bytes": 22315493,
+      "contents": "student model state and checkpoint metadata"
+    },
+    "ours_module_best.pt": {
+      "sha256": "a12ed9252467a1e90920944ddbbdf7cf8cac549d8d39f955ae62c1bde67812c9",
+      "bytes": 93725521,
+      "contents": "Ours auxiliary module state"
+    }
+  },
+  "reassembly": "Load both files and assign auxiliary['state_dict'] to student_checkpoint['ours']."
+}

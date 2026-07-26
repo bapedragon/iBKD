@@ -29,7 +29,9 @@ Verify all four selected teacher checkpoints from the repository root:
 python teachers/verify_checkpoints.py --dataset all
 ```
 
-The separate verified CUB ImageNet1K-V2 ResNet50-224 teacher from build 511
-is stored under `checkpoints/cub200_resnet50_224_imagenet1k_v2/` with its own
-manifest. Build 519's random-init ResNet50-224 teacher is not stored here
-because its teacher artifact directory was absent from the supplied archive.
+The separate verified CUB ImageNet1K-V2 ResNet50-224 teacher from builds 511
+and 523 is stored under `checkpoints/cub200_resnet50_224_imagenet1k_v2/` with
+its own manifest. The two source archives have exactly equal model tensors,
+and both source hashes are retained. Build 519's random-init ResNet50-224
+teacher is not stored here because its teacher artifact directory was absent
+from the supplied archive.

@@ -69,6 +69,13 @@ separate copyable timing and full H200 Issues. The output root and protocol ID
 carry `full_transfer` / `both_imagenet_pretrained` and cannot overwrite the
 three earlier CUB families.
 
+Build 523 completed this full-transfer sequence: teacher **84.10%**,
+Vanilla-b128 **73.06%**, LG **75.61%**, ALG **74.16%**, Ours-b64 **73.71%**,
+and Ours-b128 **74.85%**. All source artifacts were supplied and verified.
+The build-523 teacher's 320 model tensors exactly match the existing build-511
+teacher, so the compact checkpoint is reused while both source hashes and
+training records are retained.
+
 Its initialization-only paired control keeps that exact six-task order,
 224 x 224 inputs, teacher 200-epoch horizon, student 100-epoch horizon, and
 batch sizes, but initializes both ResNet50 and every DeiT-Ti from scratch.
@@ -205,6 +212,10 @@ token-space remeasurement. The pre-V2 Table 7 sweep is `83.29`, `83.40`,
 lambda `0` and `82.84%` at lambda `0.5`. All controls live in distinct
 provenance-rich protocol directories and do not replace the full-Ours
 `82.90%` checkpoint.
+
+The separate Ours v1 CIFAR-100 batch-128 ablation reached **82.60%** at epoch
+292 (last **82.46%**), `0.30 pp` below the batch-64 researcher-sync reference.
+It changes only train batch size and is stored under its own protocol ID.
 
 ## DeiT-Ti student stage
 

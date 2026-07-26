@@ -1,0 +1,29 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "dataset": "cub200",
+  "dataset_root": "/app/scratch/input/bapedragon_523/data/cub200/CUB_200_2011",
+  "protocol_family": "cub200_common_transfer_resnet50_224",
+  "model_name": "resnet50_cub200_imagenet1k_v2_224",
+  "recipe_name": "cub200_common_transfer_resnet50_224_imagenet1k_v2_200ep_seed1",
+  "input_resolution": 224,
+  "pretrained": true,
+  "pretrained_source": "torchvision.ResNet50_Weights.IMAGENET1K_V2",
+  "completed_epoch": 200,
+  "planned_epochs": 200,
+  "latest_top1": 83.7935795650673,
+  "best_top1": 84.10424577148774,
+  "avg_epoch_seconds": 13.248206344842911,
+  "estimated_planned_seconds": 2649.641268968582,
+  "estimated_planned_human": "44m 10s",
+  "elapsed_seconds": 2730.5731279850006,
+  "paths": {
+    "best": "/app/output/cub200_full_transfer_all_100ep_full_seed1/teacher_resnet50_224_imagenet1k_v2/teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1/teacher_resnet50_cub200_224_best.pt",
+    "latest": "/app/output/cub200_full_transfer_all_100ep_full_seed1/teacher_resnet50_224_imagenet1k_v2/teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1/teacher_resnet50_cub200_224_latest.pt",
+    "manifest": "/app/output/cub200_full_transfer_all_100ep_full_seed1/teacher_resnet50_224_imagenet1k_v2/teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1/manifest.json",
+    "metrics": "/app/output/cub200_full_transfer_all_100ep_full_seed1/teacher_resnet50_224_imagenet1k_v2/teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1/metrics.csv"
+  },
+  "sha256": {
+    "best": "80f46b08ea2b2c5398c951268b937f3be0abe47f08bf7617e6dcd4e49a4db82b"
+  }
+}

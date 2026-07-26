@@ -1,0 +1,27 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "method": "Vanilla",
+  "dataset": "cub200",
+  "profile": "lg_official_b128",
+  "student": "deit_ti",
+  "student_pretrained": true,
+  "student_pretrained_source": "timm/deit_tiny_patch16_224.fb_in1k",
+  "teacher": null,
+  "loss": "cross_entropy_only",
+  "input_resolution": 224,
+  "batch_size": 128,
+  "completed_epoch": 100,
+  "actual_epochs": 100,
+  "planned_epochs": 100,
+  "latest_top1": 73.05833620987228,
+  "best_top1": 73.05833620987228,
+  "avg_epoch_seconds": 12.560609874725342,
+  "estimated_planned_seconds": 1256.0609874725342,
+  "estimated_planned_human": "20m 56s",
+  "elapsed_seconds": 1263.4212021827698,
+  "paths": {
+    "best": "/app/output/cub200_full_transfer_all_100ep_full_seed1/Vanilla/pretrained_b128/vanilla_cub200_deit_ti_imagenet1k_b128_100ep_seed1/student_best.pt",
+    "latest": "/app/output/cub200_full_transfer_all_100ep_full_seed1/Vanilla/pretrained_b128/vanilla_cub200_deit_ti_imagenet1k_b128_100ep_seed1/student_latest.pt"
+  }
+}

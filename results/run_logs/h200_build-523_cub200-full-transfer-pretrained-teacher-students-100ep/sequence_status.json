@@ -1,0 +1,65 @@
+{
+  "status": "complete",
+  "mode": "full",
+  "protocol_family": "cub200_resnet50_deit_ti_224_both_imagenet_pretrained",
+  "separate_from": [
+    "cub200_resnet56_32_scratch",
+    "cub200_common_transfer_resnet50_224",
+    "cub200_resnet50_224_scratch"
+  ],
+  "completed_tasks": 6,
+  "total_tasks": 6,
+  "tasks": [
+    {
+      "name": "teacher",
+      "status": "complete",
+      "summary": "/app/output/cub200_full_transfer_all_100ep_full_seed1/teacher_resnet50_224_imagenet1k_v2/teacher_cub200_resnet50_224_imagenet1k_v2_200ep_seed1/summary.json"
+    },
+    {
+      "name": "VanillaB128",
+      "status": "complete",
+      "summary": "/app/output/cub200_full_transfer_all_100ep_full_seed1/Vanilla/pretrained_b128/vanilla_cub200_deit_ti_imagenet1k_b128_100ep_seed1/summary.json"
+    },
+    {
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/cub200_full_transfer_all_100ep_full_seed1/LG/full_transfer/lg_cub200_both_imagenet_pretrained_b128_100ep_seed1/summary.json"
+    },
+    {
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/cub200_full_transfer_all_100ep_full_seed1/ALG/full_transfer/alg_cub200_both_imagenet_pretrained_b128_100ep_seed1/summary.json"
+    },
+    {
+      "name": "OursB64",
+      "status": "complete",
+      "summary": "/app/output/cub200_full_transfer_all_100ep_full_seed1/OursB64/full_transfer/ours_cub200_both_imagenet_pretrained_b64_100ep_seed1/summary.json"
+    },
+    {
+      "name": "OursB128",
+      "status": "complete",
+      "summary": "/app/output/cub200_full_transfer_all_100ep_full_seed1/OursB128/full_transfer/ours_cub200_both_imagenet_pretrained_b128_100ep_seed1/summary.json"
+    }
+  ],
+  "started_at_unix": 1784957621.4018033,
+  "protocols": {
+    "teacher": "ImageNet1K-V2 ResNet50, 224px, full CUB fine-tuning",
+    "VanillaB128": "ImageNet-1K DeiT-Ti, official-LG CE-only base, batch 128",
+    "LG": "ImageNet-1K DeiT-Ti, official LG mechanics, batch 128",
+    "ALG": "ImageNet-1K DeiT-Ti, ALG paper controller on official LG, batch 128",
+    "OursB64": "ImageNet-1K DeiT-Ti, unchanged Ours protocol, batch 64",
+    "OursB128": "ImageNet-1K DeiT-Ti, unchanged Ours except batch 128"
+  },
+  "best_top1": {
+    "teacher": 84.10424577148774,
+    "VanillaB128": 73.05833620987228,
+    "LG": 75.61270279599586,
+    "ALG": 74.16292716603382,
+    "OursB64": 73.7141870900932,
+    "OursB128": 74.85329651363479
+  },
+  "estimated_planned_seconds": 10332.683058261871,
+  "pod_limit_seconds": 36000,
+  "pod_limit_status": "PASS",
+  "finished_at_unix": 1784968270.220952
+}

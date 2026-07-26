@@ -31,14 +31,17 @@ never replace the primary scratch ResNet56 checkpoint above.
 
 | Family | Selected checkpoint | H200 build | Best epoch | Best Top-1 | Last Top-1 | Status |
 |---|---|---:|---:|---:|---:|---|
-| ImageNet1K-V2 teacher / scratch students | `cub200_resnet50_224_imagenet1k_v2/teacher_resnet50_cub200_224_best.pt` | 511 | 161 | **84.10%** | 83.79% | Verified |
+| ImageNet1K-V2 ResNet50 teacher | `cub200_resnet50_224_imagenet1k_v2/teacher_resnet50_cub200_224_best.pt` | 511, 523 | 161 | **84.10%** | 83.79% | Verified; source model tensors equal |
 | Random-init ResNet50 teacher ablation | `cub200_resnet50_224_scratch/` | 519 | 139 | **48.31%** | 47.70% | Log verified; teacher files not supplied |
 
-The build-511 source checkpoint is 191.7 MB because it includes an optimizer
-state. The committed form retains all exact model tensors and metadata, omits
-only `optimizer_state`, and records both the source and committed SHA-256 in
-`artifact_manifest.json`. The complete source `best` and `latest` files remain
-in the local archive.
+The build-511 and build-523 source checkpoints are each about 191.7 MB because
+they include optimizer state. Their full archive hashes differ, but all 320
+model-state tensors are exactly equal under `torch.equal`. The committed form
+retains the exact model tensors and metadata, omits only `optimizer_state`,
+and records both source hashes plus the committed SHA-256 in
+`artifact_manifest.json`. Both source `best`/`latest` pairs remain in the
+local archive. The build-523 source manifest, metrics, and summary are kept
+with a `build523` suffix.
 
 The build-519 full log and five student archives were supplied, but its
 teacher `best`, `latest`, `manifest`, `metrics`, and `summary` files were not.
@@ -50,7 +53,7 @@ Verify hashes, metadata, strict state-dict loading, and a 32 x 32 forward pass:
 python teachers/verify_checkpoints.py --dataset all
 ```
 
-Verify the separate build-511 ResNet50-224 checkpoint with:
+Verify the shared build-511/build-523 ResNet50-224 checkpoint with:
 
 ```bash
 python teachers/verify_checkpoints.py \

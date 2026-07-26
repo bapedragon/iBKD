@@ -73,6 +73,24 @@ The final log line reports all six Best Top-1 values:
 [FINAL_TOP1_SUMMARY_224_FULL_TRANSFER] Teacher=...% VanillaB128=...% LG=...% ALG=...% OursB64=...% OursB128=...%
 ```
 
+## Completed build 523 result
+
+| Task | Batch | Best epoch | Best Top-1 | Last Top-1 |
+|---|---:|---:|---:|---:|
+| ResNet50-224 teacher | 64 | 161 | **84.10%** | 83.79% |
+| Vanilla-b128 | 128 | 100 | **73.06%** | 73.06% |
+| LG | 128 | 80 | **75.61%** | 75.60% |
+| ALG | 128 | 100 | **74.16%** | 74.16% |
+| Ours-b64 | 64 | 94 | **73.71%** | 73.37% |
+| Ours-b128 | 128 | 100 | **74.85%** | 74.85% |
+
+All six tasks completed, and every supplied best/latest checkpoint passed
+metadata, strict state-dict, and finite-forward validation. The teacher source
+archive SHA-256 differs from build 511, but all 320 model-state tensors are
+exactly equal. The repository reuses the existing compact model checkpoint
+and retains build 523's source manifest, metrics, summary, and full sequence
+log as separate provenance.
+
 The official CUB page warns that CUB images may overlap ImageNet. These runs
 must therefore be reported explicitly as ImageNet-pretrained transfer
 experiments, separately from all scratch families.

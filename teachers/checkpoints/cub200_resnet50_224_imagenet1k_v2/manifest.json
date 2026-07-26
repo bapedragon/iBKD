@@ -30,8 +30,12 @@
       "pretrained": true,
       "pretrained_source": "torchvision.ResNet50_Weights.IMAGENET1K_V2",
       "protocol_family": "cub200_common_transfer_resnet50_224",
-      "source_checkpoint_sha256": "7cfed8c7d7e55f24466e196134503d4bd370a7f371048d1f07878bab37e19516"
+      "source_checkpoint_sha256": "7cfed8c7d7e55f24466e196134503d4bd370a7f371048d1f07878bab37e19516",
+      "equivalent_source_checkpoint_sha256": [
+        "7cfed8c7d7e55f24466e196134503d4bd370a7f371048d1f07878bab37e19516",
+        "80f46b08ea2b2c5398c951268b937f3be0abe47f08bf7617e6dcd4e49a4db82b"
+      ]
     }
   },
-  "artifact_note": "Committed checkpoint retains exact model tensors and omits only optimizer_state to satisfy GitHub's per-file limit."
+  "artifact_note": "Committed checkpoint retains exact model tensors and omits only optimizer_state to satisfy GitHub's per-file limit. Builds 511 and 523 produced byte-different source archives whose 320 model tensors are exactly equal."
 }

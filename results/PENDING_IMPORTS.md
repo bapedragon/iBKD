@@ -7,9 +7,9 @@ verified in this repository. Accuracy cells intentionally remain blank.
 ## Current status
 
 The overnight batch received on 2026-07-22 and builds 479, 480, 482, 484,
-485, 488, 490, 493, 494, 496, 503, 509, 511, and 519 received through
-2026-07-25 have been imported where artifacts were present. Two completed
-results still await checkpoint artifacts:
+485, 488, 490, 493, 494, 496, 503, 509, 511, 519, 522, and 523 received
+through 2026-07-26 have been imported where artifacts were present. Two
+completed results still await checkpoint artifacts:
 
 | Method | Dataset | Protocol ID | Log-verified result | Expected destination | Missing artifacts |
 |---|---|---|---:|---|---|
@@ -74,6 +74,16 @@ their JSON summaries, and imported without replacing historical results:
   `cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1`:
   the five verified build-519 students. Their summaries preserve the missing
   scratch teacher's reported SHA-256.
+- `researcher_sync_v1_batch128_ablation_300ep_seed1`: the verified Ours v1
+  CIFAR-100 train-batch-128 control from build 522;
+- `cub200_deit_ti_ce_both_imagenet_pretrained_b128_100ep_seed1`,
+  `cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1`,
+  `cub200_deit_ti_alg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1`,
+  and the two
+  `cub200_deit_ti_ours_resnet50_224_both_imagenet_pretrained_b{64,128}_100ep_seed1`
+  protocols: the five verified pretrained students from build 523. The
+  pretrained teacher is tensor-identical to the existing compact build-511
+  checkpoint, and its second source hash is recorded in the teacher manifest.
 
 Add new jobs below this section only after submission, and remove their rows
 after the same import gate has passed.

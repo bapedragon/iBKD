@@ -42,7 +42,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
 
     def test_each_committed_protocol_directory_is_self_contained(self) -> None:
         summaries = sorted(RESULTS.glob("*/*/*/run_summary.json"))
-        self.assertEqual(len(summaries), 60)
+        self.assertEqual(len(summaries), 66)
         for summary_path in summaries:
             run_dir = summary_path.parent
             checkpoint_path = run_dir / "student_best.pt"
@@ -134,9 +134,39 @@ class ResultProtocolLayoutTest(unittest.TestCase):
         )
         self.assertTrue((transfer_teacher / "manifest.json").is_file())
         self.assertTrue((transfer_teacher / "artifact_manifest.json").is_file())
+        manifest = json.loads(
+            (transfer_teacher / "manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertIn(
+            "80f46b08ea2b2c5398c951268b937f3be0abe47f08bf7617e6dcd4e49a4db82b",
+            manifest["teachers"]["cub200"]["equivalent_source_checkpoint_sha256"],
+        )
         pending = (RESULTS / "PENDING_IMPORTS.md").read_text(encoding="utf-8")
         self.assertIn("cub200_resnet50_224_scratch_200ep_seed1", pending)
         self.assertIn("48.31%", pending)
+
+    def test_build_522_523_import_destinations_are_explicit(self) -> None:
+        expected = (
+            RESULTS
+            / "Ours/cifar100/researcher_sync_v1_batch128_ablation_300ep_seed1",
+            RESULTS
+            / "Vanilla/cub200/cub200_deit_ti_ce_both_imagenet_pretrained_b128_100ep_seed1",
+            RESULTS
+            / "LG/cub200/cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1",
+            RESULTS
+            / "ALG/cub200/cub200_deit_ti_alg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1",
+            RESULTS
+            / "Ours/cub200/cub200_deit_ti_ours_resnet50_224_both_imagenet_pretrained_b64_100ep_seed1",
+            RESULTS
+            / "Ours/cub200/cub200_deit_ti_ours_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1",
+        )
+        for run_dir in expected:
+            self.assertTrue((run_dir / "run_summary.json").is_file(), run_dir)
+            self.assertTrue((run_dir / "student_best.pt").is_file(), run_dir)
+
+        for run_dir in expected[-2:]:
+            self.assertTrue((run_dir / "ours_module_best.pt").is_file(), run_dir)
+            self.assertTrue((run_dir / "artifact_manifest.json").is_file(), run_dir)
 
     def test_consolidated_table_uses_only_current_reporting_results(self) -> None:
         root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
