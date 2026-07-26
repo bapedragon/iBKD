@@ -140,3 +140,20 @@ python methods/table1_cub200/train.py \
 Valid student keys are `deit_ti`, `convit_ti`, `cvt_13`, `pit_ti`,
 `pvtv2_b0`, `t2t_vit_7`, and `t2t_vit_14`. Guided LG, ALG, and Ours jobs all
 fail closed if the manifest does not identify the build-543 teacher above.
+
+## Next full-training group: DeiT-Ti Ours-b64/Ours-b128
+
+The next bounded full run reuses the fixed build-543 teacher and trains only
+the two remaining DeiT-Ti Ours settings:
+
+```bash
+python methods/table1_cub200/run_deit_ours.py --full-run --data-dir /app/output/table1_cub200_deit_ours_full_seed1/data/cub200 --output-dir /app/output/table1_cub200_deit_ours_full_seed1 --num-workers 4
+```
+
+The locked order is Ours-b64 followed by Ours-b128. Both scratch DeiT-Ti
+students use 224x224 inputs and train for 300 epochs. The measured timing
+estimate is 2h 23m 56s, below the 600-minute pod limit. Before training, the
+runner verifies the fixed Teacher manifest and actual SHA-256; after each
+student, it verifies that the saved summary records that same Teacher. The
+final log repeats the completed Teacher/LG/ALG values together with both Ours
+best Top-1 values. Copyable Issue fields are in `H200_DEIT_OURS_FULL_ISSUE.md`.
