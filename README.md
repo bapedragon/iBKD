@@ -24,6 +24,15 @@ accounts are under
 reported as a protocol transfer because the LG/ALG sources do not publish a
 CUB configuration.
 
+The new Table-1 CUB extension keeps that shared ResNet56-32 teacher and adds
+the seven paper backbones: DeiT-Ti, ConViT-Ti, CvT-13, PiT-Ti, PVTv2-B0,
+T2T-ViT-7, and T2T-ViT-14. Each backbone runs Vanilla-b128, LG-b128,
+ALG-b128, Ours-b64, and Ours-b128. Its complete **36-task** timing runner,
+audited official-LG model sources, protocol, and separately copyable H200
+Issue fields are under
+[`methods/table1_cub200/`](methods/table1_cub200/). This family never imports
+the ResNet50-224 or ImageNet-pretrained CUB settings.
+
 An additional, strictly separate CUB teacher-transfer family uses an
 ImageNet1K-V2-pretrained ResNet50 teacher fine-tuned at **224 x 224**, while
 its DeiT-Ti students still start from scratch. Its teacher, LG adaptation,

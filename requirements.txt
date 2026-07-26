@@ -1,3 +1,7 @@
 # PyTorch and torchvision are already provided by the KAU H200 image.
 timm==1.0.27
 scipy==1.15.3
+einops==0.8.1
+fvcore==0.1.5.post20221221
+iopath==0.1.10
+yacs==0.1.8
