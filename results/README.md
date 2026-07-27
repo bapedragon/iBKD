@@ -59,6 +59,19 @@ dataset. The canonical IDs currently used are:
 | `cub200_deit_ti_ours_resnet50_224_scratch_teacher_ablation_v1_300ep_seed1` | CUB-200 Ours with the random-init ResNet50-224 teacher |
 | `table1_cub200_deit_ti_lg_b128_full_300ep_seed1` | CUB Table-1 DeiT-Ti LG using the fixed build-543 ResNet56-32 teacher |
 | `table1_cub200_deit_ti_alg_b128_full_300ep_seed1` | CUB Table-1 DeiT-Ti ALG using the fixed build-543 ResNet56-32 teacher |
+| `table1_cub200_deit_ti_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free DeiT-Ti Vanilla baseline |
+| `table1_cub200_deit_ti_ours_b64_full_300ep_seed1` | CUB Table-1 DeiT-Ti Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_deit_ti_ours_b128_full_300ep_seed1` | CUB Table-1 DeiT-Ti Ours batch 128 using the fixed build-543 teacher |
+| `table1_cub200_convit_ti_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free ConViT-Ti Vanilla baseline |
+| `table1_cub200_convit_ti_lg_b128_full_300ep_seed1` | CUB Table-1 ConViT-Ti LG using the fixed build-543 teacher |
+| `table1_cub200_convit_ti_alg_b128_full_300ep_seed1` | CUB Table-1 ConViT-Ti ALG using the fixed build-543 teacher |
+| `table1_cub200_convit_ti_ours_b64_full_300ep_seed1` | CUB Table-1 ConViT-Ti Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_convit_ti_ours_b128_full_300ep_seed1` | CUB Table-1 ConViT-Ti Ours batch 128 using the fixed build-543 teacher |
+| `table1_cub200_cvt_13_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free CvT-13 Vanilla baseline |
+| `table1_cub200_cvt_13_lg_b128_full_300ep_seed1` | CUB Table-1 CvT-13 LG using the fixed build-543 teacher |
+| `table1_cub200_cvt_13_alg_b128_full_300ep_seed1` | CUB Table-1 CvT-13 ALG using the fixed build-543 teacher |
+| `table1_cub200_cvt_13_ours_b64_full_300ep_seed1` | CUB Table-1 CvT-13 Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_cvt_13_ours_b128_full_300ep_seed1` | CUB Table-1 CvT-13 Ours batch 128 using the fixed build-543 teacher |
 | `researcher_sync_v1_batch128_ablation_300ep_seed1` | CIFAR-100 Ours v1 with only train batch changed to 128 |
 | `cub200_deit_ti_ce_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained DeiT-Ti Vanilla control |
 | `cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti LG |
@@ -80,7 +93,7 @@ student and auxiliary-module states are committed as
 `artifact_manifest.json` records source and committed hashes and the
 lossless reassembly rule.
 
-All 68 currently committed student checkpoints were loaded with PyTorch and verified against
+All 81 currently committed student checkpoints were loaded with PyTorch and verified against
 their summaries for dataset, method, best accuracy, and checkpoint epoch.
 The Top-1 value is read from the adjacent summary; file names are deliberately
 stable (`student_best.pt`) inside the provenance-rich protocol directory.
@@ -219,22 +232,37 @@ transfers rather than source-paper reproductions.
 
 ## CUB-200-2011 — separate Table-1 extension
 
-Build 543 is the first completed group in the separate seven-backbone Table-1
-family. It trained its own scratch ResNet56 at 32 x 32, then trained DeiT-Ti
-LG and ALG at 224 x 224 for 300 epochs. It does not reuse or replace the
-primary build-509 CUB teacher above.
+Build 543 trained the dedicated scratch ResNet56 teacher at 32 x 32 and the
+first two DeiT-Ti students. Builds 547, 548, 551, and 552 completed the
+remaining DeiT-Ti rows plus all ConViT-Ti and CvT-13 rows. Every student uses
+224 x 224 inputs and a 300-epoch schedule; Vanilla is teacher-free and all
+guided rows use the fixed build-543 teacher. This family does not reuse or
+replace the primary build-509 CUB teacher above.
 
-| Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Status |
-|---|---:|---:|---:|---:|---|
-| Table-1 teacher, ResNet56-32 | 128 | 275 | **36.40%** | 36.12% | Verified and fixed for future Table-1 students |
-| Table-1 DeiT-Ti LG | 128 | 241 | **44.51%** | 43.61% | Verified |
-| Table-1 DeiT-Ti ALG | 128 | 286 | **47.70%** | 47.53% | Verified |
+| Student | Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Build |
+|---|---|---:|---:|---:|---:|---:|
+| ResNet56-32 | Teacher | 128 | 275 | **36.40%** | 36.12% | 543 |
+| DeiT-Ti | Vanilla | 128 | 156 | **17.69%** | 16.78% | 548 |
+| DeiT-Ti | LG | 128 | 241 | **44.51%** | 43.61% | 543 |
+| DeiT-Ti | ALG | 128 | 286 | **47.70%** | 47.53% | 543 |
+| DeiT-Ti | Ours | 64 | 263 | **48.31%** | 47.15% | 547 |
+| DeiT-Ti | Ours | 128 | 277 | **48.36%** | 47.84% | 547 |
+| ConViT-Ti | Vanilla | 128 | 261 | **22.94%** | 22.73% | 551 |
+| ConViT-Ti | LG | 128 | 263 | **45.55%** | 45.15% | 551 |
+| ConViT-Ti | ALG | 128 | 300 | **51.05%** | 51.05% | 551 |
+| ConViT-Ti | Ours | 64 | 278 | **53.18%** | 52.90% | 551 |
+| ConViT-Ti | Ours | 128 | 295 | **51.73%** | 51.35% | 551 |
+| CvT-13 | Vanilla | 128 | 194 | **29.19%** | 27.98% | 552 |
+| CvT-13 | LG | 128 | 99 | **43.01%** | 39.30% | 552 |
+| CvT-13 | ALG | 128 | 247 | **46.63%** | 45.84% | 552 |
+| CvT-13 | Ours | 64 | 248 | **47.98%** | 46.95% | 552 |
+| CvT-13 | Ours | 128 | 224 | **46.82%** | 45.36% | 552 |
 
 The fixed teacher is
 `teachers/checkpoints/cub200_table1_resnet56_32/teacher_resnet56_cub200_32_best.pt`
 with SHA-256
 `06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5`.
-Every future guided Table-1 student must use that exact checkpoint; the
+Every remaining guided Table-1 student must use that exact checkpoint; the
 Table-1 training entry point rejects any different manifest or hash.
 
 ## CUB-200-2011 — ImageNet-pretrained ResNet50-224 teacher
@@ -487,6 +515,13 @@ in separate protocol directories; no old checkpoint was overwritten.
 - `run_logs/h200_build-543_table1-cub200-resnet56-32-deit-ti-lg-alg-300ep/`:
   separate Table-1 ResNet56-32 teacher followed by DeiT-Ti LG and ALG; all
   three tasks completed and the teacher is fixed for future Table-1 students.
+- `run_logs/h200_build-547_table1-cub200-deit-ti-ours-b64-b128-300ep/`:
+  DeiT-Ti Ours batches 64/128; both tasks completed.
+- `run_logs/h200_build-548_table1-cub200-deit-ti-vanilla-b128-300ep/`:
+  teacher-free DeiT-Ti Vanilla batch-128 run.
+- `run_logs/h200_build-551_table1-cub200-convit-ti-all-five-300ep/` and
+  `run_logs/h200_build-552_table1-cub200-cvt13-all-five-300ep/`: complete
+  Vanilla/LG/ALG/Ours64/Ours128 sequences for ConViT-Ti and CvT-13.
 - `run_logs/h200_build-482_table4-grid-permutation-cifar100-300ep.log`:
   Table 4 grid-permutation control (`81.79%`).
 - `run_logs/h200_build-484_table7-lambda0-cifar100-300ep.log`:

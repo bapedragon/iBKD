@@ -1,0 +1,36 @@
+{
+  "best_top1": {
+    "ALG": 51.05281325509147,
+    "LG": 45.54711770797377,
+    "OursB128": 51.725923369002416,
+    "OursB64": 53.17569899896445,
+    "Teacher": 36.39972385226096,
+    "Vanilla": 22.937521574042112
+  },
+  "completed_tasks": 5,
+  "protocol": "table1_cub200_convit_ti_all_five",
+  "status": "complete",
+  "student": "ConViT-Ti",
+  "student_key": "convit_ti",
+  "summaries": {
+    "ALG": "/app/output/table1_cub200_convit_all_full_seed1/students/table1_cub200_convit_ti_alg_b128_full_300ep_seed1/summary.json",
+    "LG": "/app/output/table1_cub200_convit_all_full_seed1/students/table1_cub200_convit_ti_lg_b128_full_300ep_seed1/summary.json",
+    "OursB128": "/app/output/table1_cub200_convit_all_full_seed1/students/table1_cub200_convit_ti_ours_b128_full_300ep_seed1/summary.json",
+    "OursB64": "/app/output/table1_cub200_convit_all_full_seed1/students/table1_cub200_convit_ti_ours_b64_full_300ep_seed1/summary.json",
+    "Vanilla": "/app/output/table1_cub200_convit_all_full_seed1/students/table1_cub200_convit_ti_vanilla_b128_full_300ep_seed1/summary.json"
+  },
+  "teacher": {
+    "checkpoint": "teacher_resnet56_cub200_32_best.pt",
+    "epoch": 275,
+    "input_resolution": 32,
+    "num_classes": 200,
+    "pretrained": false,
+    "recipe_name": "cub200_official_split_resnet56_32_scratch_300ep_seed1",
+    "selected_kind": "best",
+    "sha256": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5",
+    "top1": 36.39972385226096
+  },
+  "timing_estimate_human": "6h 07m 30s",
+  "timing_estimate_seconds": 22050,
+  "total_tasks": 5
+}

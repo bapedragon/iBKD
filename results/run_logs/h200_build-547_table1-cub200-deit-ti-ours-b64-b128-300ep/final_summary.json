@@ -1,0 +1,30 @@
+{
+  "best_top1": {
+    "ALG": 47.704521919226785,
+    "LG": 44.511563686572316,
+    "OursB128": 48.3603727994477,
+    "OursB64": 48.30859509837763,
+    "Teacher": 36.39972385226096
+  },
+  "completed_tasks": 2,
+  "protocol": "table1_cub200_deit_ti_ours_b64_b128",
+  "status": "complete",
+  "summaries": {
+    "OursB128": "/app/output/table1_cub200_deit_ours_full_seed1/students/table1_cub200_deit_ti_ours_b128_full_300ep_seed1/summary.json",
+    "OursB64": "/app/output/table1_cub200_deit_ours_full_seed1/students/table1_cub200_deit_ti_ours_b64_full_300ep_seed1/summary.json"
+  },
+  "teacher": {
+    "checkpoint": "teacher_resnet56_cub200_32_best.pt",
+    "epoch": 275,
+    "input_resolution": 32,
+    "num_classes": 200,
+    "pretrained": false,
+    "recipe_name": "cub200_official_split_resnet56_32_scratch_300ep_seed1",
+    "selected_kind": "best",
+    "sha256": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5",
+    "top1": 36.39972385226096
+  },
+  "timing_estimate_human": "2h 23m 56s",
+  "timing_estimate_seconds": 8636,
+  "total_tasks": 2
+}

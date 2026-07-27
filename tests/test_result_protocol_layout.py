@@ -42,7 +42,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
 
     def test_each_committed_protocol_directory_is_self_contained(self) -> None:
         summaries = sorted(RESULTS.glob("*/*/*/run_summary.json"))
-        self.assertEqual(len(summaries), 68)
+        self.assertEqual(len(summaries), 81)
         for summary_path in summaries:
             run_dir = summary_path.parent
             checkpoint_path = run_dir / "student_best.pt"
@@ -187,7 +187,7 @@ class ResultProtocolLayoutTest(unittest.TestCase):
             self.assertTrue((run_dir / "ours_module_best.pt").is_file(), run_dir)
             self.assertTrue((run_dir / "artifact_manifest.json").is_file(), run_dir)
 
-    def test_build_543_table1_destinations_and_fixed_teacher_are_explicit(
+    def test_build_543_547_548_551_552_table1_destinations_are_explicit(
         self,
     ) -> None:
         teacher = ROOT / "teachers/checkpoints/cub200_table1_resnet56_32"
@@ -201,14 +201,49 @@ class ResultProtocolLayoutTest(unittest.TestCase):
         self.assertTrue(
             (teacher / "teacher_resnet56_cub200_32_best.pt").is_file()
         )
-        for method in ("LG", "ALG"):
+        expected = (
+            ("Vanilla", "deit_ti", "vanilla", 128),
+            ("LG", "deit_ti", "lg", 128),
+            ("ALG", "deit_ti", "alg", 128),
+            ("Ours", "deit_ti", "ours", 64),
+            ("Ours", "deit_ti", "ours", 128),
+            ("Vanilla", "convit_ti", "vanilla", 128),
+            ("LG", "convit_ti", "lg", 128),
+            ("ALG", "convit_ti", "alg", 128),
+            ("Ours", "convit_ti", "ours", 64),
+            ("Ours", "convit_ti", "ours", 128),
+            ("Vanilla", "cvt_13", "vanilla", 128),
+            ("LG", "cvt_13", "lg", 128),
+            ("ALG", "cvt_13", "alg", 128),
+            ("Ours", "cvt_13", "ours", 64),
+            ("Ours", "cvt_13", "ours", 128),
+        )
+        for method, student, method_key, batch in expected:
             protocol = (
-                "table1_cub200_deit_ti_"
-                f"{method.lower()}_b128_full_300ep_seed1"
+                f"table1_cub200_{student}_{method_key}_b{batch}"
+                "_full_300ep_seed1"
             )
             run_dir = RESULTS / method / "cub200" / protocol
             self.assertTrue((run_dir / "run_summary.json").is_file())
             self.assertTrue((run_dir / "student_best.pt").is_file())
+            summary = json.loads(
+                (run_dir / "run_summary.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(summary["actual_epochs"], 300)
+            self.assertEqual(summary["h200_build"], {
+                ("deit_ti", "lg"): 543,
+                ("deit_ti", "alg"): 543,
+                ("deit_ti", "ours"): 547,
+                ("deit_ti", "vanilla"): 548,
+                ("convit_ti", method_key): 551,
+                ("cvt_13", method_key): 552,
+            }[(student, method_key)])
+            if method == "Vanilla":
+                self.assertIsNone(summary["teacher"])
+            else:
+                self.assertEqual(summary["teacher"]["sha256"], manifest[
+                    "teachers"
+                ]["cub200"]["sha256"])
 
     def test_consolidated_table_uses_only_current_reporting_results(self) -> None:
         root_readme = (ROOT / "README.md").read_text(encoding="utf-8")

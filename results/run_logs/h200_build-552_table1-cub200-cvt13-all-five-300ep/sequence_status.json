@@ -1,0 +1,43 @@
+{
+  "completed_tasks": 5,
+  "final_summary": "/app/output/table1_cub200_cvt13_all_full_seed1/final_summary.json",
+  "finished_at_unix": 1785118199.7472792,
+  "protocol": "table1_cub200_cvt_13_all_five",
+  "started_at_unix": 1785096159.7149146,
+  "status": "complete",
+  "student": "CvT-13",
+  "student_key": "cvt_13",
+  "tasks": [
+    {
+      "elapsed_seconds": 4097.288248300552,
+      "name": "Vanilla",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_cvt13_all_full_seed1/students/table1_cub200_cvt_13_vanilla_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 4202.048211336136,
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_cvt13_all_full_seed1/students/table1_cub200_cvt_13_lg_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 4100.7163763046265,
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_cvt13_all_full_seed1/students/table1_cub200_cvt_13_alg_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 5180.532080888748,
+      "name": "OursB64",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_cvt13_all_full_seed1/students/table1_cub200_cvt_13_ours_b64_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 4459.133352279663,
+      "name": "OursB128",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_cvt13_all_full_seed1/students/table1_cub200_cvt_13_ours_b128_full_300ep_seed1/summary.json"
+    }
+  ],
+  "total_tasks": 5
+}

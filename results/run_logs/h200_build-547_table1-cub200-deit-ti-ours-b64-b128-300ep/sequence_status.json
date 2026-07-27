@@ -1,0 +1,23 @@
+{
+  "completed_tasks": 2,
+  "final_summary": "/app/output/table1_cub200_deit_ours_full_seed1/final_summary.json",
+  "finished_at_unix": 1785100740.185563,
+  "protocol": "table1_cub200_deit_ti_ours_b64_b128",
+  "started_at_unix": 1785092740.323471,
+  "status": "complete",
+  "tasks": [
+    {
+      "elapsed_seconds": 4182.524891614914,
+      "name": "OursB64",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_deit_ours_full_seed1/students/table1_cub200_deit_ti_ours_b64_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 3816.424064874649,
+      "name": "OursB128",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_deit_ours_full_seed1/students/table1_cub200_deit_ti_ours_b128_full_300ep_seed1/summary.json"
+    }
+  ],
+  "total_tasks": 2
+}

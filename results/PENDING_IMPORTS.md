@@ -7,8 +7,9 @@ verified in this repository. Accuracy cells intentionally remain blank.
 ## Current status
 
 The overnight batch received on 2026-07-22 and builds 479, 480, 482, 484,
-485, 488, 490, 493, 494, 496, 503, 509, 511, 519, 522, 523, and 543 received
-through 2026-07-27 have been imported where artifacts were present. One
+485, 488, 490, 493, 494, 496, 503, 509, 511, 519, 522, 523, 543, 547, 548,
+551, and 552 received through 2026-07-27 have been imported where artifacts
+were present. One
 completed result still awaits checkpoint artifacts:
 
 | Method | Dataset | Protocol ID | Log-verified result | Expected destination | Missing artifacts |
@@ -87,6 +88,15 @@ their JSON summaries, and imported without replacing historical results:
   CUB Table-1 DeiT-Ti LG/ALG runs. Their exact ResNet56-32 teacher is fixed
   under `teachers/checkpoints/cub200_table1_resnet56_32/` for all future
   Table-1 students.
+- `table1_cub200_deit_ti_ours_b{64,128}_full_300ep_seed1` and
+  `table1_cub200_deit_ti_vanilla_b128_full_300ep_seed1`: the verified
+  builds 547/548 rows that complete the five-setting DeiT-Ti Table-1 group;
+- all five `table1_cub200_convit_ti_*_full_300ep_seed1` protocols from build
+  551 and all five `table1_cub200_cvt_13_*_full_300ep_seed1` protocols from
+  build 552. Guided summaries all reference the fixed build-543 teacher;
+  teacher-free Vanilla rows carry no teacher metadata. The reattached build
+  503 pair and four CUB archives were byte-identical to the already organized
+  local copies and were not duplicated.
 
 Add new jobs below this section only after submission, and remove their rows
 after the same import gate has passed.
