@@ -22,6 +22,12 @@ windows, while keeping key and value identical, is isolated under
 The token-space cross-attention re-measurement is isolated under
 [`table4_token_space/`](table4_token_space/README.md).
 
+The CPU-only extraction of stage-wise learnable-aggregation coefficients from
+the selected Ours V1 reproduction checkpoints is isolated under
+[`aggregation_alpha/`](aggregation_alpha/README.md). It reads best
+checkpoints, applies the model's softmax normalization, and cross-checks all
+values against the saved run summaries without training or data loading.
+
 The later researcher-requested spatial-collapse experiment is isolated under
 [`cnn_to_transformer_spatial_collapse/`](cnn_to_transformer_spatial_collapse/README.md).
 It is not another permutation/token-QKV control. It reverses the alignment
