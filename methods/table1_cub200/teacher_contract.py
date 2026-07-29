@@ -45,3 +45,33 @@ def validate_table1_teacher_spec(spec: dict[str, Any]) -> None:
             "CUB-200 Table-1 students are locked to the H200 build-543 "
             f"teacher; mismatches={mismatches}"
         )
+
+
+def validate_val_selected_teacher_spec(
+    spec: dict[str, Any],
+    *,
+    validation_split_sha256: str,
+    validation_split_seed: int,
+    val_per_class: int,
+) -> None:
+    """Validate a scratch teacher selected without consulting official test."""
+
+    expected = {
+        "num_classes": 200,
+        "input_resolution": 32,
+        "pretrained": False,
+        "selected_kind": "best_validation",
+        "validation_split_sha256": validation_split_sha256,
+        "validation_split_seed": validation_split_seed,
+        "val_per_class": val_per_class,
+    }
+    mismatches = {
+        key: {"expected": value, "actual": spec.get(key)}
+        for key, value in expected.items()
+        if spec.get(key) != value
+    }
+    if mismatches:
+        raise RuntimeError(
+            "CUB-200 validation-selected students require a teacher chosen "
+            f"on the identical fixed validation split; mismatches={mismatches}"
+        )

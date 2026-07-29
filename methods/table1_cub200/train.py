@@ -21,7 +21,7 @@ from typing import Any
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import transforms
 from torchvision.transforms import InterpolationMode
 
@@ -55,6 +55,12 @@ from methods.table1_cub200.teacher_contract import (  # noqa: E402
     TABLE1_TEACHER_BUILD,
     TABLE1_TEACHER_ROOT,
     validate_table1_teacher_spec,
+    validate_val_selected_teacher_spec,
+)
+from methods.table1_cub200.val_split import (  # noqa: E402
+    DEFAULT_SPLIT_SEED,
+    DEFAULT_VAL_PER_CLASS,
+    build_stratified_train_val_indices,
 )
 from teachers.verify_checkpoints import load_teacher  # noqa: E402
 
@@ -65,7 +71,9 @@ IMAGE_SIZE = 224
 TEACHER_IMAGE_SIZE = 32
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
-METHODS = ("vanilla", "lg", "alg", "ours")
+METHODS = ("vanilla", "kd", "lg", "alg", "ours")
+KD_TEMPERATURE = 4.0
+KD_WEIGHT = 0.9
 REQUIRED_RUNTIME_IMPORTS = ("timm", "einops", "fvcore", "iopath", "yacs")
 
 
@@ -187,6 +195,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-name", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument(
+        "--selection-protocol",
+        choices=("legacy_best_test", "val_then_test_once"),
+        default="legacy_best_test",
+    )
+    parser.add_argument(
+        "--teacher-contract",
+        choices=("fixed_build543", "val_selected"),
+        default="fixed_build543",
+    )
+    parser.add_argument("--val-per-class", type=int, default=DEFAULT_VAL_PER_CLASS)
+    parser.add_argument("--val-split-seed", type=int, default=DEFAULT_SPLIT_SEED)
     return parser.parse_args()
 
 
@@ -196,18 +216,37 @@ def validate_args(args: argparse.Namespace) -> None:
     if args.num_workers < 0:
         raise ValueError("--num-workers must be non-negative")
     if args.method != "ours" and args.batch_size != 128:
-        raise ValueError("Table-1 Vanilla/LG/ALG are locked to batch 128")
+        raise ValueError("Table-1 Vanilla/KD/LG/ALG are locked to batch 128")
     if args.method == "ours" and args.batch_size not in {64, 128}:
         raise ValueError("CUB Table-1 Ours is measured only at batch 64 or 128")
     if args.seed != 1:
         raise ValueError("The primary Table-1 extension is locked to seed 1")
+    if args.val_per_class <= 0:
+        raise ValueError("--val-per-class must be positive")
+    if args.selection_protocol == "val_then_test_once" and not args.full_run:
+        raise ValueError(
+            "val_then_test_once is a paper-evaluation protocol and requires --full-run"
+        )
+    if (
+        args.selection_protocol == "legacy_best_test"
+        and args.teacher_contract != "fixed_build543"
+    ):
+        raise ValueError(
+            "legacy_best_test requires --teacher-contract fixed_build543"
+        )
 
 
 def build_loaders(
     args: argparse.Namespace,
     device: torch.device,
     timm: Any,
-) -> tuple[DataLoader[Any], DataLoader[Any], Path]:
+) -> tuple[
+    DataLoader[Any],
+    DataLoader[Any],
+    DataLoader[Any] | None,
+    Path,
+    dict[str, Any] | None,
+]:
     train_transform = timm.data.create_transform(
         input_size=(3, IMAGE_SIZE, IMAGE_SIZE),
         is_training=True,
@@ -231,16 +270,43 @@ def build_loaders(
         ]
     )
     dataset_root = ensure_cub200(args.data_dir)
-    train_dataset = CUB200Dataset(
+    train_base = CUB200Dataset(
         dataset_root,
         split="train",
         transform=train_transform,
     )
-    test_dataset = CUB200Dataset(
+    selection_base = CUB200Dataset(
+        dataset_root,
+        split="train",
+        transform=test_transform,
+    )
+    official_test_dataset: Dataset[Any] = CUB200Dataset(
         dataset_root,
         split="test",
         transform=test_transform,
     )
+    if len(train_base) != 5994 or len(official_test_dataset) != 5794:
+        raise RuntimeError(
+            "Unexpected CUB official split: "
+            f"train={len(train_base)} test={len(official_test_dataset)}"
+        )
+
+    split_manifest: dict[str, Any] | None = None
+    final_test_dataset: Dataset[Any] | None = None
+    if args.selection_protocol == "val_then_test_once":
+        train_indices, val_indices, split_manifest = (
+            build_stratified_train_val_indices(
+                train_base,
+                val_per_class=args.val_per_class,
+                split_seed=args.val_split_seed,
+            )
+        )
+        train_dataset: Dataset[Any] = Subset(train_base, train_indices)
+        selection_dataset: Dataset[Any] = Subset(selection_base, val_indices)
+        final_test_dataset = official_test_dataset
+    else:
+        train_dataset = train_base
+        selection_dataset = official_test_dataset
 
     def seed_worker(worker_id: int) -> None:
         del worker_id
@@ -262,19 +328,31 @@ def build_loaders(
         generator=generator,
         **common,
     )
-    test_loader = DataLoader(
-        test_dataset,
+    selection_loader = DataLoader(
+        selection_dataset,
         batch_size=args.eval_batch_size,
         shuffle=False,
         drop_last=False,
         **common,
     )
-    if len(train_dataset) != 5994 or len(test_dataset) != 5794:
-        raise RuntimeError(
-            "Unexpected CUB official split: "
-            f"train={len(train_dataset)} test={len(test_dataset)}"
+    final_test_loader = (
+        None
+        if final_test_dataset is None
+        else DataLoader(
+            final_test_dataset,
+            batch_size=args.eval_batch_size,
+            shuffle=False,
+            drop_last=False,
+            **common,
         )
-    return train_loader, test_loader, dataset_root
+    )
+    return (
+        train_loader,
+        selection_loader,
+        final_test_loader,
+        dataset_root,
+        split_manifest,
+    )
 
 
 def teacher_features(
@@ -288,6 +366,31 @@ def teacher_features(
         align_corners=False,
     )
     return list(teacher.forward_features(teacher_images))
+
+
+def teacher_logits(
+    teacher: nn.Module,
+    images: torch.Tensor,
+) -> torch.Tensor:
+    teacher_images = F.interpolate(
+        images,
+        size=(TEACHER_IMAGE_SIZE, TEACHER_IMAGE_SIZE),
+        mode="bilinear",
+        align_corners=False,
+    )
+    return teacher(teacher_images)
+
+
+def logit_kd_loss(
+    student_logits: torch.Tensor,
+    frozen_teacher_logits: torch.Tensor,
+) -> torch.Tensor:
+    temperature = KD_TEMPERATURE
+    return F.kl_div(
+        F.log_softmax(student_logits.float() / temperature, dim=1),
+        F.softmax(frozen_teacher_logits.float() / temperature, dim=1),
+        reduction="batchmean",
+    ) * (temperature**2)
 
 
 def no_decay_parameter_groups(
@@ -349,7 +452,7 @@ def evaluate(
 
 
 def make_controller(args: argparse.Namespace) -> Any | None:
-    if args.method == "vanilla":
+    if args.method in {"vanilla", "kd"}:
         return None
     if args.method == "lg":
         return StaticGuidanceController(beta=2.5)
@@ -403,11 +506,20 @@ def train(args: argparse.Namespace) -> None:
     summary_path = run_dir / "summary.json"
     best_path = run_dir / "student_best.pt"
     latest_path = run_dir / "student_latest.pt"
+    split_manifest_path = run_dir / "validation_split.json"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     student, backbone_spec = create_student(args.student, num_classes=NUM_CLASSES)
     student = student.to(device)
-    train_loader, test_loader, dataset_root = build_loaders(args, device, timm)
+    (
+        train_loader,
+        selection_loader,
+        final_test_loader,
+        dataset_root,
+        split_manifest,
+    ) = build_loaders(args, device, timm)
+    if split_manifest is not None:
+        atomic_json_save(split_manifest, split_manifest_path)
 
     teacher: nn.Module | None = None
     teacher_spec: dict[str, Any] | None = None
@@ -419,7 +531,21 @@ def train(args: argparse.Namespace) -> None:
             device=device,
             checkpoint_root=args.teacher_root,
         )
-        validate_table1_teacher_spec(teacher_spec)
+        if args.teacher_contract == "fixed_build543":
+            validate_table1_teacher_spec(teacher_spec)
+        else:
+            if split_manifest is None:
+                raise RuntimeError(
+                    "val_selected teacher contract requires a validation split"
+                )
+            validate_val_selected_teacher_spec(
+                teacher_spec,
+                validation_split_sha256=split_manifest[
+                    "validation_image_ids_sha256"
+                ],
+                validation_split_seed=split_manifest["split_seed"],
+                val_per_class=split_manifest["val_per_class"],
+            )
         teacher.eval()
         for parameter in teacher.parameters():
             parameter.requires_grad = False
@@ -431,7 +557,9 @@ def train(args: argparse.Namespace) -> None:
             raise RuntimeError(
                 f"Table-1 CUB requires ResNet56 channels 16/32/64, got {teacher_channels}"
             )
-        if args.method in {"lg", "alg"}:
+        if args.method == "kd":
+            pass
+        elif args.method in {"lg", "alg"}:
             method_module = OfficialLGFeatureLoss(
                 student.feature_dims,
                 backbone_spec.selected_feature_indices,
@@ -472,13 +600,25 @@ def train(args: argparse.Namespace) -> None:
         teacher_probe: list[torch.Tensor] | None = None
         probe_guidance = probe_logits.new_zeros(())
         if teacher is not None:
-            teacher_probe = teacher_features(teacher, probe)
-            if len(teacher_probe) != 3:
-                raise RuntimeError("ResNet56 teacher must expose three stages")
+            if args.method == "kd":
+                frozen_probe_logits = teacher_logits(teacher, probe)
+                if tuple(frozen_probe_logits.shape) != (probe_batch, NUM_CLASSES):
+                    raise RuntimeError(
+                        "Unexpected KD teacher logits shape: "
+                        f"{tuple(frozen_probe_logits.shape)}"
+                    )
+                probe_guidance = logit_kd_loss(
+                    probe_logits,
+                    frozen_probe_logits,
+                )
+            else:
+                teacher_probe = teacher_features(teacher, probe)
+                if len(teacher_probe) != 3:
+                    raise RuntimeError("ResNet56 teacher must expose three stages")
             if args.method in {"lg", "alg"}:
                 assert isinstance(method_module, OfficialLGFeatureLoss)
                 probe_guidance = method_module(probe_features, teacher_probe)
-            else:
+            elif args.method == "ours":
                 assert ours_adapter is not None
                 assert isinstance(method_module, Ours)
                 adapted = ours_adapter(probe_features)
@@ -538,10 +678,36 @@ def train(args: argparse.Namespace) -> None:
         f"[MODE] actual_epochs={actual_epochs} planned_epochs={PLANNED_EPOCHS}"
     )
     log(
-        "[PROTOCOL_LOCK] dataset=CUB-200-2011 split=5994/5794 "
+        "[PROTOCOL_LOCK] dataset=CUB-200-2011 official_split=5994/5794 "
         "teacher=ResNet56-scratch-32 student=scratch-224 "
-        "epochs=300 AdamW=5e-4->5e-6 wd=0.05 warmup=20 seed=1 fp32=True"
+        "epochs=300 AdamW=5e-4->5e-6 wd=0.05 warmup=20 seed=1 fp32=True "
+        f"selection_protocol={args.selection_protocol}"
     )
+    if split_manifest is None:
+        log(
+            "[SELECTION_PROTOCOL] selection=official_test "
+            "legacy_test_evaluated_each_epoch=True"
+        )
+    else:
+        log(
+            "[VAL_SPLIT] "
+            f"seed={split_manifest['split_seed']} "
+            f"val_per_class={split_manifest['val_per_class']} "
+            f"train={split_manifest['train_samples']} "
+            f"validation={split_manifest['validation_samples']} "
+            "test=5794 "
+            f"sha256={split_manifest['validation_image_ids_sha256']}"
+        )
+        log(
+            "[TEST_ISOLATION] official_test_in_training_loop=False "
+            "final_test_evaluations=1"
+        )
+        if args.teacher_contract == "fixed_build543":
+            log(
+                "[TEACHER_SELECTION_CAVEAT] "
+                "teacher=fixed_build543_36.40 selected_on=legacy_best_test "
+                "student_selected_on=validation"
+            )
     if teacher_spec is not None:
         log(
             "[FIXED_TEACHER_TABLE1_CUB200] "
@@ -570,6 +736,12 @@ def train(args: argparse.Namespace) -> None:
             f"adapter_params={count_parameters(ours_adapter):,} "
             f"ours_params={count_parameters(method_module):,}"
         )
+    if args.method == "kd":
+        log(
+            "[KD_PROTOCOL] "
+            f"temperature={KD_TEMPERATURE} alpha={KD_WEIGHT} "
+            "loss=(1-alpha)*CE+alpha*T^2*KL spatial_adapter=None"
+        )
     log(f"[OPTIMIZER] contract={optimizer_contract}")
 
     best_accuracy = float("-inf")
@@ -596,13 +768,19 @@ def train(args: argparse.Namespace) -> None:
             targets = targets.to(device, non_blocking=True)
             optimizer.zero_grad(set_to_none=True)
             frozen_teacher_features: list[torch.Tensor] | None = None
-            if teacher is not None and beta > 0.0:
+            frozen_teacher_logits: torch.Tensor | None = None
+            if teacher is not None and args.method == "kd":
+                with torch.no_grad():
+                    frozen_teacher_logits = teacher_logits(teacher, images)
+            elif teacher is not None and beta > 0.0:
                 with torch.no_grad():
                     frozen_teacher_features = teacher_features(teacher, images)
             block_features, logits = forward_student(student, images)
             ce = F.cross_entropy(logits, targets)
             guidance = ce.new_zeros(())
-            if frozen_teacher_features is not None:
+            if frozen_teacher_logits is not None:
+                guidance = logit_kd_loss(logits, frozen_teacher_logits)
+            elif frozen_teacher_features is not None:
                 if args.method in {"lg", "alg"}:
                     assert isinstance(method_module, OfficialLGFeatureLoss)
                     guidance = method_module(
@@ -618,7 +796,10 @@ def train(args: argparse.Namespace) -> None:
                         frozen_teacher_features,
                     )
                     guidance = 0.5 * alignment + 0.5 * fusion
-            loss = ce + beta * guidance
+            if args.method == "kd":
+                loss = (1.0 - KD_WEIGHT) * ce + KD_WEIGHT * guidance
+            else:
+                loss = ce + beta * guidance
             loss.backward()
             optimizer.step()
 
@@ -631,12 +812,18 @@ def train(args: argparse.Namespace) -> None:
 
         average_guidance = total_guidance / max(1, total)
         controller_observe(controller, epoch, average_guidance, beta)
-        latest_accuracy = evaluate(student, test_loader, device)
+        latest_accuracy = evaluate(student, selection_loader, device)
         epoch_seconds = time.time() - epoch_start
         epoch_times.append(epoch_seconds)
-        best_accuracy = max(best_accuracy, latest_accuracy)
+        is_best = latest_accuracy > best_accuracy
+        if is_best:
+            best_accuracy = latest_accuracy
         scheduler.step(epoch)
         average_epoch = sum(epoch_times) / len(epoch_times)
+        metric_name = "val_acc" if split_manifest is not None else "test_acc"
+        best_metric_name = (
+            "best_val" if split_manifest is not None else "best_test"
+        )
         log(
             f"[{args.method.upper()}:{backbone_spec.display_name}]"
             f"[{epoch:03d}/{actual_epochs:03d}] "
@@ -644,9 +831,11 @@ def train(args: argparse.Namespace) -> None:
             f"ce={total_ce / max(1, total):.4f} "
             f"guidance={average_guidance:.4f} beta={beta:.2f} "
             f"train_acc={100.0 * correct / max(1, total):.2f}% "
-            f"test_acc={latest_accuracy:.2f}% best={best_accuracy:.2f}% "
+            f"{metric_name}={latest_accuracy:.2f}% "
+            f"{best_metric_name}={best_accuracy:.2f}% "
             f"lr={epoch_lr:.8g} time={epoch_seconds:.1f}s "
             f"est_300={format_duration(average_epoch * PLANNED_EPOCHS)}"
+            + (" saved_best" if is_best else "")
         )
 
         if args.full_run:
@@ -661,6 +850,13 @@ def train(args: argparse.Namespace) -> None:
                 "epoch": epoch,
                 "accuracy": latest_accuracy,
                 "best_accuracy": best_accuracy,
+                "selection_protocol": args.selection_protocol,
+                "selection_metric": (
+                    "validation_top1"
+                    if split_manifest is not None
+                    else "official_test_top1"
+                ),
+                "validation_split": split_manifest,
                 "student_key": args.student,
                 "method": args.method,
                 "batch_size": args.batch_size,
@@ -668,8 +864,28 @@ def train(args: argparse.Namespace) -> None:
                 "official_lg_commit": OFFICIAL_LG_COMMIT,
             }
             atomic_torch_save(payload, latest_path)
-            if latest_accuracy >= best_accuracy:
+            if is_best:
                 atomic_torch_save(payload, best_path)
+
+    final_test_top1: float | None = None
+    test_evaluations = 0
+    best_selection_epoch: int | None = None
+    if final_test_loader is not None:
+        best_payload = torch.load(
+            best_path,
+            map_location="cpu",
+            weights_only=False,
+        )
+        student.load_state_dict(best_payload["student"], strict=True)
+        best_selection_epoch = int(best_payload["epoch"])
+        final_test_top1 = evaluate(student, final_test_loader, device)
+        test_evaluations = 1
+        log(
+            f"[FINAL_TEST_ONCE][{args.method.upper()}] "
+            f"selected_epoch={best_selection_epoch} "
+            f"best_val_top1={best_accuracy:.2f}% "
+            f"test_top1={final_test_top1:.2f}% evaluations=1"
+        )
 
     elapsed = time.time() - training_start
     average_epoch = sum(epoch_times) / len(epoch_times)
@@ -686,6 +902,19 @@ def train(args: argparse.Namespace) -> None:
         "planned_epochs": PLANNED_EPOCHS,
         "best_top1": best_accuracy,
         "latest_top1": latest_accuracy,
+        "selection_protocol": args.selection_protocol,
+        "selection_metric": (
+            "validation_top1"
+            if split_manifest is not None
+            else "official_test_top1"
+        ),
+        "best_selection_epoch": best_selection_epoch,
+        "best_validation_top1": (
+            best_accuracy if split_manifest is not None else None
+        ),
+        "final_test_top1": final_test_top1,
+        "test_evaluations": test_evaluations,
+        "validation_split": split_manifest,
         "epoch_times_seconds": epoch_times,
         "avg_epoch_seconds": average_epoch,
         "estimated_planned_seconds": average_epoch * PLANNED_EPOCHS,
@@ -699,6 +928,24 @@ def train(args: argparse.Namespace) -> None:
             "commit": OFFICIAL_LG_COMMIT,
         },
         "optimizer_contract": optimizer_contract,
+        "kd": (
+            {
+                "temperature": KD_TEMPERATURE,
+                "weight": KD_WEIGHT,
+                "loss": "(1-alpha)*CE+alpha*T^2*KL",
+            }
+            if args.method == "kd"
+            else None
+        ),
+        "paths": {
+            "best": str(best_path.resolve()) if args.full_run else None,
+            "latest": str(latest_path.resolve()) if args.full_run else None,
+            "validation_split": (
+                str(split_manifest_path.resolve())
+                if split_manifest is not None
+                else None
+            ),
+        },
         "ours_adapter": (
             None
             if args.method != "ours"
@@ -724,6 +971,18 @@ def train(args: argparse.Namespace) -> None:
         f"avg_epoch={average_epoch:.2f}s "
         f"estimated_300={summary['estimated_planned_human']}"
     )
+    if split_manifest is None:
+        log(
+            f"[FINAL_RESULT] method={args.method.upper()} "
+            f"best_test_top1={best_accuracy:.2f}%"
+        )
+    else:
+        log(
+            f"[FINAL_RESULT] method={args.method.upper()} "
+            f"best_val_top1={best_accuracy:.2f}% "
+            f"final_test_top1={final_test_top1:.2f}% "
+            "test_evaluations=1"
+        )
     log(f"[FINAL_RESULT] summary={summary_path.resolve()}")
     log("[DONE] Table-1 CUB student task completed successfully.")
 
