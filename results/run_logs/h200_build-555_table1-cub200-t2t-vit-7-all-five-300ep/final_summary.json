@@ -1,0 +1,36 @@
+{
+  "best_top1": {
+    "ALG": 50.5695547117708,
+    "LG": 46.63444943044529,
+    "OursB128": 52.96858819468416,
+    "OursB64": 54.59095616154643,
+    "Teacher": 36.39972385226096,
+    "Vanilla": 26.73455298584743
+  },
+  "completed_tasks": 5,
+  "protocol": "table1_cub200_t2t_vit_7_all_five",
+  "status": "complete",
+  "student": "T2T-ViT-7",
+  "student_key": "t2t_vit_7",
+  "summaries": {
+    "ALG": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_alg_b128_full_300ep_seed1/summary.json",
+    "LG": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_lg_b128_full_300ep_seed1/summary.json",
+    "OursB128": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_ours_b128_full_300ep_seed1/summary.json",
+    "OursB64": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_ours_b64_full_300ep_seed1/summary.json",
+    "Vanilla": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_vanilla_b128_full_300ep_seed1/summary.json"
+  },
+  "teacher": {
+    "checkpoint": "teacher_resnet56_cub200_32_best.pt",
+    "epoch": 275,
+    "input_resolution": 32,
+    "num_classes": 200,
+    "pretrained": false,
+    "recipe_name": "cub200_official_split_resnet56_32_scratch_300ep_seed1",
+    "selected_kind": "best",
+    "sha256": "06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5",
+    "top1": 36.39972385226096
+  },
+  "timing_estimate_human": "5h 43m 46s",
+  "timing_estimate_seconds": 20626,
+  "total_tasks": 5
+}

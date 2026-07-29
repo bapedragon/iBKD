@@ -72,6 +72,26 @@ dataset. The canonical IDs currently used are:
 | `table1_cub200_cvt_13_alg_b128_full_300ep_seed1` | CUB Table-1 CvT-13 ALG using the fixed build-543 teacher |
 | `table1_cub200_cvt_13_ours_b64_full_300ep_seed1` | CUB Table-1 CvT-13 Ours batch 64 using the fixed build-543 teacher |
 | `table1_cub200_cvt_13_ours_b128_full_300ep_seed1` | CUB Table-1 CvT-13 Ours batch 128 using the fixed build-543 teacher |
+| `table1_cub200_pit_ti_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free PiT-Ti Vanilla baseline |
+| `table1_cub200_pit_ti_lg_b128_full_300ep_seed1` | CUB Table-1 PiT-Ti LG using the fixed build-543 teacher |
+| `table1_cub200_pit_ti_alg_b128_full_300ep_seed1` | CUB Table-1 PiT-Ti ALG using the fixed build-543 teacher |
+| `table1_cub200_pit_ti_ours_b64_full_300ep_seed1` | CUB Table-1 PiT-Ti Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_pit_ti_ours_b128_full_300ep_seed1` | CUB Table-1 PiT-Ti Ours batch 128 using the fixed build-543 teacher |
+| `table1_cub200_pvtv2_b0_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free PVTv2-B0 Vanilla baseline |
+| `table1_cub200_pvtv2_b0_lg_b128_full_300ep_seed1` | CUB Table-1 PVTv2-B0 LG using the fixed build-543 teacher |
+| `table1_cub200_pvtv2_b0_alg_b128_full_300ep_seed1` | CUB Table-1 PVTv2-B0 ALG using the fixed build-543 teacher |
+| `table1_cub200_pvtv2_b0_ours_b64_full_300ep_seed1` | CUB Table-1 PVTv2-B0 Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_pvtv2_b0_ours_b128_full_300ep_seed1` | CUB Table-1 PVTv2-B0 Ours batch 128 using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_7_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free T2T-ViT-7 Vanilla baseline |
+| `table1_cub200_t2t_vit_7_lg_b128_full_300ep_seed1` | CUB Table-1 T2T-ViT-7 LG using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_7_alg_b128_full_300ep_seed1` | CUB Table-1 T2T-ViT-7 ALG using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_7_ours_b64_full_300ep_seed1` | CUB Table-1 T2T-ViT-7 Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_7_ours_b128_full_300ep_seed1` | CUB Table-1 T2T-ViT-7 Ours batch 128 using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_14_vanilla_b128_full_300ep_seed1` | CUB Table-1 teacher-free T2T-ViT-14 Vanilla baseline |
+| `table1_cub200_t2t_vit_14_lg_b128_full_300ep_seed1` | CUB Table-1 T2T-ViT-14 LG using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_14_alg_b128_full_300ep_seed1` | CUB Table-1 T2T-ViT-14 ALG using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_14_ours_b64_full_300ep_seed1` | CUB Table-1 T2T-ViT-14 Ours batch 64 using the fixed build-543 teacher |
+| `table1_cub200_t2t_vit_14_ours_b128_full_300ep_seed1` | CUB Table-1 T2T-ViT-14 Ours batch 128 using the fixed build-543 teacher |
 | `researcher_sync_v1_batch128_ablation_300ep_seed1` | CIFAR-100 Ours v1 with only train batch changed to 128 |
 | `cub200_deit_ti_ce_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained DeiT-Ti Vanilla control |
 | `cub200_deit_ti_lg_resnet50_224_both_imagenet_pretrained_b128_100ep_seed1` | CUB-200 pretrained ResNet50/DeiT-Ti LG |
@@ -93,7 +113,7 @@ student and auxiliary-module states are committed as
 `artifact_manifest.json` records source and committed hashes and the
 lossless reassembly rule.
 
-All 81 currently committed student checkpoints were loaded with PyTorch and verified against
+All 101 currently committed student checkpoints were loaded with PyTorch and verified against
 their summaries for dataset, method, best accuracy, and checkpoint epoch.
 The Top-1 value is read from the adjacent summary; file names are deliberately
 stable (`student_best.pt`) inside the provenance-rich protocol directory.
@@ -232,12 +252,12 @@ transfers rather than source-paper reproductions.
 
 ## CUB-200-2011 — separate Table-1 extension
 
-Build 543 trained the dedicated scratch ResNet56 teacher at 32 x 32 and the
-first two DeiT-Ti students. Builds 547, 548, 551, and 552 completed the
-remaining DeiT-Ti rows plus all ConViT-Ti and CvT-13 rows. Every student uses
-224 x 224 inputs and a 300-epoch schedule; Vanilla is teacher-free and all
-guided rows use the fixed build-543 teacher. This family does not reuse or
-replace the primary build-509 CUB teacher above.
+Build 543 trained the dedicated scratch ResNet56 teacher at 32 x 32. Builds
+543, 547, 548, and 551–556 completed all 35 student settings, so the original
+`1 teacher + 7 backbones x 5 settings = 36 tasks` baseline matrix is complete.
+Every student uses 224 x 224 inputs and a 300-epoch schedule; Vanilla is
+teacher-free and all guided rows use the fixed build-543 teacher. This family
+does not reuse or replace the primary build-509 CUB teacher above.
 
 | Student | Method | Train batch | Best epoch | Best Top-1 | Last Top-1 | Build |
 |---|---|---:|---:|---:|---:|---:|
@@ -257,12 +277,32 @@ replace the primary build-509 CUB teacher above.
 | CvT-13 | ALG | 128 | 247 | **46.63%** | 45.84% | 552 |
 | CvT-13 | Ours | 64 | 248 | **47.98%** | 46.95% | 552 |
 | CvT-13 | Ours | 128 | 224 | **46.82%** | 45.36% | 552 |
+| PiT-Ti | Vanilla | 128 | 149 | **20.16%** | 20.06% | 553 |
+| PiT-Ti | LG | 128 | 111 | **42.37%** | 40.30% | 553 |
+| PiT-Ti | ALG | 128 | 196 | **43.63%** | 42.75% | 553 |
+| PiT-Ti | Ours | 64 | 267 | **44.44%** | 43.70% | 553 |
+| PiT-Ti | Ours | 128 | 221 | **42.72%** | 41.11% | 553 |
+| PVTv2-B0 | Vanilla | 128 | 277 | **47.15%** | 46.70% | 554 |
+| PVTv2-B0 | LG | 128 | 246 | **45.43%** | 45.32% | 554 |
+| PVTv2-B0 | ALG | 128 | 291 | **50.05%** | 49.86% | 554 |
+| PVTv2-B0 | Ours | 64 | 274 | **52.73%** | 52.24% | 554 |
+| PVTv2-B0 | Ours | 128 | 254 | **52.69%** | 52.04% | 554 |
+| T2T-ViT-7 | Vanilla | 128 | 224 | **26.73%** | 25.98% | 555 |
+| T2T-ViT-7 | LG | 128 | 222 | **46.63%** | 45.72% | 555 |
+| T2T-ViT-7 | ALG | 128 | 295 | **50.57%** | 50.47% | 555 |
+| T2T-ViT-7 | Ours | 64 | 276 | **54.59%** | 54.14% | 555 |
+| T2T-ViT-7 | Ours | 128 | 291 | **52.97%** | 52.76% | 555 |
+| T2T-ViT-14 | Vanilla | 128 | 267 | **19.90%** | 19.57% | 556 |
+| T2T-ViT-14 | LG | 128 | 103 | **46.05%** | 43.30% | 556 |
+| T2T-ViT-14 | ALG | 128 | 254 | **48.45%** | 47.51% | 556 |
+| T2T-ViT-14 | Ours | 64 | 226 | **49.00%** | 47.88% | 556 |
+| T2T-ViT-14 | Ours | 128 | 259 | **47.98%** | 46.41% | 556 |
 
 The fixed teacher is
 `teachers/checkpoints/cub200_table1_resnet56_32/teacher_resnet56_cub200_32_best.pt`
 with SHA-256
 `06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5`.
-Every remaining guided Table-1 student must use that exact checkpoint; the
+Every guided Table-1 student uses that exact checkpoint; the
 Table-1 training entry point rejects any different manifest or hash.
 
 ## CUB-200-2011 — ImageNet-pretrained ResNet50-224 teacher
@@ -522,6 +562,11 @@ in separate protocol directories; no old checkpoint was overwritten.
 - `run_logs/h200_build-551_table1-cub200-convit-ti-all-five-300ep/` and
   `run_logs/h200_build-552_table1-cub200-cvt13-all-five-300ep/`: complete
   Vanilla/LG/ALG/Ours64/Ours128 sequences for ConViT-Ti and CvT-13.
+- `run_logs/h200_build-553_table1-cub200-pit-ti-all-five-300ep/`,
+  `run_logs/h200_build-554_table1-cub200-pvtv2-b0-all-five-300ep/`,
+  `run_logs/h200_build-555_table1-cub200-t2t-vit-7-all-five-300ep/`, and
+  `run_logs/h200_build-556_table1-cub200-t2t-vit-14-all-five-300ep/`:
+  complete five-setting sequences for the four remaining Table-1 backbones.
 - `run_logs/h200_build-482_table4-grid-permutation-cifar100-300ep.log`:
   Table 4 grid-permutation control (`81.79%`).
 - `run_logs/h200_build-484_table7-lambda0-cifar100-300ep.log`:

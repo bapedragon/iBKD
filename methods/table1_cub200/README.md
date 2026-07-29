@@ -120,9 +120,10 @@ The verified artifacts are under `teachers/checkpoints/cub200_table1_resnet56_32
 `results/run_logs/h200_build-543_*`. The producer command above and its Issue
 fields remain for provenance.
 
-## Future Table-1 student training
+## Direct Table-1 student training
 
-Do not retrain or substitute the teacher. Run each remaining student directly
+The original 36-task baseline matrix is complete. For any controlled rerun or
+follow-up, do not retrain or substitute the teacher. Run the student directly
 through `train.py`; its default `--teacher-root` is the fixed build-543
 directory, and the exact hash is checked before training:
 
@@ -172,7 +173,7 @@ The `v2` output root distinguishes it from the earlier job that stopped before
 epoch 1 because `iopath` had not been installed. Copyable Issue fields remain
 in `H200_DEIT_VANILLA_FULL_ISSUE.md`.
 
-## Five-setting backbone runner and completed builds 551/552
+## Five-setting backbone runner and completed builds 551–556
 
 `run_backbone_all.py` trains one student backbone in the locked order
 Vanilla-b128, LG-b128, ALG-b128, Ours-b64, and Ours-b128. Vanilla remains
@@ -186,8 +187,8 @@ The first use was ConViT-Ti:
 python methods/table1_cub200/run_backbone_all.py --full-run --student convit_ti --data-dir /app/output/table1_cub200_convit_all_full_seed1/data/cub200 --output-dir /app/output/table1_cub200_convit_all_full_seed1 --num-workers 4
 ```
 
-Build 551 completed all five ConViT-Ti settings, and build 552 used the same
-runner for all five CvT-13 settings:
+Builds 551–556 used the same runner to complete all five settings for the six
+non-DeiT backbones:
 
 | Student | Method | Batch | Best epoch | Best Top-1 | Last Top-1 |
 |---|---|---:|---:|---:|---:|
@@ -201,9 +202,30 @@ runner for all five CvT-13 settings:
 | CvT-13 | ALG | 128 | 247 | **46.63%** | 45.84% |
 | CvT-13 | Ours | 64 | 248 | **47.98%** | 46.95% |
 | CvT-13 | Ours | 128 | 224 | **46.82%** | 45.36% |
+| PiT-Ti | Vanilla | 128 | 149 | **20.16%** | 20.06% |
+| PiT-Ti | LG | 128 | 111 | **42.37%** | 40.30% |
+| PiT-Ti | ALG | 128 | 196 | **43.63%** | 42.75% |
+| PiT-Ti | Ours | 64 | 267 | **44.44%** | 43.70% |
+| PiT-Ti | Ours | 128 | 221 | **42.72%** | 41.11% |
+| PVTv2-B0 | Vanilla | 128 | 277 | **47.15%** | 46.70% |
+| PVTv2-B0 | LG | 128 | 246 | **45.43%** | 45.32% |
+| PVTv2-B0 | ALG | 128 | 291 | **50.05%** | 49.86% |
+| PVTv2-B0 | Ours | 64 | 274 | **52.73%** | 52.24% |
+| PVTv2-B0 | Ours | 128 | 254 | **52.69%** | 52.04% |
+| T2T-ViT-7 | Vanilla | 128 | 224 | **26.73%** | 25.98% |
+| T2T-ViT-7 | LG | 128 | 222 | **46.63%** | 45.72% |
+| T2T-ViT-7 | ALG | 128 | 295 | **50.57%** | 50.47% |
+| T2T-ViT-7 | Ours | 64 | 276 | **54.59%** | 54.14% |
+| T2T-ViT-7 | Ours | 128 | 291 | **52.97%** | 52.76% |
+| T2T-ViT-14 | Vanilla | 128 | 267 | **19.90%** | 19.57% |
+| T2T-ViT-14 | LG | 128 | 103 | **46.05%** | 43.30% |
+| T2T-ViT-14 | ALG | 128 | 254 | **48.45%** | 47.51% |
+| T2T-ViT-14 | Ours | 64 | 226 | **49.00%** | 47.88% |
+| T2T-ViT-14 | Ours | 128 | 259 | **47.98%** | 46.41% |
 
-Every guided checkpoint records the fixed build-543 teacher hash. CvT-13 Ours
-also preserves its learned per-block projection/resize adapter state. The same
-runner remains the entry point for PiT-Ti, PVTv2-B0, T2T-ViT-7, and
-T2T-ViT-14. Copyable ConViT Issue fields are in
+Every guided checkpoint records the fixed build-543 teacher hash. All
+hierarchical Ours checkpoints preserve their learned per-block
+projection/resize adapter state. With the earlier DeiT-Ti group, these results
+complete all 35 baseline students plus the one fixed teacher. The same runner
+remains available for controlled reruns. Copyable ConViT Issue fields are in
 `H200_CONVIT_ALL_FULL_ISSUE.md`.

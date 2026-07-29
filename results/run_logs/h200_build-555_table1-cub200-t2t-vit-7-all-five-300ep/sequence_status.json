@@ -1,0 +1,43 @@
+{
+  "completed_tasks": 5,
+  "final_summary": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/final_summary.json",
+  "finished_at_unix": 1785160683.1474822,
+  "protocol": "table1_cub200_t2t_vit_7_all_five",
+  "started_at_unix": 1785141354.4534786,
+  "status": "complete",
+  "student": "T2T-ViT-7",
+  "student_key": "t2t_vit_7",
+  "tasks": [
+    {
+      "elapsed_seconds": 3781.013546705246,
+      "name": "Vanilla",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_vanilla_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 3811.48690533638,
+      "name": "LG",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_lg_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 3789.196949005127,
+      "name": "ALG",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_alg_b128_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 4110.062558889389,
+      "name": "OursB64",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_ours_b64_full_300ep_seed1/summary.json"
+    },
+    {
+      "elapsed_seconds": 3836.743907928467,
+      "name": "OursB128",
+      "status": "complete",
+      "summary": "/app/output/table1_cub200_t2t_vit7_all_full_seed1/students/table1_cub200_t2t_vit_7_ours_b128_full_300ep_seed1/summary.json"
+    }
+  ],
+  "total_tasks": 5
+}

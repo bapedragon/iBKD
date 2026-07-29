@@ -27,15 +27,15 @@ CUB configuration.
 The new Table-1 CUB extension is a separate experiment family with the seven
 paper backbones: DeiT-Ti, ConViT-Ti, CvT-13, PiT-Ti, PVTv2-B0, T2T-ViT-7,
 and T2T-ViT-14. Each backbone runs Vanilla-b128, LG-b128, ALG-b128, Ours-b64,
-and Ours-b128. Builds 543/547/548 completed the Table-1 teacher and all five
-DeiT-Ti settings; builds 551/552 completed all five ConViT-Ti and CvT-13
-settings. The best guided results so far are ConViT-Ti Ours-b64
-(**53.18%**), DeiT-Ti Ours-b128 (**48.36%**), and CvT-13 Ours-b64
-(**47.98%**). Every guided Table-1 student is code-locked to the build-543
+and Ours-b128. Builds 543/547/548 and 551–556 completed the full 36-task
+baseline matrix. The strongest guided results include T2T-ViT-7 Ours-b64
+(**54.59%**), ConViT-Ti Ours-b64 (**53.18%**), and PVTv2-B0 Ours-b64
+(**52.73%**). Every guided Table-1 student is code-locked to the build-543
 teacher (**36.40%**, epoch 275) and SHA-256
 `06f75192b1c108c89e480843cb4f72dfb28aa762d7b11e7ac327333dd54b51f5`.
 The full verified matrix, complete **36-task** timing runner, audited
-official-LG model sources, protocol, and remaining full-run instructions are under
+official-LG model sources, protocol, and validation-selected follow-up
+instructions are under
 [`methods/table1_cub200/`](methods/table1_cub200/). This family never imports
 the primary build-509 teacher, ResNet50-224, or ImageNet-pretrained CUB
 settings.
