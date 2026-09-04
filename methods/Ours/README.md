@@ -40,6 +40,11 @@ Table 7 loss-balance controls are likewise isolated under
 [`table7_loss_balance/`](table7_loss_balance/README.md). They inherit the same
 82.90%-run protocol and vary only the convex loss-balance parameter `lambda`.
 
+The cross-dataset lambda transfer check lives under
+[`lambda_transfer/`](lambda_transfer/README.md). It keeps the completed
+Flowers-102 and Chaoyang Ours v1 protocols fixed and runs only `lambda=0.25`,
+using the verified `lambda=0.5` results as paired references.
+
 `ours.py` is a standalone PyTorch port rather than a byte-for-byte copy of the
 original pycls wrapper. Its aggregation, projection, attention blocks, MSE
 calculation, and larger-grid resize preserve the supplied implementation.
